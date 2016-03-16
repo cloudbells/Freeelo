@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">Freeelo</string>
+    <string name="summoner_name">Enter Summoner Name</string>
+
+    <string-array name="regions">
+        <item>EUW</item>
+        <item>EUNE</item>
+        <item>NA</item>
+        <item>KR</item>
+        <item>RU</item>
+        <item>TR</item>
+        <item>LAN</item>
+        <item>LAS</item>
+        <item>BR</item>
+        <item>OCE</item>
+    </string-array>
 </resources>

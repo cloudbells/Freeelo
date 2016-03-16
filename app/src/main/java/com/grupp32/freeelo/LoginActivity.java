@@ -8,8 +8,12 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -18,14 +22,23 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        final Animation animAlpha = AnimationUtils.loadAnimation(this, R.anim.anim_alpha);
-        Button btnAlpha = (Button) findViewById(R.id.okButton);
+        final TextView twSummonerName = (TextView) findViewById(R.id.summonerName);
 
-        assert btnAlpha != null;
-        btnAlpha.setOnClickListener(new Button.OnClickListener(){
+        Spinner spRegion = (Spinner) findViewById(R.id.region);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.regions, R.layout.textview_spinner);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spRegion.setAdapter(adapter);
+
+        final Animation animAlpha = AnimationUtils.loadAnimation(this, R.anim.anim_alpha);
+        final Button btnOK = (Button) findViewById(R.id.okButton);
+
+        assert btnOK != null;
+        btnOK.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 v.startAnimation(animAlpha);
+
+                Toast.makeText(LoginActivity.this, twSummonerName.getText(), Toast.LENGTH_LONG).show();
             }
         });
     }

@@ -15,27 +15,39 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Freeelo"
+        android:text="@string/app_name"
         android:id="@+id/okButton"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:textColor="#5d5c5c"
-        android:background="#FAFAFA"
+        android:background="@drawable/edittext_style"
         android:layout_margin="10dp"/>
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/region"
+        android:background="@drawable/edittext_style"
+        android:layout_toStartOf="@+id/okButton"
+        android:layout_alignTop="@+id/okButton"
+        android:layout_alignBottom="@+id/okButton" />
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/summonerName"
-        android:hint="Enter Summoner Name"
+        android:hint="@string/summoner_name"
         android:textColor="#5d5c5c"
         android:textAlignment="center"
-        android:layout_above="@+id/okButton"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="true"
+        android:textSize="24sp"
         android:imeOptions="actionDone"
         android:lines="1"
         android:textColorHint="#E0E0E0"
-        android:background="@drawable/edittext_style" />
+        android:background="@drawable/edittext_style"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:layout_above="@+id/okButton"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>
