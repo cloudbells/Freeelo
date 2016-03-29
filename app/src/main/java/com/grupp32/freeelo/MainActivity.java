@@ -1,5 +1,6 @@
 package com.grupp32.freeelo;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -8,6 +9,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,11 +39,19 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onTabUnselected(TabLayout.Tab tab) { }
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
 
             @Override
-            public void onTabReselected(TabLayout.Tab tab) { }
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
         });
+
+        Intent intent = getIntent();
+        Bundle extras = intent.getExtras();
+        if(extras != null) {
+            Toast.makeText(this, extras.get("summoner") + " - Region: " + extras.get("region"), Toast.LENGTH_LONG).show();
+        }
     }
 
     public class PagerAdapter extends FragmentStatePagerAdapter {

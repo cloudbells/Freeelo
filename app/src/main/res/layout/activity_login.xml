@@ -1,16 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     android:background="@drawable/login_background"
     android:clickable="true"
     android:focusable="true"
     tools:context="com.grupp32.freeelo.LoginActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="?attr/colorPrimary"
+        android:elevation="6dp"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
     <Button
         android:layout_width="wrap_content"
@@ -28,6 +36,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/region"
         android:background="@drawable/edittext_style"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:layout_toStartOf="@+id/okButton"
         android:layout_alignTop="@+id/okButton"
         android:layout_alignBottom="@+id/okButton" />
@@ -44,10 +53,10 @@
         android:lines="1"
         android:textColorHint="#E0E0E0"
         android:background="@drawable/edittext_style"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:layout_above="@+id/okButton"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>
