@@ -32,15 +32,12 @@ public class LoginActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spRegion.setAdapter(adapter);
 
-        final Animation animAlpha = AnimationUtils.loadAnimation(this, R.anim.anim_alpha);
         final Button btnOK = (Button) findViewById(R.id.okButton);
 
         assert btnOK != null;
         btnOK.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                v.startAnimation(animAlpha);
-
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 String summoner = twSummonerName.getText().toString();
                 String region = spRegion.getSelectedItem().toString();

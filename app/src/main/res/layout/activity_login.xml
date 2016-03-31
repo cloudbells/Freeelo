@@ -4,7 +4,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/login_background"
     android:clickable="true"
     android:focusable="true"
     tools:context="com.grupp32.freeelo.LoginActivity">
@@ -14,9 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:background="?attr/colorPrimary"
+        android:background="@color/colorPrimary"
         android:elevation="6dp"
-        android:minHeight="?attr/actionBarSize"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
@@ -25,18 +23,15 @@
         android:layout_height="wrap_content"
         android:text="@string/app_name"
         android:id="@+id/okButton"
-        android:layout_centerVertical="true"
+        android:layout_below="@+id/summonerName"
         android:layout_centerHorizontal="true"
-        android:textColor="#5d5c5c"
-        android:background="@drawable/edittext_style"
         android:layout_margin="10dp"/>
 
     <Spinner
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/region"
-        android:background="@drawable/edittext_style"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:layout_toStartOf="@+id/okButton"
         android:layout_alignTop="@+id/okButton"
         android:layout_alignBottom="@+id/okButton" />
@@ -46,17 +41,22 @@
         android:layout_height="wrap_content"
         android:id="@+id/summonerName"
         android:hint="@string/summoner_name"
-        android:textColor="#5d5c5c"
         android:textAlignment="center"
         android:textSize="24sp"
         android:imeOptions="actionDone"
         android:lines="1"
-        android:textColorHint="#E0E0E0"
-        android:background="@drawable/edittext_style"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:layout_above="@+id/okButton"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_below="@+id/logo"
         android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/logo"
+        android:background="@drawable/ic_logo"
+        android:layout_below="@+id/toolbar"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

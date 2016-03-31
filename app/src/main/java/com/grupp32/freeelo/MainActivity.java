@@ -64,7 +64,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-
             switch (position) {
                 case 0:
                     TabFragment tab1 = new TabFragment();
