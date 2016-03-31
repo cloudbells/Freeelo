@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TabHost;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,11 +20,17 @@ import java.net.URL;
 
 public class TabFragment extends Fragment {
     private ImageView background;
+    private String summonerName;
+    private String region;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_tab, container, false);
         background = (ImageView) view.findViewById(R.id.background);
+
+        summonerName = getActivity().getIntent().getExtras().getString("summoner");
+        region = getActivity().getIntent().getExtras().getString("region");
+        Toast.makeText(getActivity(), summonerName + " - Region: " + region, Toast.LENGTH_SHORT).show();
 
         try {
             new BackgroundSwitcher().execute(new URL("http://ddragon.leagueoflegends.com/cdn/img/champion/loading/Aatrox_0.jpg"));

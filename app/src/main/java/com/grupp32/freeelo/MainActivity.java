@@ -1,7 +1,9 @@
 package com.grupp32.freeelo;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -9,9 +11,9 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
+    private CurrentGame game;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,10 +24,10 @@ public class MainActivity extends AppCompatActivity {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.addTab(tabLayout.newTab().setText("Top").setIcon(R.drawable.ic_top));
-        tabLayout.addTab(tabLayout.newTab().setText("Jungle").setIcon(R.drawable.ic_jgl));
+        tabLayout.addTab(tabLayout.newTab().setText("Jgl").setIcon(R.drawable.ic_jgl));
         tabLayout.addTab(tabLayout.newTab().setText("Mid").setIcon(R.drawable.ic_mid));
         tabLayout.addTab(tabLayout.newTab().setText("Bot").setIcon(R.drawable.ic_bot));
-        tabLayout.addTab(tabLayout.newTab().setText("Supp").setIcon(R.drawable.ic_sup));
+        tabLayout.addTab(tabLayout.newTab().setText("Sup").setIcon(R.drawable.ic_sup));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
@@ -48,10 +50,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         Intent intent = getIntent();
-        Bundle extras = intent.getExtras();
-        if(extras != null) {
-            Toast.makeText(this, extras.get("summoner") + " - Region: " + extras.get("region"), Toast.LENGTH_LONG).show();
-        }
+        new GetCurrentGame().execute(intent.getExtras().getString("summoner"), intent.getExtras().getString("region"));
     }
 
     public class PagerAdapter extends FragmentStatePagerAdapter {
@@ -88,6 +87,17 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             return mNumOfTabs;
+        }
+    }
+
+    private class GetCurrentGame extends AsyncTask<String, Void, Void> {
+        @Override
+        protected Void doInBackground(String... params) {
+            String summonerName = params[0];
+            String region = params[1];
+
+            game = new CurrentGame(summonerName, region);
+            return null;
         }
     }
 }
