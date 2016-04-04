@@ -1,9 +1,11 @@
 package com.grupp32.freeelo;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -11,9 +13,21 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.Toast;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     private CurrentGame game;
+    private ArrayList<Champion> champions;
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,21 +36,30 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        tabLayout.addTab(tabLayout.newTab().setText("Top").setIcon(R.drawable.ic_top));
-        tabLayout.addTab(tabLayout.newTab().setText("Jgl").setIcon(R.drawable.ic_jgl));
-        tabLayout.addTab(tabLayout.newTab().setText("Mid").setIcon(R.drawable.ic_mid));
-        tabLayout.addTab(tabLayout.newTab().setText("Bot").setIcon(R.drawable.ic_bot));
-        tabLayout.addTab(tabLayout.newTab().setText("Sup").setIcon(R.drawable.ic_sup));
+        champions = new ArrayList<Champion>();
+        tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        /*tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_top));
+        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_jgl));
+        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_mid));
+        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_bot));
+        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_sup));*/
+        for(int i = 0; i < 5; i++) {
+            tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_fill));
+        }
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-        final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
+        final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+        progressBar.setProgress(0);
+
+        viewPager = (ViewPager) findViewById(R.id.pager);
         final PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(adapter);
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        //viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        tabLayout.setupWithViewPager(viewPager);
+        /*tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                Log.e("TABPOS", "pos = " + tab.getPosition());
                 viewPager.setCurrentItem(tab.getPosition());
             }
 
@@ -47,57 +70,130 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
             }
-        });
+        });*/
 
         Intent intent = getIntent();
-        new GetCurrentGame().execute(intent.getExtras().getString("summoner"), intent.getExtras().getString("region"));
+        GetCurrentGame game = new GetCurrentGame();
+        game.setProgressBar(progressBar);
+        game.execute(intent.getExtras().getString("summoner"), intent.getExtras().getString("region"));
     }
 
     public class PagerAdapter extends FragmentStatePagerAdapter {
-        int mNumOfTabs;
+        int numOfTabs;
 
-        public PagerAdapter(FragmentManager fm, int NumOfTabs) {
+        public PagerAdapter(FragmentManager fm, int numOfTabs) {
             super(fm);
-            this.mNumOfTabs = NumOfTabs;
+            this.numOfTabs = numOfTabs;
         }
 
         @Override
         public Fragment getItem(int position) {
-            switch (position) {
-                case 0:
-                    TabFragment tab1 = new TabFragment();
-                    return tab1;
-                case 1:
-                    TabFragment tab2 = new TabFragment();
-                    return tab2;
-                case 2:
-                    TabFragment tab3 = new TabFragment();
-                    return tab3;
-                case 3:
-                    TabFragment tab4 = new TabFragment();
-                    return tab4;
-                case 4:
-                    TabFragment tab5 = new TabFragment();
-                    return tab5;
-                default:
-                    return null;
+            /*Log.e("POSITION1", "pos: " + position);
+            Log.e("ArrayLIST", Arrays.toString(tabs.toArray()));
+            if(tabs.isEmpty()) {
+                return new TabFragment();
+            } else {
+                Log.e("POSITION2", "pos: " + position);
+                Log.e("ArrayLIST", Arrays.toString(tabs.toArray()));
+                return tabs.get(position);
+            }*/
+            if(!champions.isEmpty()) {
+                return TabFragment.newInstance(position, champions.get(position));
+            } else {
+                return TabFragment.newInstance();
             }
         }
 
         @Override
         public int getCount() {
-            return mNumOfTabs;
+            return numOfTabs;
         }
     }
 
-    private class GetCurrentGame extends AsyncTask<String, Void, Void> {
+    private class GetCurrentGame extends AsyncTask<String, Integer, String> {
+        private ProgressBar bar;
+        private String summonerName;
+
+        public void setProgressBar(ProgressBar bar) {
+            this.bar = bar;
+        }
+
         @Override
-        protected Void doInBackground(String... params) {
-            String summonerName = params[0];
+        protected String doInBackground(String... params) {
+            Log.v("TEST", "doInBackground");
+            summonerName = params[0];
             String region = params[1];
 
-            game = new CurrentGame(summonerName, region);
-            return null;
+            try {
+                game = new CurrentGame(summonerName, region);
+
+                Summoner[] summoners = game.getSummoners();
+                int progress = 0;
+                for(Summoner summoner : summoners) {
+                    Champion champ = summoner.getChampion();
+                    Log.e("HELLO", champ.toString());
+
+                    champions.add(champ);
+
+                    publishProgress(progress += 20);
+                }
+
+                return "" + summoners.length;
+            } catch(Exception e) {
+                e.printStackTrace();
+                finish();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+            Log.v("TEST", "onProgressUpdate");
+            if(bar != null) {
+                bar.setProgress(values[0]);
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            Log.v("TEST", "onPostExecute" + result);
+            if(result != null) {
+                bar.setProgress(100);
+                bar.setVisibility(View.INVISIBLE);
+
+                int tabId = 0;
+                for(Champion champ : champions) {
+                    new IconSwitcher().execute("http://ddragon.leagueoflegends.com/cdn/6.6.1/img/champion/" + champ.getSquareImageFull(), Integer.toString(tabId));
+                    tabId++;
+                }
+
+                viewPager.setCurrentItem(1);
+                viewPager.setCurrentItem(2);
+            } else {
+                Toast.makeText(getApplication(), String.format(getString(R.string.not_in_game), summonerName), Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    private class IconSwitcher extends AsyncTask<String, Bitmap, Bitmap> {
+        private int tabId;
+
+        protected Bitmap doInBackground(String... strings) {
+            Bitmap bitmap = null;
+            tabId = Integer.parseInt(strings[1]);
+            try {
+                bitmap = BitmapFactory.decodeStream((InputStream) new URL(strings[0]).getContent());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return bitmap;
+        }
+
+        protected void onPostExecute(Bitmap bitmap) {
+            tabLayout.getTabAt(tabId).setIcon(new BitmapDrawable(getResources(), bitmap));
         }
     }
 }

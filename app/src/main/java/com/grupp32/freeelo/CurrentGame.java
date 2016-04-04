@@ -18,6 +18,7 @@ public class CurrentGame {
 	private final String VERSION = "/v1.4/";
 	private final String SUM_BY_NAME = "summoner/by-name/";
 	private final String API_KEY = "?api_key=8088586e-a695-4cc5-80c2-be3b6fcec3e5";
+	private final String API_KEY2 = "&api_key=8088586e-a695-4cc5-80c2-be3b6fcec3e5";
 
 	public CurrentGame(String summonerName, String region) {
 		this.region = region;
@@ -60,12 +61,29 @@ public class CurrentGame {
 			region = "NA1/";
 		} else if (this.region.toLowerCase().equals("eune")) {
 			region = "EUN1/";
+		} else if (this.region.toLowerCase().equals("br")) {
+			region = "BR1/";
+		} else if (this.region.toLowerCase().equals("kr")) {
+			region = "KR/";
+		} else if (this.region.toLowerCase().equals("lan")) {
+			region = "LA1/";
+		} else if (this.region.toLowerCase().equals("las")) {
+			region = "LA2/";
+		} else if (this.region.toLowerCase().equals("oce")) {
+			region = "OC1/";
+		} else if (this.region.toLowerCase().equals("tr")) {
+			region = "TR1/";
+		} else if (this.region.toLowerCase().equals("ru")) {
+			region = "RU/";
+		} else if (this.region.toLowerCase().equals("pbe")) {
+			region = "PBE1/";
 		}
+
 		URL url = new URL("https://" + this.region + ROOT_URL + OBS_URL + region + summonerId + API_KEY);
 		currentGame = buildRootObject(url);
 	}
 
-	private void buildSummonerArray(int summonerId) throws JSONException {
+	private void buildSummonerArray(int summonerId) throws IOException, JSONException {
 		JSONArray allSummoners = currentGame.getJSONArray("participants");
 		int enemyTeamId = 100;
 		Summoner[] summoners = new Summoner[5];
@@ -81,11 +99,42 @@ public class CurrentGame {
 		for (int i = 0; i < 10; i++) {
 			JSONObject summoner = allSummoners.getJSONObject(i);
 			if (summoner.getInt("teamId") == enemyTeamId) {
-				summoners[index++] = new Summoner(summoner.getString("summonerName"), summoner.getInt("spell1Id"),
-						summoner.getInt("spell2Id"), summoner.getInt("championId"));
+				summoners[index] = new Summoner(summoner.getString("summonerName"), summoner.getInt("spell1Id"), summoner.getInt("spell2Id"));
+
+				Champion champ = populateChampionData(summoner.getInt("championId"));
+				summoners[index].setChampion(champ);
+
+				index++;
 			}
 		}
 		this.summoners = summoners;
+	}
+
+	private Champion populateChampionData(int championId) throws IOException, JSONException {
+		URL url = new URL("https://global.api.pvp.net/api/lol/static-data/" + this.region.toLowerCase() + "/v1.2/champion/" + championId + "?champData=image,spells" + API_KEY2);
+		JSONObject championData = buildRootObject(url);
+
+		String name = championData.getString("name");
+		String title = championData.getString("title");
+		String key = championData.getString("key");
+
+		JSONObject image = championData.getJSONObject("image");
+		String squareImageFull = image.getString("full");
+
+		JSONArray spells = championData.getJSONArray("spells");
+		JSONObject ultimate = spells.getJSONObject(3);
+		String ultimateName = ultimate.getString("name");
+		int ultimateMaxRank = ultimate.getInt("maxrank");
+		JSONArray cooldown = ultimate.getJSONArray("cooldown");
+		int cooldowns[] = new int[ultimateMaxRank];
+		for(int i = 0; i < ultimateMaxRank; i++) {
+			cooldowns[i] = cooldown.getInt(i);
+		}
+
+		JSONObject ultImg = ultimate.getJSONObject("image");
+		String ultimateImage = ultImg.getString("full");
+
+		return new Champion(championId, name, title, key, squareImageFull, ultimateName, ultimateMaxRank, cooldowns, ultimateImage);
 	}
 	
 	public Summoner[] getSummoners() {

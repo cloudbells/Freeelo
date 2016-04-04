@@ -7,14 +7,13 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -38,12 +37,16 @@ public class LoginActivity extends AppCompatActivity {
         btnOK.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                String summoner = twSummonerName.getText().toString();
-                String region = spRegion.getSelectedItem().toString();
-                intent.putExtra("summoner", summoner);
-                intent.putExtra("region", region);
-                startActivity(intent);
+                String summoner = twSummonerName.getText().toString().trim();
+                if(!summoner.isEmpty()) {
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    String region = spRegion.getSelectedItem().toString();
+                    intent.putExtra("summoner", summoner);
+                    intent.putExtra("region", region);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(getApplication(), getString(R.string.enter_name), Toast.LENGTH_LONG).show();
+                }
             }
         });
     }
