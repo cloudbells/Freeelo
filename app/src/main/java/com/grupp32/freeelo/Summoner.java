@@ -3,7 +3,6 @@ package com.grupp32.freeelo;
 import java.io.Serializable;
 
 public class Summoner implements Serializable {
-
 	private String name;
 	private Spell spell1;
 	private Spell spell2;

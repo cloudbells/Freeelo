@@ -1,10 +1,11 @@
 package com.grupp32.freeelo;
 
+import java.io.Serializable;
+
 /**
  * Created by Christoffer Nilsson on 2016-04-05.
  */
-public class Spell {
-
+public class Spell implements Serializable {
     private int id;
     private String name;
     private String image;
@@ -31,5 +32,15 @@ public class Spell {
 
     public int getCooldown() {
         return cooldown;
+    }
+
+    @Override
+    public String toString() {
+        return "Spell{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", image='" + image + '\'' +
+                ", cooldown=" + cooldown +
+                '}';
     }
 }

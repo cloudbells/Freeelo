@@ -2,7 +2,6 @@ package com.grupp32.freeelo;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Scanner;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -117,9 +116,6 @@ public class CurrentGame {
 		int cunning = 0;
 		int resolve = 0;
 		for (int i = 0; i < masteries.length(); i++) {
-			ferocity = 0;
-			cunning = 0;
-			resolve = 0;
 			JSONObject mastery = masteries.getJSONObject(i);
 			int rank = mastery.getInt("rank");
 			int id = mastery.getInt("masteryId");
@@ -140,7 +136,7 @@ public class CurrentGame {
 					break;
 			}
 		}
-	return ferocity + "/" + cunning + "/" + resolve;
+		return ferocity + "/" + cunning + "/" + resolve;
 	}
 
 	private Spell buildSpell(int spellId) throws IOException, JSONException {

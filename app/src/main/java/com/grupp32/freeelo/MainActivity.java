@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         viewPager = (ViewPager) findViewById(R.id.pager);
         final PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(adapter);
-        //viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.setupWithViewPager(viewPager);
         /*tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -91,16 +91,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-            /*Log.e("POSITION1", "pos: " + position);
-            Log.e("ArrayLIST", Arrays.toString(tabs.toArray()));
-            if(tabs.isEmpty()) {
-                return new TabFragment();
-            } else {
-                Log.e("POSITION2", "pos: " + position);
-                Log.e("ArrayLIST", Arrays.toString(tabs.toArray()));
-                return tabs.get(position);
-            }*/
-            if(!champions.isEmpty()) {
+            if(!summoners.isEmpty() && !champions.isEmpty()) {
                 return TabFragment.newInstance(position, summoners.get(position), champions.get(position));
             } else {
                 return TabFragment.newInstance();
@@ -135,6 +126,11 @@ public class MainActivity extends AppCompatActivity {
                 for(Summoner summoner : summonerArr) {
                     Champion champ = summoner.getChampion();
                     Log.e("HELLO", champ.toString());
+                    Spell spell1 = summoner.getSpell1();
+                    Spell spell2 = summoner.getSpell2();
+                    Log.e("SPELL1", spell1.toString());
+                    Log.e("SPELL2", spell2.toString());
+                    Log.e("MASTERIES", summoner.getMasteries());
 
                     summoners.add(summoner);
                     champions.add(champ);
@@ -197,7 +193,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         protected void onPostExecute(Bitmap bitmap) {
-            tabLayout.getTabAt(tabId).setIcon(new BitmapDrawable(getResources(), bitmap));
+            TabLayout.Tab tab = tabLayout.getTabAt(tabId);
+            if(tab != null) {
+                tab.setIcon(new BitmapDrawable(getResources(), bitmap));
+            }
         }
     }
 }
