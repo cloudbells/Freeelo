@@ -2,10 +2,13 @@ package com.grupp32.freeelo;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Scanner;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+// Test summonerID: 27693209 on EUW
 
 public class CurrentGame {
 	private Summoner[] summoners;
@@ -78,7 +81,6 @@ public class CurrentGame {
 		} else if (this.region.toLowerCase().equals("pbe")) {
 			region = "PBE1/";
 		}
-
 		URL url = new URL("https://" + this.region + ROOT_URL + OBS_URL + region + summonerId + API_KEY);
 		currentGame = buildRootObject(url);
 	}
@@ -99,28 +101,66 @@ public class CurrentGame {
 		for (int i = 0; i < 10; i++) {
 			JSONObject summoner = allSummoners.getJSONObject(i);
 			if (summoner.getInt("teamId") == enemyTeamId) {
-				summoners[index] = new Summoner(summoner.getString("summonerName"), summoner.getInt("spell1Id"), summoner.getInt("spell2Id"));
-
-				Champion champ = populateChampionData(summoner.getInt("championId"));
-				summoners[index].setChampion(champ);
-
-				index++;
+				Champion champ = buildChampion(summoner.getInt("championId"));
+				Spell spell1 = buildSpell(summoner.getInt("spell1Id"));
+				Spell spell2 = buildSpell(summoner.getInt("spell2Id"));
+				String masteries = buildMasteries(summoner);
+				summoners[index++] = new Summoner(summoner.getString("summonerName"), champ, spell1, spell2, masteries);
 			}
 		}
 		this.summoners = summoners;
 	}
 
-	private Champion populateChampionData(int championId) throws IOException, JSONException {
-		URL url = new URL("https://global.api.pvp.net/api/lol/static-data/" + this.region.toLowerCase() + "/v1.2/champion/" + championId + "?champData=image,spells" + API_KEY2);
-		JSONObject championData = buildRootObject(url);
+	private String buildMasteries(JSONObject summoner) throws IOException, JSONException {
+		JSONArray masteries = summoner.getJSONArray("masteries");
+		int ferocity = 0;
+		int cunning = 0;
+		int resolve = 0;
+		for (int i = 0; i < masteries.length(); i++) {
+			ferocity = 0;
+			cunning = 0;
+			resolve = 0;
+			JSONObject mastery = masteries.getJSONObject(i);
+			int rank = mastery.getInt("rank");
+			int id = mastery.getInt("masteryId");
+			URL url = new URL("https://global.api.pvp.net/api/lol/static-data/euw/v1.2/mastery/" + id + "?masteryData=masteryTree" + API_KEY2);
+			JSONObject masteryObject = buildRootObject(url);
+			String tree = masteryObject.getString("masteryTree");
+			switch (tree) {
+				case "Ferocity":
+					ferocity += rank;
+					break;
+				case "Cunning":
+					cunning += rank;
+					break;
+				case "Resolve":
+					resolve += rank;
+					break;
+				default:
+					break;
+			}
+		}
+	return ferocity + "/" + cunning + "/" + resolve;
+	}
 
+	private Spell buildSpell(int spellId) throws IOException, JSONException {
+		URL url = new URL("https://global.api.pvp.net/api/lol/static-data/euw/v1.2/summoner-spell/" + spellId + "?spellData=cooldown,image" + API_KEY2);
+		JSONObject spellObject = buildRootObject(url);
+		String spellName = spellObject.getString("name");
+		JSONObject imageObject = spellObject.getJSONObject("image");
+		String spellImage = imageObject.getString("full");
+		int spellCooldown = spellObject.getJSONArray("cooldown").getInt(0);
+		return new Spell(spellId, spellName, spellImage, spellCooldown);
+	}
+
+	private Champion buildChampion(int championId) throws IOException, JSONException {
+		URL url = new URL("https://global.api.pvp.net/api/lol/static-data/" + region.toLowerCase() + "/v1.2/champion/" + championId + "?champData=image,spells" + API_KEY2);
+		JSONObject championData = buildRootObject(url);
 		String name = championData.getString("name");
 		String title = championData.getString("title");
 		String key = championData.getString("key");
-
 		JSONObject image = championData.getJSONObject("image");
 		String squareImageFull = image.getString("full");
-
 		JSONArray spells = championData.getJSONArray("spells");
 		JSONObject ultimate = spells.getJSONObject(3);
 		String ultimateName = ultimate.getString("name");
@@ -130,10 +170,8 @@ public class CurrentGame {
 		for(int i = 0; i < ultimateMaxRank; i++) {
 			cooldowns[i] = cooldown.getInt(i);
 		}
-
 		JSONObject ultImg = ultimate.getJSONObject("image");
 		String ultimateImage = ultImg.getString("full");
-
 		return new Champion(championId, name, title, key, squareImageFull, ultimateName, ultimateMaxRank, cooldowns, ultimateImage);
 	}
 	

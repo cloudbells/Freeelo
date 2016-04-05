@@ -1,39 +1,44 @@
 package com.grupp32.freeelo;
 
-public class Summoner {
+import java.io.Serializable;
+
+public class Summoner implements Serializable {
+
 	private String name;
-	private int summSpell1;
-	private int summSpell2;
+	private Spell spell1;
+	private Spell spell2;
 	private Champion champion;
+	private String masteries;
 	
-	public Summoner(String name, int summSpell1, int summSpell2) {
+	public Summoner(String name, Champion champion, Spell spell1, Spell spell2, String masteries) {
 		this.name = name;
-		this.summSpell1 = summSpell1;
-		this.summSpell2 = summSpell2;
-        this.champion = new Champion();
+		this.champion = champion;
+		this.spell1 = spell1;
+		this.spell2 = spell2;
+		this.masteries = masteries;
 	}
 	
 	public String getName() {
 		return name;
 	}
 	
-	public int getSummSpell1() {
-		return summSpell1;
+	public Spell getSpell1() {
+		return spell1;
 	}
 	
-	public int getSummSpell2() {
-		return summSpell2;
+	public Spell getSpell2() {
+		return spell2;
 	}
 	
 	public Champion getChampion() {
 		return champion;
 	}
 
-	public void setChampion(Champion champ) {
-		this.champion = champ;
+	public String getMasteries() {
+		return masteries;
 	}
 	
 	public String toString() {
-		return name + ", spell1: " + summSpell1;
+		return name;
 	}
 }
