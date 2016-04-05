@@ -10,4 +10,27 @@
         android:id="@+id/background"
         android:layout_centerHorizontal="true"
         android:layout_alignParentTop="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/summoner_name"
+        android:id="@+id/summonerName"
+        android:textSize="18sp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="40dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/tier"
+        android:textColor="#ffffff"
+        android:shadowColor="#000000" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tier"
+        android:background="@drawable/challenger"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true" />
+
 </RelativeLayout>

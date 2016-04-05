@@ -25,6 +25,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     private CurrentGame game;
+    private ArrayList<Summoner> summoners;
     private ArrayList<Champion> champions;
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -36,7 +37,9 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        summoners = new ArrayList<Summoner>();
         champions = new ArrayList<Champion>();
+
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         /*tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_top));
         tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_jgl));
@@ -98,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
                 return tabs.get(position);
             }*/
             if(!champions.isEmpty()) {
-                return TabFragment.newInstance(position, champions.get(position));
+                return TabFragment.newInstance(position, summoners.get(position), champions.get(position));
             } else {
                 return TabFragment.newInstance();
             }
@@ -127,18 +130,19 @@ public class MainActivity extends AppCompatActivity {
             try {
                 game = new CurrentGame(summonerName, region);
 
-                Summoner[] summoners = game.getSummoners();
+                Summoner[] summonerArr = game.getSummoners();
                 int progress = 0;
-                for(Summoner summoner : summoners) {
+                for(Summoner summoner : summonerArr) {
                     Champion champ = summoner.getChampion();
                     Log.e("HELLO", champ.toString());
 
+                    summoners.add(summoner);
                     champions.add(champ);
 
                     publishProgress(progress += 20);
                 }
 
-                return "" + summoners.length;
+                return "" + summonerArr.length;
             } catch(Exception e) {
                 e.printStackTrace();
                 finish();

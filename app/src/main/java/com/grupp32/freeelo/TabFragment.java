@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,11 +29,11 @@ public class TabFragment extends Fragment {
         return fragment;
     }
 
-    static TabFragment newInstance(int num, Champion champion) {
+    static TabFragment newInstance(int num, Summoner summoner, Champion champion) {
         TabFragment fragment = new TabFragment();
 
-        // Supply num input as an argument.
         Bundle args = new Bundle();
+        args.putSerializable("summoner", summoner);
         args.putSerializable("champion", champion);
         args.putInt("num", num);
         fragment.setArguments(args);
@@ -44,6 +45,7 @@ public class TabFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_tab, container, false);
         background = (ImageView) view.findViewById(R.id.background);
+        final TextView summonerName = (TextView) view.findViewById(R.id.summonerName);
         //tabLayout = (TabLayout) getActivity().findViewById(R.id.tab_layout);
 
         //summonerName = getActivity().getIntent().getExtras().getString("summoner");
@@ -53,9 +55,10 @@ public class TabFragment extends Fragment {
         Log.e("PRE BUNDLE", "Fragment instantiated");
         Bundle bundle = this.getArguments();
         if (bundle != null) {
+            Summoner summoner = (Summoner) bundle.getSerializable("summoner");
             Champion champ = (Champion) bundle.getSerializable("champion");
-            //tabId = bundle.getInt("tabId");
             Log.e("HELPME", champ.toString());
+            summonerName.setText(summoner.getName());
 
             try {
                 new BackgroundSwitcher().execute(new URL("http://ddragon.leagueoflegends.com/cdn/img/champion/loading/" + champ.getKey() + "_0.jpg"));
