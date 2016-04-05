@@ -24,7 +24,6 @@ import java.net.URL;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    private CurrentGame game;
     private ArrayList<Summoner> summoners;
     private ArrayList<Champion> champions;
     private TabLayout tabLayout;
@@ -37,8 +36,8 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        summoners = new ArrayList<Summoner>();
-        champions = new ArrayList<Champion>();
+        summoners = new ArrayList<>();
+        champions = new ArrayList<>();
 
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         /*tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_top));
@@ -119,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
             String region = params[1];
 
             try {
-                game = new CurrentGame(summonerName, region);
+                CurrentGame game = new CurrentGame(summonerName, region);
 
                 Summoner[] summonerArr = game.getSummoners();
                 int progress = 0;

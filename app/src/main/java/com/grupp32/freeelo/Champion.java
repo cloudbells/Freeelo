@@ -17,8 +17,6 @@ public class Champion implements Serializable {
     private int[] ultimateCooldown;
     private String ultimateImage;
 
-    public Champion() {}
-
     public Champion(int championId, String name, String title, String key, String squareImageFull, String ultimateName, int ultimateMaxRank, int[] ultimateCooldown, String ultimateImage) {
         this.championId = championId;
         this.name = name;

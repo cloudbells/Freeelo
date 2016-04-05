@@ -20,12 +20,11 @@ import java.net.URL;
 public class TabFragment extends Fragment {
     private ImageView background;
 
-    static TabFragment newInstance() {
-        TabFragment fragment = new TabFragment();
-        return fragment;
+    public static TabFragment newInstance() {
+        return new TabFragment();
     }
 
-    static TabFragment newInstance(int num, Summoner summoner, Champion champion) {
+    public static TabFragment newInstance(int num, Summoner summoner, Champion champion) {
         TabFragment fragment = new TabFragment();
 
         Bundle args = new Bundle();
@@ -48,13 +47,15 @@ public class TabFragment extends Fragment {
         if (bundle != null) {
             Summoner summoner = (Summoner) bundle.getSerializable("summoner");
             Champion champ = (Champion) bundle.getSerializable("champion");
-            Log.e("HELPME", champ.toString());
-            summonerName.setText(summoner.getName());
+            if(summoner != null && champ != null) {
+                Log.e("HELPME", champ.toString());
+                summonerName.setText(summoner.getName());
 
-            try {
-                new BackgroundSwitcher().execute(new URL("http://ddragon.leagueoflegends.com/cdn/img/champion/loading/" + champ.getKey() + "_0.jpg"));
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
+                try {
+                    new BackgroundSwitcher().execute(new URL("http://ddragon.leagueoflegends.com/cdn/img/champion/loading/" + champ.getKey() + "_0.jpg"));
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
             }
         } else {
             Log.e("BUNDLE", "BUNDLE EMPTY");

@@ -35,7 +35,7 @@ public class CurrentGame {
 	
 	private JSONObject buildRootObject(URL url) throws IOException, JSONException {
 		Scanner scanner = new Scanner(url.openStream());
-		String str = new String();
+		String str = null;
 		while (scanner.hasNext()) {
 			str += scanner.nextLine();
 		}
