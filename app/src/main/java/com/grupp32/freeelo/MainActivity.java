@@ -1,5 +1,6 @@
 package com.grupp32.freeelo;
 
+import android.app.Application;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -118,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
             String region = params[1];
 
             try {
-                CurrentGame game = new CurrentGame(summonerName, region);
+                CurrentGame game = new CurrentGame(getApplicationContext(), summonerName, region);
 
                 Summoner[] summonerArr = game.getSummoners();
                 int progress = 0;
@@ -127,10 +128,13 @@ public class MainActivity extends AppCompatActivity {
                     Log.e("HELLO", champ.toString());
                     Spell spell1 = summoner.getSpell1();
                     Spell spell2 = summoner.getSpell2();
+                    RuneCollection runes = summoner.getRunes();
                     Log.e("SPELL1", spell1.toString());
                     Log.e("SPELL2", spell2.toString());
                     Log.e("MASTERIES", summoner.getMasteries());
-
+                    for (int i = 0; i < runes.size(); i++) {
+                        Log.e("RUNE TYPE 1:", runes.get(i));
+                    }
                     summoners.add(summoner);
                     champions.add(champ);
 

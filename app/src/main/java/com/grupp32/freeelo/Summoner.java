@@ -63,4 +63,8 @@ public class Summoner implements Serializable {
 	public String toString() {
 		return name;
 	}
+
+	public RuneCollection getRunes() {
+		return runes;
+	}
 }

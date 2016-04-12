@@ -1,5 +1,8 @@
 package com.grupp32.freeelo;
 
+import android.content.Context;
+import android.util.Log;
+
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,6 +19,7 @@ import org.json.JSONObject;
 public class CurrentGame {
 	private Summoner[] summoners;
 	private JSONObject currentGame;
+	private Context context;
 	
 	private String region;
 	private final String ROOT_URL = ".api.pvp.net/";
@@ -26,7 +30,8 @@ public class CurrentGame {
 	private final String API_KEY = "?api_key=8088586e-a695-4cc5-80c2-be3b6fcec3e5";
 	private final String API_KEY2 = "&api_key=8088586e-a695-4cc5-80c2-be3b6fcec3e5";
 
-	public CurrentGame(String summonerName, String region) {
+	public CurrentGame(Context context, String summonerName, String region) {
+		this.context = context;
 		this.region = region;
 		try {
 			int summonerId = getSummonerId(summonerName);
@@ -48,7 +53,7 @@ public class CurrentGame {
 	}
 
 	private JSONObject buildRuneList() throws IOException, JSONException {
-		Scanner scanner = new Scanner(new File("runes.txt"));
+		Scanner scanner = new Scanner(context.getResources().openRawResource(R.raw.runes));
 		String str = new String();
 		while (scanner.hasNext()) {
 			str += scanner.nextLine();
@@ -204,7 +209,7 @@ public class CurrentGame {
 			if (!Double.toString(stat).startsWith("-")) {
 				finalStats = "+" + finalStats;
 			}
-			runeCollection.add(finalStats);
+			runeCollection.add(finalStats + shortDesc);
 		}
 		return runeCollection;
 	}
