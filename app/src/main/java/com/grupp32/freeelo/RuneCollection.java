@@ -1,11 +1,12 @@
 package com.grupp32.freeelo;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by Christoffer Nilsson on 2016-04-07.
  */
-public class RuneCollection {
+public class RuneCollection implements Serializable {
 
     private ArrayList<String> runes = new ArrayList<String>();
 
