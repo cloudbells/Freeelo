@@ -1,5 +1,8 @@
 package com.grupp32.freeelo;
 
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Scanner;
@@ -36,6 +39,16 @@ public class CurrentGame {
 	private JSONObject buildRootObject(URL url) throws IOException, JSONException {
 		Scanner scanner = new Scanner(url.openStream());
 		String str = "";
+		while (scanner.hasNext()) {
+			str += scanner.nextLine();
+		}
+		scanner.close();
+		return new JSONObject(str);
+	}
+
+	private JSONObject buildRuneList() throws IOException, JSONException {
+		Scanner scanner = new Scanner(new File("runes.txt"));
+		String str = new String();
 		while (scanner.hasNext()) {
 			str += scanner.nextLine();
 		}
@@ -104,7 +117,10 @@ public class CurrentGame {
 				Spell spell1 = buildSpell(summoner.getInt("spell1Id"));
 				Spell spell2 = buildSpell(summoner.getInt("spell2Id"));
 				String masteries = buildMasteries(summoner);
-				summoners[index++] = new Summoner(summoner.getString("summonerName"), champ, spell1, spell2, masteries);
+				RuneCollection runes = buildRunes(summoner);
+				summoners[index++] = new Summoner().setName(name).setSpell1(spell1).
+						setSpell2(spell2).setChampion(champ).setMasteries(masteries).
+						setRunes(runes);
 			}
 		}
 		this.summoners = summoners;
@@ -147,6 +163,19 @@ public class CurrentGame {
 		String spellImage = imageObject.getString("full");
 		int spellCooldown = spellObject.getJSONArray("cooldown").getInt(0);
 		return new Spell(spellId, spellName, spellImage, spellCooldown);
+	}
+
+	private RuneCollection buildRunes(JSONObject summoner) throws IOException, JSONException {
+		RuneCollection runes = new RuneCollection();
+		JSONObject runeList = buildRuneList().getJSONObject("data"); // text file
+		JSONArray runesArray = summoner.getJSONArray("runes"); // from summoner object
+		for (int i = 0; i < runesArray.length(); i++) {
+			// Gets the Rune JSONObject from the runeList by getting the runeId from the summoner JSONObject first
+			JSONObject runeObject = runesArray.getJSONObject(i); // count and runeId are variables
+			JSONObject rune = runeList.getJSONObject(Integer.toString(runeObject.getInt("runeId")));
+			int count = runeObject.getInt("count"); // How many of that rune the player has.
+
+		}
 	}
 
 	private Champion buildChampion(int championId) throws IOException, JSONException {
