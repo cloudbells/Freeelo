@@ -9,9 +9,19 @@ public class RuneCollection {
 
     private ArrayList<String> runes = new ArrayList<String>();
 
-    public RuneCollection add(String rune) {
-        runes.add(rune);
-        return this;
+    public void add(String runeType) {
+        runes.add(runeType);
+    }
+
+    public String get(int index) {
+        if (index <= runes.size()) {
+            return runes.get(index);
+        }
+        return "NULL";
+    }
+
+    public int size() {
+        return runes.size();
     }
 
     public String toString() {

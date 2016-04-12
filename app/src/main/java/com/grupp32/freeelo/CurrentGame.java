@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.Scanner;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -113,6 +114,7 @@ public class CurrentGame {
 		for (int i = 0; i < 10; i++) {
 			JSONObject summoner = allSummoners.getJSONObject(i);
 			if (summoner.getInt("teamId") == enemyTeamId) {
+				String name = summoner.getString("summonerName");
 				Champion champ = buildChampion(summoner.getInt("championId"));
 				Spell spell1 = buildSpell(summoner.getInt("spell1Id"));
 				Spell spell2 = buildSpell(summoner.getInt("spell2Id"));
@@ -166,16 +168,45 @@ public class CurrentGame {
 	}
 
 	private RuneCollection buildRunes(JSONObject summoner) throws IOException, JSONException {
-		RuneCollection runes = new RuneCollection();
+		RuneCollection runeCollection = new RuneCollection();
 		JSONObject runeList = buildRuneList().getJSONObject("data"); // text file
 		JSONArray runesArray = summoner.getJSONArray("runes"); // from summoner object
+		boolean percent;
 		for (int i = 0; i < runesArray.length(); i++) {
 			// Gets the Rune JSONObject from the runeList by getting the runeId from the summoner JSONObject first
-			JSONObject runeObject = runesArray.getJSONObject(i); // count and runeId are variables
-			JSONObject rune = runeList.getJSONObject(Integer.toString(runeObject.getInt("runeId")));
-			int count = runeObject.getInt("count"); // How many of that rune the player has.
-
+			JSONObject runeObject = runesArray.getJSONObject(i); // count and runeId are variables, (FROM summoner)
+			JSONObject rune = runeList.getJSONObject(Integer.toString(runeObject.getInt("runeId"))); // Gets the rune from runes.txt.
+			percent = false;
+			int count = runeObject.getInt("count");
+			String desc = rune.getString("description"); // "-0.21% cooldowns per level (-3.9% at champion level 18)"
+			if (desc.contains("%")) {
+				percent = true;
+			}
+			JSONObject stats = rune.getJSONObject("stats"); // "stats": {"rPercentCooldownModPerLevel": -0.002167}
+			double stat = stats.getDouble(stats.names().getString(0)); // -0.002167
+			if (desc.contains("sec")) {
+				stat *= 5;
+			}
+			String shortDesc = ""; // cooldowns per level
+			if (desc.contains("(")) {
+				shortDesc = desc.substring(desc.indexOf(" "), desc.indexOf("(") - 1);
+			} else {
+				shortDesc = desc.substring(desc.indexOf(" "), desc.length());
+			}
+			String finalStats = "";
+			// If the desc contains the percent sign, add it to the finalStats and format, else dont add and format
+			if (percent) {
+				finalStats = new DecimalFormat("0.00").format(stat * count * 100) + "%";
+			} else {
+				finalStats = new DecimalFormat("0.00").format(stat * count);
+			}
+			// Adds a '+' if the stat doesn't begin with a '-' (which means it's positive).
+			if (!Double.toString(stat).startsWith("-")) {
+				finalStats = "+" + finalStats;
+			}
+			runeCollection.add(finalStats);
 		}
+		return runeCollection;
 	}
 
 	private Champion buildChampion(int championId) throws IOException, JSONException {
