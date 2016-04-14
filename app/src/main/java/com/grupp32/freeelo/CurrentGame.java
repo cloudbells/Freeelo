@@ -61,6 +61,16 @@ public class CurrentGame {
 		scanner.close();
 		return new JSONObject(str);
 	}
+
+	private JSONObject buildMasteryList() throws IOException, JSONException {
+		Scanner scanner = new Scanner(context.getResources().openRawResource(R.raw.masteries));
+		String str = new String();
+		while (scanner.hasNext()) {
+			str += scanner.nextLine();
+		}
+		scanner.close();
+		return new JSONObject(str);
+	}
 	
 	private int getSummonerId(String summonerName) throws IOException, JSONException {
 		String fixedSummonerName = summonerName;
@@ -135,6 +145,7 @@ public class CurrentGame {
 
 	private String buildMasteries(JSONObject summoner) throws IOException, JSONException {
 		JSONArray masteries = summoner.getJSONArray("masteries");
+		JSONObject masteryList = buildMasteryList().getJSONObject("data");
 		int ferocity = 0;
 		int cunning = 0;
 		int resolve = 0;
@@ -142,8 +153,7 @@ public class CurrentGame {
 			JSONObject mastery = masteries.getJSONObject(i);
 			int rank = mastery.getInt("rank");
 			int id = mastery.getInt("masteryId");
-			URL url = new URL("https://global.api.pvp.net/api/lol/static-data/euw/v1.2/mastery/" + id + "?masteryData=masteryTree" + API_KEY2);
-			JSONObject masteryObject = buildRootObject(url);
+			JSONObject masteryObject = masteryList.getJSONObject(Integer.toString(id));
 			String tree = masteryObject.getString("masteryTree");
 			switch (tree) {
 				case "Ferocity":
@@ -155,7 +165,7 @@ public class CurrentGame {
 				case "Resolve":
 					resolve += rank;
 					break;
-				default:
+				default: // This literally can't happen.
 					break;
 			}
 		}
