@@ -48,7 +48,7 @@ public class TabFragment extends Fragment {
             Summoner summoner = (Summoner) bundle.getSerializable("summoner");
             Champion champ = (Champion) bundle.getSerializable("champions");
             if(summoner != null && champ != null) {
-                Log.e("HELPME", champ.toString());
+                Log.e("CHAMP POST BUNDLE", champ.toString());
                 summonerName.setText(summoner.getName());
 
                 try {

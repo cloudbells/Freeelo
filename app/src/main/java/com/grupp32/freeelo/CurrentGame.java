@@ -1,10 +1,13 @@
 package com.grupp32.freeelo;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.io.IOException;
 import java.net.URL;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.util.Date;
 import java.util.Scanner;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -15,6 +18,10 @@ import org.json.JSONObject;
 public class CurrentGame {
 	private Summoner[] summoners;
 	private JSONObject currentGame;
+	private JSONObject runeList;
+	private JSONObject masteryList;
+	private JSONObject spellList;
+	private JSONObject championList;
 	private Context context;
 	
 	private String region;
@@ -30,6 +37,10 @@ public class CurrentGame {
 		this.context = context;
 		this.region = region;
 		try {
+			runeList = buildList(R.raw.runes).getJSONObject("data"); // text file
+			masteryList = buildList(R.raw.masteries).getJSONObject("data");
+			spellList = buildList(R.raw.spells).getJSONObject("data");
+			championList = buildList(R.raw.champions).getJSONObject("data");
 			int summonerId = getSummonerId(summonerName);
 			buildCurrentGame(summonerId);
 			buildSummonerArray(summonerId);
@@ -50,7 +61,7 @@ public class CurrentGame {
 
 	private JSONObject buildList(int resource) throws IOException, JSONException {
 		Scanner scanner = new Scanner(context.getResources().openRawResource(resource));
-		String str = new String();
+		String str = "";
 		while (scanner.hasNext()) {
 			str += scanner.nextLine();
 		}
@@ -126,12 +137,12 @@ public class CurrentGame {
 						setRunes(runes);
 			}
 		}
+
 		this.summoners = summoners;
 	}
 
 	private String buildMasteries(JSONObject summoner) throws IOException, JSONException {
 		JSONArray masteries = summoner.getJSONArray("masteries");
-		JSONObject masteryList = buildList(R.raw.masteries).getJSONObject("data");
 		int ferocity = 0;
 		int cunning = 0;
 		int resolve = 0;
@@ -159,7 +170,6 @@ public class CurrentGame {
 	}
 
 	private Spell buildSpell(int spellId) throws IOException, JSONException {
-		JSONObject spellList = buildList(R.raw.spells).getJSONObject("data");
 		JSONObject spellObject = spellList.getJSONObject(Integer.toString(spellId));
 		String spellName = spellObject.getString("name");
 		JSONObject imageObject = spellObject.getJSONObject("image");
@@ -170,48 +180,23 @@ public class CurrentGame {
 
 	private RuneCollection buildRunes(JSONObject summoner) throws IOException, JSONException {
 		RuneCollection runeCollection = new RuneCollection();
-		JSONObject runeList = buildList(R.raw.runes).getJSONObject("data"); // text file
 		JSONArray runesArray = summoner.getJSONArray("runes"); // from summoner object
-		boolean percent;
 		for (int i = 0; i < runesArray.length(); i++) {
 			// Gets the Rune JSONObject from the runeList by getting the runeId from the summoner JSONObject first
 			JSONObject runeObject = runesArray.getJSONObject(i); // count and runeId are variables, (FROM summoner)
 			JSONObject rune = runeList.getJSONObject(Integer.toString(runeObject.getInt("runeId"))); // Gets the rune from runes.json.
-			percent = false;
 			int count = runeObject.getInt("count");
-			String desc = rune.getString("description"); // "-0.21% cooldowns per level (-3.9% at champions level 18)"
-			if (desc.contains("%")) {
-				percent = true;
-			}
-			JSONObject stats = rune.getJSONObject("stats"); // "stats": {"rPercentCooldownModPerLevel": -0.002167}
-			double stat = stats.getDouble(stats.names().getString(0)); // -0.002167
-			if (desc.contains("sec")) {
-				stat *= 5;
-			}
-			String shortDesc = ""; // cooldowns per level
-			if (desc.contains("(")) {
-				shortDesc = desc.substring(desc.indexOf(" "), desc.indexOf("(") - 1);
-			} else {
-				shortDesc = desc.substring(desc.indexOf(" "), desc.length());
-			}
-			String finalStats = "";
-			// If the desc contains the percent sign, add it to the finalStats and format, else dont add and format
-			if (percent) {
-				finalStats = new DecimalFormat("0.00").format(stat * count * 100) + "%";
-			} else {
-				finalStats = new DecimalFormat("0.00").format(stat * count);
-			}
-			// Adds a '+' if the stat doesn't begin with a '-' (which means it's positive).
-			if (!Double.toString(stat).startsWith("-")) {
-				finalStats = "+" + finalStats;
-			}
-			runeCollection.add(finalStats + shortDesc);
+			String desc = rune.getString("description");
+			JSONObject stats = rune.getJSONObject("stats");
+			String statType = stats.names().getString(0);
+			double stat = stats.getDouble(statType);
+			runeCollection.add(new Rune(count, statType, stat, desc));
 		}
+
 		return runeCollection;
 	}
 
 	private Champion buildChampion(int championId) throws IOException, JSONException {
-		JSONObject championList = buildList(R.raw.champions).getJSONObject("data");
 		JSONObject championData = championList.getJSONObject(Integer.toString(championId));
 		String name = championData.getString("name");
 		String title = championData.getString("title");

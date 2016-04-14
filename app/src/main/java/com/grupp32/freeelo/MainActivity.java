@@ -42,11 +42,6 @@ public class MainActivity extends AppCompatActivity {
         champions = new ArrayList<>();
 
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        /*tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_top));
-        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_jgl));
-        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_mid));
-        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_bot));
-        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_sup));*/
         for(int i = 0; i < 5; i++) {
             tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_fill));
         }
@@ -59,11 +54,10 @@ public class MainActivity extends AppCompatActivity {
         final PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        tabLayout.setupWithViewPager(viewPager);
-        /*tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        //tabLayout.setupWithViewPager(viewPager);
+        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                Log.e("TABPOS", "pos = " + tab.getPosition());
                 viewPager.setCurrentItem(tab.getPosition());
             }
 
@@ -74,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
             }
-        });*/
+        });
 
         Intent intent = getIntent();
         GetCurrentGame game = new GetCurrentGame();
@@ -115,7 +109,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... params) {
-            Log.v("TEST", "doInBackground");
             summonerName = params[0];
             String region = params[1];
 
@@ -128,16 +121,6 @@ public class MainActivity extends AppCompatActivity {
                 int progress = 0;
                 for(Summoner summoner : summonerArr) {
                     Champion champ = summoner.getChampion();
-                    Log.e("HELLO", champ.toString());
-                    Spell spell1 = summoner.getSpell1();
-                    Spell spell2 = summoner.getSpell2();
-                    RuneCollection runes = summoner.getRunes();
-                    Log.e("SPELL1", spell1.toString());
-                    Log.e("SPELL2", spell2.toString());
-                    Log.e("MASTERIES", summoner.getMasteries());
-                    for (int i = 0; i < runes.size(); i++) {
-                        Log.e("RUNE TYPE 1:", runes.get(i));
-                    }
                     summoners.add(summoner);
                     champions.add(champ);
 
@@ -155,7 +138,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onProgressUpdate(Integer... values) {
             super.onProgressUpdate(values);
-            Log.v("TEST", "onProgressUpdate");
             if(bar != null) {
                 bar.setProgress(values[0]);
             }
@@ -164,7 +146,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            Log.v("TEST", "onPostExecute" + result);
             if(result != null) {
                 bar.setProgress(100);
                 bar.setVisibility(View.INVISIBLE);
@@ -180,6 +161,18 @@ public class MainActivity extends AppCompatActivity {
 
                 long time = (System.currentTimeMillis() / 1000L) - unixTime;
                 Toast.makeText(getApplication(), "Responstid: " + time, Toast.LENGTH_LONG).show();
+
+                for(Summoner summoner : summoners) {
+                    Champion champ = summoner.getChampion();
+                    Log.e("HELLO", champ.toString());
+                    Spell spell1 = summoner.getSpell1();
+                    Spell spell2 = summoner.getSpell2();
+                    RuneCollection runes = summoner.getRunes();
+                    Log.e("SPELL1", spell1.toString());
+                    Log.e("SPELL2", spell2.toString());
+                    Log.e("MASTERIES", summoner.getMasteries());
+                    Log.e("RUNES", runes.toString());
+                }
             } else {
                 Toast.makeText(getApplication(), String.format(getString(R.string.not_in_game), summonerName), Toast.LENGTH_LONG).show();
             }
