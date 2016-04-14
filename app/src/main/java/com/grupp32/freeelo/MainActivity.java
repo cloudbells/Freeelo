@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Champion> champions;
     private TabLayout tabLayout;
     private ViewPager viewPager;
+    private long unixTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,6 +119,8 @@ public class MainActivity extends AppCompatActivity {
             summonerName = params[0];
             String region = params[1];
 
+            unixTime = System.currentTimeMillis() / 1000L;
+
             try {
                 CurrentGame game = new CurrentGame(getApplicationContext(), summonerName, region);
 
@@ -174,6 +177,9 @@ public class MainActivity extends AppCompatActivity {
 
                 viewPager.setCurrentItem(1);
                 viewPager.setCurrentItem(2);
+
+                long time = (System.currentTimeMillis() / 1000L) - unixTime;
+                Toast.makeText(getApplication(), "Responstid: " + time, Toast.LENGTH_LONG).show();
             } else {
                 Toast.makeText(getApplication(), String.format(getString(R.string.not_in_game), summonerName), Toast.LENGTH_LONG).show();
             }
