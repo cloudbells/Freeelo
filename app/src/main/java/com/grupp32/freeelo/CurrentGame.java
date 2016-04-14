@@ -1,11 +1,7 @@
 package com.grupp32.freeelo;
 
 import android.content.Context;
-import android.util.Log;
 
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -52,18 +48,8 @@ public class CurrentGame {
 		return new JSONObject(str);
 	}
 
-	private JSONObject buildRuneList() throws IOException, JSONException {
-		Scanner scanner = new Scanner(context.getResources().openRawResource(R.raw.runes));
-		String str = new String();
-		while (scanner.hasNext()) {
-			str += scanner.nextLine();
-		}
-		scanner.close();
-		return new JSONObject(str);
-	}
-
-	private JSONObject buildMasteryList() throws IOException, JSONException {
-		Scanner scanner = new Scanner(context.getResources().openRawResource(R.raw.masteries));
+	private JSONObject buildList(int resource) throws IOException, JSONException {
+		Scanner scanner = new Scanner(context.getResources().openRawResource(resource));
 		String str = new String();
 		while (scanner.hasNext()) {
 			str += scanner.nextLine();
@@ -145,7 +131,7 @@ public class CurrentGame {
 
 	private String buildMasteries(JSONObject summoner) throws IOException, JSONException {
 		JSONArray masteries = summoner.getJSONArray("masteries");
-		JSONObject masteryList = buildMasteryList().getJSONObject("data");
+		JSONObject masteryList = buildList(R.raw.masteries).getJSONObject("data");
 		int ferocity = 0;
 		int cunning = 0;
 		int resolve = 0;
@@ -173,8 +159,8 @@ public class CurrentGame {
 	}
 
 	private Spell buildSpell(int spellId) throws IOException, JSONException {
-		URL url = new URL("https://global.api.pvp.net/api/lol/static-data/euw/v1.2/summoner-spell/" + spellId + "?spellData=cooldown,image" + API_KEY2);
-		JSONObject spellObject = buildRootObject(url);
+		JSONObject spellList = buildList(R.raw.spells).getJSONObject("data");
+		JSONObject spellObject = spellList.getJSONObject(Integer.toString(spellId));
 		String spellName = spellObject.getString("name");
 		JSONObject imageObject = spellObject.getJSONObject("image");
 		String spellImage = imageObject.getString("full");
@@ -184,16 +170,16 @@ public class CurrentGame {
 
 	private RuneCollection buildRunes(JSONObject summoner) throws IOException, JSONException {
 		RuneCollection runeCollection = new RuneCollection();
-		JSONObject runeList = buildRuneList().getJSONObject("data"); // text file
+		JSONObject runeList = buildList(R.raw.runes).getJSONObject("data"); // text file
 		JSONArray runesArray = summoner.getJSONArray("runes"); // from summoner object
 		boolean percent;
 		for (int i = 0; i < runesArray.length(); i++) {
 			// Gets the Rune JSONObject from the runeList by getting the runeId from the summoner JSONObject first
 			JSONObject runeObject = runesArray.getJSONObject(i); // count and runeId are variables, (FROM summoner)
-			JSONObject rune = runeList.getJSONObject(Integer.toString(runeObject.getInt("runeId"))); // Gets the rune from runes.txt.
+			JSONObject rune = runeList.getJSONObject(Integer.toString(runeObject.getInt("runeId"))); // Gets the rune from runes.json.
 			percent = false;
 			int count = runeObject.getInt("count");
-			String desc = rune.getString("description"); // "-0.21% cooldowns per level (-3.9% at champion level 18)"
+			String desc = rune.getString("description"); // "-0.21% cooldowns per level (-3.9% at champions level 18)"
 			if (desc.contains("%")) {
 				percent = true;
 			}
@@ -225,8 +211,8 @@ public class CurrentGame {
 	}
 
 	private Champion buildChampion(int championId) throws IOException, JSONException {
-		URL url = new URL("https://global.api.pvp.net/api/lol/static-data/" + region.toLowerCase() + "/v1.2/champion/" + championId + "?champData=image,spells" + API_KEY2);
-		JSONObject championData = buildRootObject(url);
+		JSONObject championList = buildList(R.raw.champions).getJSONObject("data");
+		JSONObject championData = championList.getJSONObject(Integer.toString(championId));
 		String name = championData.getString("name");
 		String title = championData.getString("title");
 		String key = championData.getString("key");

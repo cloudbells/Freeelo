@@ -29,7 +29,7 @@ public class TabFragment extends Fragment {
 
         Bundle args = new Bundle();
         args.putSerializable("summoner", summoner);
-        args.putSerializable("champion", champion);
+        args.putSerializable("champions", champion);
         args.putInt("num", num);
         fragment.setArguments(args);
 
@@ -46,13 +46,13 @@ public class TabFragment extends Fragment {
         Bundle bundle = this.getArguments();
         if (bundle != null) {
             Summoner summoner = (Summoner) bundle.getSerializable("summoner");
-            Champion champ = (Champion) bundle.getSerializable("champion");
+            Champion champ = (Champion) bundle.getSerializable("champions");
             if(summoner != null && champ != null) {
                 Log.e("HELPME", champ.toString());
                 summonerName.setText(summoner.getName());
 
                 try {
-                    new BackgroundSwitcher().execute(new URL("http://ddragon.leagueoflegends.com/cdn/img/champion/loading/" + champ.getKey() + "_0.jpg"));
+                    new BackgroundSwitcher().execute(new URL("http://ddragon.leagueoflegends.com/cdn/img/champions/loading/" + champ.getKey() + "_0.jpg"));
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 }
