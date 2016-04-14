@@ -52,7 +52,7 @@ public class TabFragment extends Fragment {
                 summonerName.setText(summoner.getName());
 
                 try {
-                    new BackgroundSwitcher().execute(new URL("http://ddragon.leagueoflegends.com/cdn/img/champions/loading/" + champ.getKey() + "_0.jpg"));
+                    new BackgroundSwitcher().execute(new URL("http://ddragon.leagueoflegends.com/cdn/img/champion/loading/" + champ.getKey() + "_0.jpg"));
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 }

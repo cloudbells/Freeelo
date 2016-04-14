@@ -171,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
 
                 int tabId = 0;
                 for(Champion champ : champions) {
-                    new IconSwitcher().execute("http://ddragon.leagueoflegends.com/cdn/6.6.1/img/champions/" + champ.getSquareImageFull(), Integer.toString(tabId));
+                    new IconSwitcher().execute("http://ddragon.leagueoflegends.com/cdn/6.6.1/img/champion/" + champ.getSquareImageFull(), Integer.toString(tabId));
                     tabId++;
                 }
 

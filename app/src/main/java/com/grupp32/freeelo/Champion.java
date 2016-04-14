@@ -67,6 +67,7 @@ public class Champion implements Serializable {
                 "championId=" + championId +
                 ", name='" + name + '\'' +
                 ", title='" + title + '\'' +
+                ", key='" + key + '\'' +
                 ", squareImageFull='" + squareImageFull + '\'' +
                 ", ultimateName='" + ultimateName + '\'' +
                 ", ultimateMaxRank=" + ultimateMaxRank +
