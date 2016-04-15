@@ -18,6 +18,7 @@
         android:layout_marginLeft="4sp"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Summoner name"
+        android:textColor="#e1e1e1"
         android:id="@+id/SummonerName"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true" />
@@ -28,6 +29,7 @@
         android:padding="4dip"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Champ Name"
+        android:textColor="#e1e1e1"
         android:id="@+id/ChampionName"
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@+id/SummonerName" />
@@ -39,10 +41,12 @@
         android:layout_marginLeft="4sp"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Masteries"
+        android:textColor="#e1e1e1"
         android:id="@+id/Masteries"
         android:layout_below="@+id/SummonerName"
         android:layout_alignStart="@+id/SummonerName"
         android:layout_marginTop="39dp" />
+
 
     <TextView
         android:layout_width="wrap_content"
@@ -51,6 +55,7 @@
         android:layout_marginLeft="4sp"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Runes"
+        android:textColor="#e1e1e1"
         android:id="@+id/Runes"
         android:layout_below="@+id/Masteries"
         android:layout_alignStart="@+id/Masteries"
@@ -82,6 +87,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Rank"
+        android:textColor="#e1e1e1"
         android:id="@+id/Tier"
         android:layout_below="@+id/Masteries"
         android:layout_toEndOf="@+id/ChampionName" />
