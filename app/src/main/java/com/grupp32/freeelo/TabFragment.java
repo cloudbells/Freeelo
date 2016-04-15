@@ -40,7 +40,7 @@ public class TabFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_tab, container, false);
         background = (ImageView) view.findViewById(R.id.background);
-        final TextView summonerName = (TextView) view.findViewById(R.id.summonerName);
+        final TextView summonerName = (TextView) view.findViewById(R.id.SummonerName);
 
         Log.e("PRE BUNDLE", "Fragment instantiated");
         Bundle bundle = this.getArguments();

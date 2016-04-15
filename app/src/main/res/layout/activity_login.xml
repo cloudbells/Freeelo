@@ -44,7 +44,8 @@
         android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:layout_toStartOf="@+id/okButton"
         android:layout_alignTop="@+id/okButton"
-        android:layout_alignBottom="@+id/okButton" />
+        android:layout_alignBottom="@+id/okButton"
+        />
 
     <EditText
         android:layout_width="wrap_content"
