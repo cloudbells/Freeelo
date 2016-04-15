@@ -3,7 +3,9 @@ package com.grupp32.freeelo;
 import android.content.Context;
 import android.util.Log;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -132,7 +134,9 @@ public class CurrentGame {
 				Spell spell2 = buildSpell(summoner.getInt("spell2Id"));
 				String masteries = buildMasteries(summoner);
 				RuneCollection runes = buildRunes(summoner);
-				summoners[index++] = new Summoner().setName(name).setSpell1(spell1).
+				Summoner newSummoner = new Summoner();
+				populateSummonerFields(newSummoner, summoner.getInt("summonerId"));
+				summoners[index++] = newSummoner.setName(name).setSpell1(spell1).
 						setSpell2(spell2).setChampion(champ).setMasteries(masteries).
 						setRunes(runes);
 			}
@@ -216,7 +220,30 @@ public class CurrentGame {
 		String ultimateImage = ultImg.getString("full");
 		return new Champion(championId, name, title, key, squareImageFull, ultimateName, ultimateMaxRank, cooldowns, ultimateImage);
 	}
-	
+
+	private void populateSummonerFields(Summoner summoner, int summonerId) throws IOException, JSONException {
+		URL url = new URL("https://" + this.region + ROOT_URL + API_URL + this.region.toLowerCase() + "/v2.5/league/by-summoner/" + summonerId + "/entry" + API_KEY);
+		try {
+			JSONObject summonerData = buildRootObject(url);
+
+			JSONArray data = summonerData.getJSONArray(Integer.toString(summonerId));
+			JSONObject sum = data.getJSONObject(0);
+			JSONArray entries = sum.getJSONArray("entries");
+			JSONObject entry = entries.getJSONObject(0);
+			summoner.setLeaguePoints(entry.getInt("leaguePoints"))
+					.setDivision(entry.getString("division"))
+					.setWins(entry.getInt("wins"))
+					.setLosses(entry.getInt("losses"))
+					.setTier(sum.getString("tier"));
+		} catch(FileNotFoundException e) {
+			summoner.setLeaguePoints(0)
+					.setDivision("")
+					.setWins(0)
+					.setLosses(0)
+					.setTier("Provisional");
+		}
+	}
+
 	public Summoner[] getSummoners() {
 		return summoners;
 	}

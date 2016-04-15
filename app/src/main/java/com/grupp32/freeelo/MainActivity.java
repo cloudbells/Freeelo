@@ -172,6 +172,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.e("SPELL2", spell2.toString());
                     Log.e("MASTERIES", summoner.getMasteries());
                     Log.e("RUNES", runes.toString());
+                    Log.e("SUMMONER", summoner.toString());
                 }
             } else {
                 Toast.makeText(getApplication(), String.format(getString(R.string.not_in_game), summonerName), Toast.LENGTH_LONG).show();

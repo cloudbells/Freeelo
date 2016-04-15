@@ -8,8 +8,9 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:id="@+id/background"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentTop="true" />
+        android:layout_below="@+id/tierDivision"
+        android:layout_alignStart="@+id/summonerSpell2"
+        android:layout_above="@+id/summonerSpell2" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -17,36 +18,20 @@
         android:padding="4dip"
         android:layout_marginLeft="4sp"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Summoner name"
-        android:textColor="#e1e1e1"
-        android:id="@+id/SummonerName"
+        android:id="@+id/summonerName"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/tier" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="4dip"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Champ Name"
-        android:textColor="#e1e1e1"
-        android:id="@+id/ChampionName"
-        android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/SummonerName" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="4dip"
-        android:layout_marginLeft="4sp"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Masteries"
-        android:textColor="#e1e1e1"
-        android:id="@+id/Masteries"
-        android:layout_below="@+id/SummonerName"
-        android:layout_alignStart="@+id/SummonerName"
-        android:layout_marginTop="39dp" />
-
+        android:id="@+id/championName"
+        android:layout_below="@+id/summonerName"
+        android:layout_alignStart="@+id/summonerName"
+        android:layout_alignEnd="@+id/summonerName" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -54,31 +39,42 @@
         android:padding="4dip"
         android:layout_marginLeft="4sp"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Runes"
-        android:textColor="#e1e1e1"
-        android:id="@+id/Runes"
-        android:layout_below="@+id/Masteries"
-        android:layout_alignStart="@+id/Masteries"
-        android:layout_marginTop="41dp" />
+        android:id="@+id/masteries"
+        android:layout_below="@+id/summonerName"
+        android:layout_marginTop="39dp"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/tier" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="4dip"
+        android:layout_marginLeft="4sp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/runes"
+        android:layout_below="@+id/masteries"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/background" />
 
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/SummonerSpell1"
+        android:id="@+id/summonerSpell1"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true" />
 
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/SummonerSpell2"
+        android:id="@+id/summonerSpell2"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
 
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/Ultimate"
+        android:id="@+id/ultimate"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true" />
 
@@ -86,22 +82,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Rank"
-        android:textColor="#e1e1e1"
-        android:id="@+id/Tier"
-        android:layout_below="@+id/Masteries"
-        android:layout_toEndOf="@+id/ChampionName" />
+        
+        android:id="@+id/tierDivision"
+        android:layout_below="@+id/championName"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@+id/masteries" />
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tier"
-        android:background="@drawable/challenger"
         android:layout_alignParentEnd="true"
-        android:layout_below="@+id/ChampionName"
-        android:layout_above="@+id/Tier"
-        android:layout_alignStart="@+id/Tier" />
-
-
+        android:layout_toEndOf="@+id/summonerSpell2"
+        android:layout_alignStart="@+id/background"
+        android:layout_above="@+id/background"
+        android:layout_alignParentTop="true" />
 
 </RelativeLayout>
