@@ -2,5 +2,5 @@
 <resources>
     <color name="colorPrimary">#12292D</color> <!-- lightgrey: #9E9E9E -->
     <color name="colorPrimaryDark">#091517</color> <!-- grey: #616161 -->
-    <color name="colorAccent">#48A4B4</color>
+    <color name="colorAccent">#e1e1e1</color>
 </resources>

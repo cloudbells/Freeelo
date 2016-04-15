@@ -18,6 +18,16 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/background"
+        android:background="@drawable/ic_background"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/toolbar"
+        android:layout_alignParentEnd="true" />
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -41,6 +51,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/summonerName"
         android:hint="@string/summoner_name"
+        android:textColorHint="#e1e1e1"
         android:textAlignment="center"
         android:textSize="24sp"
         android:imeOptions="actionDone"
@@ -58,5 +69,7 @@
         android:background="@drawable/ic_logo"
         android:layout_below="@+id/toolbar"
         android:layout_centerHorizontal="true" />
+
+
 
 </RelativeLayout>

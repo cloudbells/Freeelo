@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:weightSum="1">
 
     <ImageView
         android:layout_width="fill_parent"
@@ -14,23 +14,88 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/summoner_name"
-        android:id="@+id/summonerName"
-        android:textSize="18sp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="40dp"
+        android:padding="4dip"
+        android:layout_marginLeft="4sp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Summoner name"
+        android:id="@+id/SummonerName"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_toStartOf="@+id/tier"
-        android:textColor="#ffffff"
-        android:shadowColor="#000000" />
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="4dip"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Champ Name"
+        android:id="@+id/ChampionName"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/SummonerName" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="4dip"
+        android:layout_marginLeft="4sp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Masteries"
+        android:id="@+id/Masteries"
+        android:layout_below="@+id/SummonerName"
+        android:layout_alignStart="@+id/SummonerName"
+        android:layout_marginTop="39dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="4dip"
+        android:layout_marginLeft="4sp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Runes"
+        android:id="@+id/Runes"
+        android:layout_below="@+id/Masteries"
+        android:layout_alignStart="@+id/Masteries"
+        android:layout_marginTop="41dp" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/SummonerSpell1"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/SummonerSpell2"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/Ultimate"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Rank"
+        android:id="@+id/Tier"
+        android:layout_below="@+id/Masteries"
+        android:layout_toEndOf="@+id/ChampionName" />
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tier"
         android:background="@drawable/challenger"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/ChampionName"
+        android:layout_above="@+id/Tier"
+        android:layout_alignStart="@+id/Tier" />
+
+
 
 </RelativeLayout>
