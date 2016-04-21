@@ -1,20 +1,23 @@
-package com.grupp32.freeelo;
+package collection;
 
 import java.io.Serializable;
 
+/**
+ * @author Christoffer Nilsson, Alexander Johansson
+ */
 public class Summoner implements Serializable {
-	private String name;
-	private Spell spell1;
-	private Spell spell2;
-	private Champion champion;
-	private String masteries;
-	private RuneCollection runes;
 
-	private String tier;
-	private String division;
 	private int wins;
 	private int losses;
 	private int leaguePoints;
+	private String name;
+	private String tier;
+	private String division;
+	private String masteries;
+	private Spell spell1;
+	private Spell spell2;
+	private Champion champion;
+	private RuneCollection runes;
 
 	public Summoner setName(String name) {
 		this.name = name;
@@ -70,19 +73,19 @@ public class Summoner implements Serializable {
 		this.wins = wins;
 		return this;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
-	
+
 	public Spell getSpell1() {
 		return spell1;
 	}
-	
+
 	public Spell getSpell2() {
 		return spell2;
 	}
-	
+
 	public Champion getChampion() {
 		return champion;
 	}
@@ -117,18 +120,6 @@ public class Summoner implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Summoner{" +
-				"name='" + name + '\'' +
-				", spell1=" + spell1 +
-				", spell2=" + spell2 +
-				", champion=" + champion +
-				", masteries='" + masteries + '\'' +
-				", runes=" + runes +
-				", tier='" + tier + '\'' +
-				", division='" + division + '\'' +
-				", wins=" + wins +
-				", losses=" + losses +
-				", leaguePoints=" + leaguePoints +
-				'}';
+		return name;
 	}
 }

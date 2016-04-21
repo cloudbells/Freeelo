@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:clickable="true"
     android:focusable="true"
-    tools:context="com.grupp32.freeelo.LoginActivity">
+    tools:context="com.grupp32.activity.LoginActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"

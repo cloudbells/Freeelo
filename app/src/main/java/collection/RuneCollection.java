@@ -1,4 +1,4 @@
-package com.grupp32.freeelo;
+package collection;
 
 import java.io.Serializable;
 import java.text.DecimalFormat;

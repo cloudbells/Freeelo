@@ -1,4 +1,4 @@
-package com.grupp32.freeelo;
+package com.grupp32.activity;
 
 import org.junit.Test;
 
