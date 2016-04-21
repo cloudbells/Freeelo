@@ -42,10 +42,8 @@ public class JSONParser {
 	}
 
 	public int parseSpellId(JSONObject participant, int spellNumber) throws JSONException {
-		if (spellNumber == 2) {
-			return participant.getInt("spell2Id");
-		}
-		return participant.getInt("spell1Id"); // Default is the first spell (if you try > 2 or 1).
+		String spell = "spell%sId";
+		return participant.getInt((spellNumber == 2) ? String.format(spell, "2") : String.format(spell, "1"));
 	}
 
 	public int parseTeamId(JSONArray participants, int summonerId) throws IOException, JSONException {
@@ -60,36 +58,8 @@ public class JSONParser {
 		return enemyTeamId;
 	}
 
-	public int parseSummonerId(JSONObject participant, int type) throws JSONException {
-		return (type == 1 ? participant.getInt("id") : participant.getInt("summonerId"));
-	}
-
-	public int parseChampionId(JSONObject participant) throws JSONException {
-		return participant.getInt("championId");
-	}
-
-	public int parseLosses(JSONObject rankedEntries) throws JSONException {
-		return rankedEntries.getInt("losses");
-	}
-
-	public int parseWins(JSONObject rankedEntries) throws JSONException {
-		return rankedEntries.getInt("wins");
-	}
-
-	public int parseLeaguePoints(JSONObject rankedEntries) throws JSONException {
-		return rankedEntries.getInt("leaguePoints");
-	}
-
-	public String parseSummonerName(JSONObject participant) throws JSONException {
-		return participant.getString("summonerName");
-	}
-
-	public String parseDivision(JSONObject rankedEntries) throws JSONException {
-		return rankedEntries.getString("division");
-	}
-
-	public String parseTier(JSONObject rankedData) throws JSONException {
-		return rankedData.getString("tier");
+	public Object parse(JSONObject jsonObj, String key) throws JSONException {
+		return jsonObj.get(key);
 	}
 
 	public String parseMasteries(JSONObject participant) throws IOException, JSONException {
@@ -168,10 +138,6 @@ public class JSONParser {
 
 	public JSONObject parseRankedEntries(JSONObject rankedData) throws JSONException {
 		return rankedData.getJSONArray("entries").getJSONObject(0);
-	}
-
-	public JSONArray parseParticipants(JSONObject currentGame) throws JSONException {
-		return currentGame.getJSONArray("participants");
 	}
 
 	private JSONObject parseResource(InputStream inputStream) throws IOException, JSONException {

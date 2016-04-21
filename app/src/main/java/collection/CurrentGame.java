@@ -14,17 +14,18 @@ import json.JSONRequester;
 
 public class CurrentGame {
 
-	private JSONRequester requester = new JSONRequester();
+	private JSONRequester requester;
 	private JSONParser parser;
 	private Summoner[] summoners = new Summoner[5];
 
 	public CurrentGame(Context context, String summonerName, String region) {
 		parser = new JSONParser(context);
+		requester = new JSONRequester(parser);
 		try {
 			JSONObject summonerObject = requester.requestSummonerObject(summonerName, region);
-			int summonerId = parser.parseSummonerId(summonerObject, 1);
+			int summonerId = (int) parser.parse(summonerObject, "id");
 			JSONObject currentGame = requester.requestCurrentGameObject(summonerId, region);
-			JSONArray participants = parser.parseParticipants(currentGame);
+			JSONArray participants = (JSONArray) parser.parse(currentGame, "participants");
 			int enemyTeamId = parser.parseTeamId(participants, summonerId);
 			initSummoners(participants, enemyTeamId, region);
 		} catch (IOException e) {
@@ -39,8 +40,8 @@ public class CurrentGame {
 		for (int i = 0; i < 10; i++) {
 			JSONObject participant = participants.getJSONObject(i);
 			if (participant.getInt("teamId") == enemyTeamId) {
-				String name = parser.parseSummonerName(participant);
-				Champion champ = parser.parseChampion(parser.parseChampionId(participant));
+				String name = (String) parser.parse(participant, "summonerName");
+				Champion champ = parser.parseChampion((int) parser.parse(participant, "championId"));
 				Spell spell1 = parser.parseSpell(parser.parseSpellId(participant, 1));
 				Spell spell2 = parser.parseSpell(parser.parseSpellId(participant, 2));
 				String masteries = parser.parseMasteries(participant);
@@ -48,9 +49,9 @@ public class CurrentGame {
 				summoners[index] = new Summoner().setName(name).setSpell1(spell1).
 						setSpell2(spell2).setChampion(champ).setMasteries(masteries).setRunes(runes);
 				try {
-					JSONObject rankedData = requester.requestRankedData(parser.parseSummonerId(participant, 0), region);
+					JSONObject rankedData = requester.requestRankedData((int) parser.parse(participant, "summonerId"), region);
 					setRankedData(participant, rankedData, summoners[index++]);
-				} catch(FileNotFoundException e) {
+				} catch (FileNotFoundException e) {
 					setRankedData(participant, null, summoners[index++]);
 				}
 			}
@@ -61,12 +62,12 @@ public class CurrentGame {
 		if (rankedData == null) {
 			summoner.setDivision("").setLeaguePoints(0).setLosses(0).setWins(0).setTier("Provisional");
 		} else {
-			String tier = parser.parseTier(rankedData);
+			String tier = (String) parser.parse(rankedData, "tier");
 			JSONObject rankedEntries = parser.parseRankedEntries(rankedData);
-			int leaguePoints = parser.parseLeaguePoints(rankedEntries);
-			String division = parser.parseDivision(rankedEntries);
-			int losses = parser.parseLosses(rankedEntries);
-			int wins = parser.parseWins(rankedEntries);
+			int leaguePoints = (int) parser.parse(rankedEntries, "leaguePoints");
+			String division = (String) parser.parse(rankedEntries, "division");
+			int losses = (int) parser.parse(rankedEntries, "losses");
+			int wins = (int) parser.parse(rankedEntries, "wins");
 			summoner.setDivision(division).setLeaguePoints(leaguePoints).setLosses(losses).setWins(wins).setTier(tier);
 		}
 	}

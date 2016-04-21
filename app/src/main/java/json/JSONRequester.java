@@ -1,75 +1,64 @@
 package json;
 
-import android.util.Log;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Scanner;
-
-import collection.Summoner;
 
 /**
  * Created by Christoffer on 2016-04-19.
  */
 public class JSONRequester {
-	private final String HTTPS = "https://";
-	private final String API_LOCATION = ".api.pvp.net/";
-	private final String API_ADDITION = "api/lol/";
-	private final String CURRENT_GAME_URL = API_LOCATION + "observer-mode/rest/consumer/getSpectatorGameInfo/";
-	private final String SUMMONER_ID_URL = "/v1.4/summoner/by-name/";
-	private final String RANKED_DATA_URL = "/v2.5/league/by-summoner/";
+
+	private JSONParser parser;
+
 	private final String API_KEY = "?api_key=8088586e-a695-4cc5-80c2-be3b6fcec3e5";
+	private final String CURRENT_GAME_URL = "https://%s.api.pvp.net/observer-mode/rest/consumer/getSpectatorGameInfo/%s/%s";
+	private final String SUMMONER_ID_URL = "https://%s.api.pvp.net/api/lol/%s/v1.4/summoner/by-name/%s";
+	private final String RANKED_DATA_URL = "https://%s.api.pvp.net/api/lol/%s/v2.5/league/by-summoner/%s/entry";
+
+	public JSONRequester(JSONParser parser) {
+		this.parser = parser;
+	}
 
 	public JSONObject requestCurrentGameObject(int summonerId, String region) throws IOException, JSONException {
-		String region_platform = new String(region);
+		String platformRegion = region;
 		switch (region) {
 			case "EUNE":
-				region_platform = "EUN1";
+				platformRegion = "EUN1";
 				break;
 			case "LAN":
-				region_platform = "LA1";
+				platformRegion = "LA1";
 				break;
 			case "LAS":
-				region_platform = "LA2";
+				platformRegion = "LA2";
 				break;
 			case "OCE":
-				region_platform = "OC1";
+				platformRegion = "OC1";
 				break;
 			case "KR":
 				break;
 			case "RU":
 				break;
 			default:
-				region_platform += "1";
+				platformRegion += "1";
 				break;
 		}
-		Log.e("CURRENT GAME OBJECT URL", HTTPS + region + CURRENT_GAME_URL + region_platform + "/" + summonerId + API_KEY);
-		return buildRootObject(new URL(HTTPS + region + CURRENT_GAME_URL + region_platform + "/" + summonerId + API_KEY));
+		return buildRootObject(new URL(String.format(CURRENT_GAME_URL, region, platformRegion, summonerId) + API_KEY));
 	}
 
-	/**
-	 * Returns the ID associated with the given Summoner Name.
-	 *
-	 * @param summonerName the Summoner Name
-	 * @return summoner ID associated with the given Summoner Name
-	 */
 	public JSONObject requestSummonerObject(String summonerName, String region) throws IOException, JSONException {
 		String urlSummonerName = summonerName.replace(" ", "%20"); // Formats the Summoner Name to work in a URL context (spaces = %20).
-		Log.e("SUMMONER OBJECT URL", HTTPS + region + API_LOCATION + API_ADDITION + region + SUMMONER_ID_URL + urlSummonerName + API_KEY);
-		JSONObject root = buildRootObject(new URL(HTTPS + region + API_LOCATION + API_ADDITION + region + SUMMONER_ID_URL + urlSummonerName + API_KEY));
-		return root.getJSONObject(summonerName.replace(" ", "").toLowerCase()); // In the JSON object, the name is lower case and without spaces.
+		JSONObject root = buildRootObject(new URL(String.format(SUMMONER_ID_URL, region, region, urlSummonerName) + API_KEY));
+		return (JSONObject) parser.parse(root, summonerName.replace(" ", "").toLowerCase()); // In the JSON object, the name is lower case and without spaces.
 	}
 
 	public JSONObject requestRankedData(int summonerId, String region) throws IOException {
 		JSONObject rankedData;
 		try {
-			Log.e("RANKED DATA URL", HTTPS + region + API_LOCATION + API_ADDITION + region.toLowerCase() + RANKED_DATA_URL + summonerId + "/entry" + API_KEY);
-			rankedData = buildRootObject(new URL(HTTPS + region + API_LOCATION + API_ADDITION + region.toLowerCase() + RANKED_DATA_URL + summonerId + "/entry" + API_KEY)).
+			rankedData = buildRootObject(new URL(String.format(RANKED_DATA_URL, region, region.toLowerCase(), summonerId) + API_KEY)).
 					getJSONArray(Integer.toString(summonerId)).getJSONObject(0);
 		} catch (JSONException e) {
 			return new JSONObject();
