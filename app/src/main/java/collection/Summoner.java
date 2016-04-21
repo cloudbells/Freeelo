@@ -120,6 +120,18 @@ public class Summoner implements Serializable {
 
 	@Override
 	public String toString() {
-		return name;
+		return "Summoner{" +
+				"wins=" + wins +
+				", losses=" + losses +
+				", leaguePoints=" + leaguePoints +
+				", name='" + name + '\'' +
+				", tier='" + tier + '\'' +
+				", division='" + division + '\'' +
+				", masteries='" + masteries + '\'' +
+				", spell1=" + spell1 +
+				", spell2=" + spell2 +
+				", champion=" + champion +
+				", runes=" + runes +
+				'}';
 	}
 }

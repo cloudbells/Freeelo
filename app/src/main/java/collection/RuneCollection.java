@@ -1,15 +1,20 @@
 package collection;
 
+import android.util.Log;
+
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Created by Christoffer Nilsson on 2016-04-07.
  */
 public class RuneCollection implements Serializable {
-
     private ArrayList<Rune> runes = new ArrayList<Rune>();
+    private String finalizedStats = "";
 
     public void add(Rune rune) {
         runes.add(rune);
@@ -26,45 +31,69 @@ public class RuneCollection implements Serializable {
         return runes.size();
     }
 
-    public String toString() {
-        String res = "";
-        boolean percent;
-        String desc;
-        int count;
-        double stat;
+    public RuneCollection finalizeStats() {
+        HashMap<String, Double> stats = new HashMap<String, Double>();
+        HashMap<String, String> descriptions = new HashMap<String, String>();
         for(Rune rune: runes) {
-            desc = rune.getDescription();
-            stat = rune.getStat();
-            count = rune.getCount();
+            String statType = rune.getStatType();
+            if(!stats.containsKey(statType)) {
+                stats.put(statType, rune.getStat() * rune.getCount());
+                descriptions.put(statType, rune.getDescription());
+                Log.e("STATS PUT", statType + ": " + rune.getStat());
+            } else if(stats.containsKey(statType)) {
+                double tempStat = stats.get(statType);
+                stats.remove(statType);
+                stats.put(statType, tempStat + rune.getStat() * rune.getCount());
+                descriptions.put(statType, rune.getDescription());
+                Log.e("STATS PUT2", statType + ": " + rune.getStat());
+            }
+        }
 
+        Log.e("HASHMAPSTATS", stats.toString());
+        Log.e("HASHMAPDESC", descriptions.toString());
+
+        Iterator it = stats.entrySet().iterator();
+        boolean percent = false;
+        while(it.hasNext()) {
+            Map.Entry entry = (Map.Entry) it.next();
+            String key = (String) entry.getKey();
+            double value = (double) entry.getValue();
+            String description = descriptions.get(key);
             percent = false;
-            if (desc.contains("%")) {
+            if(key.contains("Percent")){
                 percent = true;
             }
 
-            if (desc.contains("sec")) {
-                stat *= 5;
+            if(key.contains("Regen")) {
+                value *= 5;
             }
+
             String shortDesc = ""; // cooldowns per level
-            if (desc.contains("(")) {
-                shortDesc = desc.substring(desc.indexOf(" "), desc.indexOf("(") - 1);
+            if (description.contains("(")) {
+                shortDesc = description.substring(description.indexOf(" "), description.indexOf("(") - 1);
             } else {
-                shortDesc = desc.substring(desc.indexOf(" "), desc.length());
+                shortDesc = description.substring(description.indexOf(" "), description.length());
             }
+
             String finalStats = "";
             // If the desc contains the percent sign, add it to the finalStats and format, else dont add and format
             if (percent) {
-                finalStats = new DecimalFormat("0.00").format(stat * count * 100) + "%";
+                finalStats = new DecimalFormat("0.00").format(value * 100) + "%";
             } else {
-                finalStats = new DecimalFormat("0.00").format(stat * count);
+                finalStats = new DecimalFormat("0.00").format(value);
             }
             // Adds a '+' if the stat doesn't begin with a '-' (which means it's positive).
-            if (!Double.toString(stat).startsWith("-")) {
+            if (!Double.toString(value).startsWith("-")) {
                 finalStats = "+" + finalStats;
             }
 
-            res += finalStats + shortDesc + "\n";
+            finalizedStats += finalStats + shortDesc + "\n";
         }
-        return res;
+
+        return this;
+    }
+
+    public String toString() {
+        return finalizedStats;
     }
 }

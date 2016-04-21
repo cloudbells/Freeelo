@@ -2,6 +2,7 @@ package collection;
 
 import android.content.Context;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.json.JSONArray;
@@ -20,12 +21,12 @@ public class CurrentGame {
 	public CurrentGame(Context context, String summonerName, String region) {
 		parser = new JSONParser(context);
 		try {
-			JSONObject summonerObject = requester.requestSummonerObject(summonerName);
-			int summonerId = parser.parseSummonerId(summonerObject);
+			JSONObject summonerObject = requester.requestSummonerObject(summonerName, region);
+			int summonerId = parser.parseSummonerId(summonerObject, 1);
 			JSONObject currentGame = requester.requestCurrentGameObject(summonerId, region);
 			JSONArray participants = parser.parseParticipants(currentGame);
 			int enemyTeamId = parser.parseTeamId(participants, summonerId);
-			initSummoners(participants, enemyTeamId);
+			initSummoners(participants, enemyTeamId, region);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (JSONException e) {
@@ -33,7 +34,7 @@ public class CurrentGame {
 		}
 	}
 
-	private void initSummoners(JSONArray participants, int enemyTeamId) throws IOException, JSONException {
+	private void initSummoners(JSONArray participants, int enemyTeamId, String region) throws IOException, JSONException {
 		int index = 0;
 		for (int i = 0; i < 10; i++) {
 			JSONObject participant = participants.getJSONObject(i);
@@ -44,17 +45,21 @@ public class CurrentGame {
 				Spell spell2 = parser.parseSpell(parser.parseSpellId(participant, 2));
 				String masteries = parser.parseMasteries(participant);
 				RuneCollection runes = parser.parseRuneCollection(participant);
-				JSONObject rankedData = requester.requestRankedData(parser.parseSummonerId(participant));
 				summoners[index] = new Summoner().setName(name).setSpell1(spell1).
 						setSpell2(spell2).setChampion(champ).setMasteries(masteries).setRunes(runes);
-				setRankedData(participant, rankedData, summoners[index++]);
+				try {
+					JSONObject rankedData = requester.requestRankedData(parser.parseSummonerId(participant, 0), region);
+					setRankedData(participant, rankedData, summoners[index++]);
+				} catch(FileNotFoundException e) {
+					setRankedData(participant, null, summoners[index++]);
+				}
 			}
 		}
 	}
 
 	private void setRankedData(JSONObject participant, JSONObject rankedData, Summoner summoner) throws JSONException {
-		if (rankedData.length() == 0) {
-			summoner.setDivision("").setLeaguePoints(0).setLosses(0).setWins(0).setTier("Unranked");
+		if (rankedData == null) {
+			summoner.setDivision("").setLeaguePoints(0).setLosses(0).setWins(0).setTier("Provisional");
 		} else {
 			String tier = parser.parseTier(rankedData);
 			JSONObject rankedEntries = parser.parseRankedEntries(rankedData);

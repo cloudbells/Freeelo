@@ -60,8 +60,8 @@ public class JSONParser {
 		return enemyTeamId;
 	}
 
-	public int parseSummonerId(JSONObject summonerObject) throws JSONException {
-		return summonerObject.getInt("id");
+	public int parseSummonerId(JSONObject participant, int type) throws JSONException {
+		return (type == 1 ? participant.getInt("id") : participant.getInt("summonerId"));
 	}
 
 	public int parseChampionId(JSONObject participant) throws JSONException {
@@ -142,7 +142,7 @@ public class JSONParser {
 			double stat = stats.getDouble(statType);
 			runeCollection.add(new Rune(count, statType, stat, desc));
 		}
-		return runeCollection;
+		return runeCollection.finalizeStats();
 	}
 
 	public Champion parseChampion(int championId) throws IOException, JSONException {
