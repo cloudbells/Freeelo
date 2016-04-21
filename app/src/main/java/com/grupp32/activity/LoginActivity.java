@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -19,6 +21,8 @@ import android.widget.Toast;
  * @author
  */
 public class LoginActivity extends AppCompatActivity {
+	private TextView twSummonerName;
+	private Spinner spRegion;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -27,31 +31,44 @@ public class LoginActivity extends AppCompatActivity {
 		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 
-		final TextView twSummonerName = (TextView) findViewById(R.id.summonerName);
+		twSummonerName = (TextView) findViewById(R.id.summonerName);
+		assert twSummonerName != null;
+		twSummonerName.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+				if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+					startIntentToMain();
+				}
 
-		final Spinner spRegion = (Spinner) findViewById(R.id.region);
+				return false;
+			}
+		});
+
+		spRegion = (Spinner) findViewById(R.id.region);
 		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.regions, R.layout.textview_spinner);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spRegion.setAdapter(adapter);
 
 		final Button btnOK = (Button) findViewById(R.id.okButton);
-
 		assert btnOK != null;
 		btnOK.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				String summoner = twSummonerName.getText().toString().trim();
-				if (!summoner.isEmpty()) {
-					Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-					String region = spRegion.getSelectedItem().toString();
-					intent.putExtra("summoner", summoner);
-					intent.putExtra("region", region);
-					startActivity(intent);
-				} else {
-					Toast.makeText(getApplication(), getString(R.string.enter_name), Toast.LENGTH_LONG).show();
-				}
+				startIntentToMain();
 			}
 		});
+	}
+
+	private void startIntentToMain() {
+		String summoner = twSummonerName.getText().toString().trim();
+		if (!summoner.isEmpty()) {
+			Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+			String region = spRegion.getSelectedItem().toString();
+			intent.putExtra("summoner", summoner);
+			intent.putExtra("region", region);
+			startActivity(intent);
+		} else {
+			Toast.makeText(getApplication(), getString(R.string.enter_name), Toast.LENGTH_LONG).show();
+		}
 	}
 
 	@Override
