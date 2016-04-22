@@ -4,6 +4,10 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -27,8 +32,11 @@ import collection.Summoner;
 /**
  * @author
  */
-public class TabFragment extends Fragment {
+public class TabFragment extends Fragment implements View.OnClickListener {
 	private ImageView background;
+	private ImageButton iBtnSpell1;
+	private ImageButton iBtnSpell2;
+	private ImageButton iBtnUltimate;
 	private int bHeight, bWidth;
 
 	public static TabFragment newInstance() {
@@ -53,6 +61,14 @@ public class TabFragment extends Fragment {
 		background = (ImageView) view.findViewById(R.id.background);
 		bWidth = background.getWidth();
 		bHeight = background.getHeight();
+
+		iBtnSpell1 = (ImageButton) view.findViewById(R.id.summonerSpell1);
+		iBtnSpell2 = (ImageButton) view.findViewById(R.id.summonerSpell2);
+		iBtnUltimate = (ImageButton) view.findViewById(R.id.ultimate);
+		iBtnSpell1.setOnClickListener(this);
+		iBtnSpell2.setOnClickListener(this);
+		iBtnUltimate.setOnClickListener(this);
+
 		final TextView summonerName = (TextView) view.findViewById(R.id.summonerName);
 		final TextView championName = (TextView) view.findViewById(R.id.championName);
 		final TextView masteries = (TextView) view.findViewById(R.id.masteries);
@@ -87,7 +103,12 @@ public class TabFragment extends Fragment {
 				tier.setImageBitmap(decodeSampledBitmapFromResource(context.getResources(), imageResource, 100, 100));
 
 				try {
-					new BackgroundSwitcher().execute(new URL("http://ddragon.leagueoflegends.com/cdn/img/champion/loading/" + champ.getKey() + "_0.jpg"));
+					new ImageSwitcher().execute(
+							new URL("http://ddragon.leagueoflegends.com/cdn/img/champion/loading/" + champ.getKey() + "_0.jpg"),
+							new URL("http://ddragon.leagueoflegends.com/cdn/6.8.1/img/spell/" + summoner.getSpell1().getImage()),
+							new URL("http://ddragon.leagueoflegends.com/cdn/6.8.1/img/spell/" + summoner.getSpell2().getImage()),
+							new URL("http://ddragon.leagueoflegends.com/cdn/6.8.1/img/spell/" + champ.getUltimateImage())
+							);
 				} catch (MalformedURLException e) {
 					e.printStackTrace();
 				}
@@ -101,22 +122,6 @@ public class TabFragment extends Fragment {
 		return view;
 	}
 
-	/*public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
-		final int height = options.outHeight;
-		final int width = options.outWidth;
-		int inSampleSize = 1;
-
-		if (height > reqHeight || width > reqWidth) {
-			final int halfHeight = height / 2;
-			final int halfWidth = width / 2;
-
-			while ((halfHeight / inSampleSize) > reqHeight && (halfWidth / inSampleSize) > reqWidth) {
-				inSampleSize *= 2;
-			}
-		}
-
-		return inSampleSize;
-	}*/
 	private int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
 		final int height = options.outHeight;
 		final int width = options.outWidth;
@@ -188,23 +193,67 @@ public class TabFragment extends Fragment {
 		return new ByteArrayInputStream(baos.toByteArray());
 	}
 
-	private class BackgroundSwitcher extends AsyncTask<URL, Bitmap, Bitmap> {
-		protected Bitmap doInBackground(URL... urls) {
-			Bitmap bitmap = null;
-			URL url = urls[0];
+	private void resourceToGrayscale(ImageView view) {
+		ColorMatrix matrix = new ColorMatrix();
+		matrix.setSaturation(0);
+
+		ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
+		view.setColorFilter(filter);
+	}
+
+	private void resetColorFilter(ImageView view) {
+		view.setColorFilter(null);
+	}
+
+	@Override
+	public void onClick(View v) {
+		switch(v.getId()) {
+			case R.id.summonerSpell1:
+				if(iBtnSpell1.getColorFilter() == null) {
+					resourceToGrayscale(iBtnSpell1);
+				} else {
+					resetColorFilter(iBtnSpell1);
+				}
+				break;
+			case R.id.summonerSpell2:
+				if(iBtnSpell2.getColorFilter() == null) {
+					resourceToGrayscale(iBtnSpell2);
+				} else {
+					resetColorFilter(iBtnSpell2);
+				}
+				break;
+			case R.id.ultimate:
+				if(iBtnUltimate.getColorFilter() == null) {
+					resourceToGrayscale(iBtnUltimate);
+				} else {
+					resetColorFilter(iBtnUltimate);
+				}
+				break;
+		}
+	}
+
+	private class ImageSwitcher extends AsyncTask<URL, Bitmap[], Bitmap[]> {
+		protected Bitmap[] doInBackground(URL... urls) {
+			Bitmap[] bitmaps = new Bitmap[5];
 			try {
-				bitmap = decodeSampledBitmapFromStream((InputStream) url.getContent(), bWidth, bHeight);
+				bitmaps[0] = decodeSampledBitmapFromStream((InputStream) urls[0].getContent(), bWidth, bHeight);
+				bitmaps[1] = decodeSampledBitmapFromStream((InputStream) urls[1].getContent(), 64, 64);
+				bitmaps[2] = decodeSampledBitmapFromStream((InputStream) urls[2].getContent(), 64, 64);
+				bitmaps[3] = decodeSampledBitmapFromStream((InputStream) urls[3].getContent(), 64, 64);
 				//BitmapFactory.decodeStream((InputStream) url.getContent());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 
-			return bitmap;
+			return bitmaps;
 		}
 
-		protected void onPostExecute(Bitmap bitmap) {
-			//background.setImageBitmap(Bitmap.createScaledBitmap(bitmap, background.getWidth(), background.getHeight(), false));
-			background.setImageBitmap(bitmap);
+		protected void onPostExecute(Bitmap[] bitmaps) {
+			background.setImageBitmap(Bitmap.createScaledBitmap(bitmaps[0], background.getWidth(), background.getHeight(), false));
+			//background.setImageBitmap(bitmap);
+			iBtnSpell1.setImageBitmap(Bitmap.createScaledBitmap(bitmaps[1], iBtnSpell1.getWidth(), iBtnSpell1.getHeight(), false));
+			iBtnSpell2.setImageBitmap(Bitmap.createScaledBitmap(bitmaps[2], iBtnSpell2.getWidth(), iBtnSpell2.getHeight(), false));
+			iBtnUltimate.setImageBitmap(Bitmap.createScaledBitmap(bitmaps[3], iBtnUltimate.getWidth(), iBtnUltimate.getHeight(), false));
 		}
 	}
 }
