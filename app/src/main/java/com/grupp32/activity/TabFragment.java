@@ -10,6 +10,7 @@ import android.graphics.ColorMatrixColorFilter;
 import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.io.ByteArrayInputStream;
@@ -34,10 +36,15 @@ import collection.Summoner;
  */
 public class TabFragment extends Fragment implements View.OnClickListener {
 	private ImageView background;
+	private int bHeight, bWidth;
+
 	private ImageButton iBtnSpell1;
 	private ImageButton iBtnSpell2;
 	private ImageButton iBtnUltimate;
-	private int bHeight, bWidth;
+
+	private ProgressBar pBarSpell1;
+
+	private TextView twSpell1;
 
 	public static TabFragment newInstance() {
 		return new TabFragment();
@@ -63,6 +70,9 @@ public class TabFragment extends Fragment implements View.OnClickListener {
 		bHeight = background.getHeight();
 
 		iBtnSpell1 = (ImageButton) view.findViewById(R.id.summonerSpell1);
+		pBarSpell1 = (ProgressBar) view.findViewById(R.id.pBarSpell1);
+		twSpell1 = (TextView) view.findViewById(R.id.twSpell1);
+
 		iBtnSpell2 = (ImageButton) view.findViewById(R.id.summonerSpell2);
 		iBtnUltimate = (ImageButton) view.findViewById(R.id.ultimate);
 		iBtnSpell1.setOnClickListener(this);
@@ -210,9 +220,9 @@ public class TabFragment extends Fragment implements View.OnClickListener {
 		switch(v.getId()) {
 			case R.id.summonerSpell1:
 				if(iBtnSpell1.getColorFilter() == null) {
-					resourceToGrayscale(iBtnSpell1);
+					startTimer(60, iBtnSpell1, pBarSpell1, twSpell1);
 				} else {
-					resetColorFilter(iBtnSpell1);
+					//resetColorFilter(iBtnSpell1);
 				}
 				break;
 			case R.id.summonerSpell2:
@@ -230,6 +240,25 @@ public class TabFragment extends Fragment implements View.OnClickListener {
 				}
 				break;
 		}
+	}
+
+	private void startTimer(final int seconds, final ImageView ivResource, final ProgressBar pResource, final TextView twResource) {
+		resourceToGrayscale(ivResource);
+		pResource.setMax(seconds);
+		new CountDownTimer(seconds * 1000, 1000) {
+			@Override
+			public void onTick(long leftTimeInMilliseconds) {
+				long seconds = leftTimeInMilliseconds / 1000;
+				pResource.setProgress((int) seconds);
+				twResource.setText(Long.toString(seconds));
+			}
+
+			@Override
+			public void onFinish() {
+				resetColorFilter(ivResource);
+				twResource.setText("");
+			}
+		}.start();
 	}
 
 	private class ImageSwitcher extends AsyncTask<URL, Bitmap[], Bitmap[]> {

@@ -105,4 +105,26 @@
         android:layout_alignParentTop="true"
         android:layout_alignBottom="@+id/championName" />
 
+    <ProgressBar
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:progressDrawable="@drawable/circular_progress_bar"
+        android:id="@+id/pBarSpell1"
+        android:layout_alignStart="@+id/summonerSpell1"
+        android:layout_alignParentBottom="true"
+        android:layout_alignEnd="@+id/summonerSpell1"
+        android:layout_alignTop="@+id/summonerSpell1" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/twSpell1"
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="28dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/summonerSpell1"
+        android:layout_alignEnd="@+id/summonerSpell1"
+        android:textAlignment="center" />
+
 </RelativeLayout>
