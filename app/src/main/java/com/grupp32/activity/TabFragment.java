@@ -240,7 +240,6 @@ public class TabFragment extends Fragment implements View.OnClickListener {
 				bitmaps[1] = decodeSampledBitmapFromStream((InputStream) urls[1].getContent(), 64, 64);
 				bitmaps[2] = decodeSampledBitmapFromStream((InputStream) urls[2].getContent(), 64, 64);
 				bitmaps[3] = decodeSampledBitmapFromStream((InputStream) urls[3].getContent(), 64, 64);
-				//BitmapFactory.decodeStream((InputStream) url.getContent());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -250,7 +249,6 @@ public class TabFragment extends Fragment implements View.OnClickListener {
 
 		protected void onPostExecute(Bitmap[] bitmaps) {
 			background.setImageBitmap(Bitmap.createScaledBitmap(bitmaps[0], background.getWidth(), background.getHeight(), false));
-			//background.setImageBitmap(bitmap);
 			iBtnSpell1.setImageBitmap(Bitmap.createScaledBitmap(bitmaps[1], iBtnSpell1.getWidth(), iBtnSpell1.getHeight(), false));
 			iBtnSpell2.setImageBitmap(Bitmap.createScaledBitmap(bitmaps[2], iBtnSpell2.getWidth(), iBtnSpell2.getHeight(), false));
 			iBtnUltimate.setImageBitmap(Bitmap.createScaledBitmap(bitmaps[3], iBtnUltimate.getWidth(), iBtnUltimate.getHeight(), false));
