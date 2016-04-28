@@ -4,10 +4,8 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
-import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -28,7 +26,6 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import collection.Champion;
 import collection.Summoner;
 
 /**
@@ -43,20 +40,24 @@ public class TabFragment extends Fragment implements View.OnClickListener {
 	private ImageButton iBtnUltimate;
 
 	private ProgressBar pBarSpell1;
-
+	private ProgressBar pBarSpell2;
+	private ProgressBar pBarUltimate;
 	private TextView twSpell1;
+	private TextView twSpell2;
+	private TextView twUltimate;
+
+	private Summoner tabSummoner;
 
 	public static TabFragment newInstance() {
 		return new TabFragment();
 	}
 
-	public static TabFragment newInstance(int num, Summoner summoner, Champion champion) {
+	public static TabFragment newInstance(int num, Summoner summoner) {
 		TabFragment fragment = new TabFragment();
 
 		Bundle args = new Bundle();
 		args.putSerializable("summoner", summoner);
-		args.putSerializable("champions", champion);
-		args.putInt("num", num);
+		args.putInt("position", num);
 		fragment.setArguments(args);
 
 		return fragment;
@@ -70,14 +71,19 @@ public class TabFragment extends Fragment implements View.OnClickListener {
 		bHeight = background.getHeight();
 
 		iBtnSpell1 = (ImageButton) view.findViewById(R.id.summonerSpell1);
-		pBarSpell1 = (ProgressBar) view.findViewById(R.id.pBarSpell1);
-		twSpell1 = (TextView) view.findViewById(R.id.twSpell1);
-
 		iBtnSpell2 = (ImageButton) view.findViewById(R.id.summonerSpell2);
 		iBtnUltimate = (ImageButton) view.findViewById(R.id.ultimate);
 		iBtnSpell1.setOnClickListener(this);
 		iBtnSpell2.setOnClickListener(this);
 		iBtnUltimate.setOnClickListener(this);
+
+		pBarSpell1 = (ProgressBar) view.findViewById(R.id.pBarSpell1);
+		pBarSpell2 = (ProgressBar) view.findViewById(R.id.pBarSpell2);
+		pBarUltimate = (ProgressBar) view.findViewById(R.id.pBarUltimate);
+
+		twSpell1 = (TextView) view.findViewById(R.id.twSpell1);
+		twSpell2 = (TextView) view.findViewById(R.id.twSpell2);
+		twUltimate = (TextView) view.findViewById(R.id.twUltimate);
 
 		final TextView summonerName = (TextView) view.findViewById(R.id.summonerName);
 		final TextView championName = (TextView) view.findViewById(R.id.championName);
@@ -90,20 +96,18 @@ public class TabFragment extends Fragment implements View.OnClickListener {
 		Log.e("PRE BUNDLE", "Fragment instantiated");
 		Bundle bundle = this.getArguments();
 		if (bundle != null) {
-			Summoner summoner = (Summoner) bundle.getSerializable("summoner");
-			Champion champ = (Champion) bundle.getSerializable("champions");
-			if (summoner != null && champ != null) {
-				Log.e("CHAMP POST BUNDLE", champ.toString());
-				summonerName.setText(summoner.getName());
-				championName.setText(summoner.getChampion().getName());
-				masteries.setText(summoner.getMasteries());
-				runes.setText(summoner.getRunes().toString());
-				String rankText = summoner.getTier() + " " + summoner.getDivision();
+			tabSummoner = (Summoner) bundle.getSerializable("summoner");
+			if (tabSummoner != null) {
+				summonerName.setText(tabSummoner.getName());
+				championName.setText(tabSummoner.getChampion().getName());
+				masteries.setText(tabSummoner.getMasteries());
+				runes.setText(tabSummoner.getRunes().toString());
+				String rankText = tabSummoner.getTier() + " " + tabSummoner.getDivision();
 				rank.setText(rankText);
 
 				int imageResource;
-				String tierText = summoner.getTier().toLowerCase();
-				String divisionText = summoner.getDivision().toLowerCase();
+				String tierText = tabSummoner.getTier().toLowerCase();
+				String divisionText = tabSummoner.getDivision().toLowerCase();
 				if (tierText.equals("challenger") || tierText.equals("master") || tierText.equals("provisional")) {
 					imageResource = context.getResources().getIdentifier("@drawable/" + tierText, null, context.getPackageName());
 				} else {
@@ -114,16 +118,14 @@ public class TabFragment extends Fragment implements View.OnClickListener {
 
 				try {
 					new ImageSwitcher().execute(
-							new URL("http://ddragon.leagueoflegends.com/cdn/img/champion/loading/" + champ.getKey() + "_0.jpg"),
-							new URL("http://ddragon.leagueoflegends.com/cdn/6.8.1/img/spell/" + summoner.getSpell1().getImage()),
-							new URL("http://ddragon.leagueoflegends.com/cdn/6.8.1/img/spell/" + summoner.getSpell2().getImage()),
-							new URL("http://ddragon.leagueoflegends.com/cdn/6.8.1/img/spell/" + champ.getUltimateImage())
+							new URL("http://ddragon.leagueoflegends.com/cdn/img/champion/loading/" + tabSummoner.getChampion().getKey() + "_0.jpg"),
+							new URL("http://ddragon.leagueoflegends.com/cdn/6.8.1/img/spell/" + tabSummoner.getSpell1().getImage()),
+							new URL("http://ddragon.leagueoflegends.com/cdn/6.8.1/img/spell/" + tabSummoner.getSpell2().getImage()),
+							new URL("http://ddragon.leagueoflegends.com/cdn/6.8.1/img/spell/" + tabSummoner.getChampion().getUltimateImage())
 							);
 				} catch (MalformedURLException e) {
 					e.printStackTrace();
 				}
-
-
 			}
 		} else {
 			Log.e("BUNDLE", "BUNDLE EMPTY");
@@ -220,23 +222,18 @@ public class TabFragment extends Fragment implements View.OnClickListener {
 		switch(v.getId()) {
 			case R.id.summonerSpell1:
 				if(iBtnSpell1.getColorFilter() == null) {
-					startTimer(60, iBtnSpell1, pBarSpell1, twSpell1);
-				} else {
-					//resetColorFilter(iBtnSpell1);
+					startTimer(tabSummoner.getSpell1().getCooldown(), iBtnSpell1, pBarSpell1, twSpell1);
 				}
 				break;
 			case R.id.summonerSpell2:
 				if(iBtnSpell2.getColorFilter() == null) {
-					resourceToGrayscale(iBtnSpell2);
-				} else {
-					resetColorFilter(iBtnSpell2);
+					startTimer(tabSummoner.getSpell2().getCooldown(), iBtnSpell2, pBarSpell2, twSpell2);
 				}
 				break;
 			case R.id.ultimate:
 				if(iBtnUltimate.getColorFilter() == null) {
-					resourceToGrayscale(iBtnUltimate);
-				} else {
-					resetColorFilter(iBtnUltimate);
+					int ultMaxRank = tabSummoner.getChampion().getUltimateMaxRank();
+					startTimer((int)tabSummoner.getChampion().getUltimateCooldowns()[ultMaxRank - 1], iBtnUltimate, pBarUltimate, twUltimate);
 				}
 				break;
 		}
@@ -244,8 +241,9 @@ public class TabFragment extends Fragment implements View.OnClickListener {
 
 	private void startTimer(final int seconds, final ImageView ivResource, final ProgressBar pResource, final TextView twResource) {
 		resourceToGrayscale(ivResource);
+		pResource.setVisibility(View.VISIBLE);
 		pResource.setMax(seconds);
-		new CountDownTimer(seconds * 1000, 1000) {
+		new CountDownTimer(seconds * 1000, 500) {
 			@Override
 			public void onTick(long leftTimeInMilliseconds) {
 				long seconds = leftTimeInMilliseconds / 1000;
@@ -256,6 +254,7 @@ public class TabFragment extends Fragment implements View.OnClickListener {
 			@Override
 			public void onFinish() {
 				resetColorFilter(ivResource);
+				pResource.setVisibility(View.INVISIBLE);
 				twResource.setText("");
 			}
 		}.start();
@@ -281,6 +280,10 @@ public class TabFragment extends Fragment implements View.OnClickListener {
 			iBtnSpell1.setImageBitmap(Bitmap.createScaledBitmap(bitmaps[1], iBtnSpell1.getWidth(), iBtnSpell1.getHeight(), false));
 			iBtnSpell2.setImageBitmap(Bitmap.createScaledBitmap(bitmaps[2], iBtnSpell2.getWidth(), iBtnSpell2.getHeight(), false));
 			iBtnUltimate.setImageBitmap(Bitmap.createScaledBitmap(bitmaps[3], iBtnUltimate.getWidth(), iBtnUltimate.getHeight(), false));
+
+			iBtnSpell1.setVisibility(View.VISIBLE);
+			iBtnSpell2.setVisibility(View.VISIBLE);
+			iBtnUltimate.setVisibility(View.VISIBLE);
 		}
 	}
 }

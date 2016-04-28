@@ -35,7 +35,6 @@ import collection.Summoner;
 public class MainActivity extends AppCompatActivity {
 
 	private ArrayList<Summoner> summoners;
-	private ArrayList<Champion> champions;
 	private TabLayout tabLayout;
 	private ViewPager viewPager;
 	private long unixTime;
@@ -48,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
 		setSupportActionBar(toolbar);
 
 		summoners = new ArrayList<>();
-		champions = new ArrayList<>();
 
 		tabLayout = (TabLayout) findViewById(R.id.tab_layout);
 		for (int i = 0; i < 5; i++) {
@@ -95,8 +93,8 @@ public class MainActivity extends AppCompatActivity {
 
 		@Override
 		public Fragment getItem(int position) {
-			if (!summoners.isEmpty() && !champions.isEmpty()) {
-				return TabFragment.newInstance(position, summoners.get(position), champions.get(position));
+			if (!summoners.isEmpty()) {
+				return TabFragment.newInstance(position, summoners.get(position));
 			} else {
 				return TabFragment.newInstance();
 			}
@@ -129,9 +127,7 @@ public class MainActivity extends AppCompatActivity {
 				Summoner[] summonerArr = game.getSummoners();
 				int progress = 0;
 				for (Summoner summoner : summonerArr) {
-					Champion champ = summoner.getChampion();
 					summoners.add(summoner);
-					champions.add(champ);
 
 					publishProgress(progress += 20);
 				}
@@ -160,8 +156,8 @@ public class MainActivity extends AppCompatActivity {
 				bar.setVisibility(View.INVISIBLE);
 
 				int tabId = 0;
-				for (Champion champ : champions) {
-					new IconSwitcher().execute("http://ddragon.leagueoflegends.com/cdn/6.6.1/img/champion/" + champ.getImageName(), Integer.toString(tabId));
+				for (Summoner summoner : summoners) {
+					new IconSwitcher().execute("http://ddragon.leagueoflegends.com/cdn/6.6.1/img/champion/" + summoner.getChampion().getImageName(), Integer.toString(tabId));
 					tabId++;
 				}
 
@@ -172,8 +168,7 @@ public class MainActivity extends AppCompatActivity {
 				Toast.makeText(getApplication(), "Responstid: " + time, Toast.LENGTH_LONG).show();
 
 				for (Summoner summoner : summoners) {
-					Champion champ = summoner.getChampion();
-					Log.e("HELLO", champ.toString());
+					Log.e("HELLO", summoner.getChampion().toString());
 					Spell spell1 = summoner.getSpell1();
 					Spell spell2 = summoner.getSpell2();
 					RuneCollection runes = summoner.getRunes();
