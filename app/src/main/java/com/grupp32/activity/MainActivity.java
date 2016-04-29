@@ -131,13 +131,13 @@ public class MainActivity extends AppCompatActivity {
 
 					publishProgress(progress += 20);
 				}
-
-				return "" + summonerArr.length;
 			} catch (Exception e) {
 				e.printStackTrace();
 				finish();
 				return null;
 			}
+
+			return "" + summoners.size();
 		}
 
 		@Override
@@ -151,6 +151,7 @@ public class MainActivity extends AppCompatActivity {
 		@Override
 		protected void onPostExecute(String result) {
 			super.onPostExecute(result);
+			Log.e("ONPOSTEXECUTE - RESULT", "Result: (" + result + ")");
 			if (result != null) {
 				bar.setProgress(100);
 				bar.setVisibility(View.INVISIBLE);
@@ -168,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
 				Toast.makeText(getApplication(), "Responstid: " + time, Toast.LENGTH_LONG).show();
 
 				for (Summoner summoner : summoners) {
-					Log.e("HELLO", summoner.getChampion().toString());
+					Log.e("CHAMPION", summoner.getChampion().toString());
 					Spell spell1 = summoner.getSpell1();
 					Spell spell2 = summoner.getSpell2();
 					RuneCollection runes = summoner.getRunes();

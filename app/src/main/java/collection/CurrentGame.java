@@ -18,21 +18,15 @@ public class CurrentGame {
 	private JSONParser parser;
 	private Summoner[] summoners = new Summoner[5];
 
-	public CurrentGame(Context context, String summonerName, String region) {
+	public CurrentGame(Context context, String summonerName, String region) throws IOException, JSONException {
 		parser = new JSONParser(context);
 		requester = new JSONRequester(parser);
-		try {
-			JSONObject summonerObject = requester.requestSummonerObject(summonerName, region);
-			int summonerId = (int) parser.parse(summonerObject, "id");
-			JSONObject currentGame = requester.requestCurrentGameObject(summonerId, region);
-			JSONArray participants = (JSONArray) parser.parse(currentGame, "participants");
-			int enemyTeamId = parser.parseTeamId(participants, summonerId);
-			initSummoners(participants, enemyTeamId, region);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
+		JSONObject summonerObject = requester.requestSummonerObject(summonerName, region);
+		int summonerId = (int) parser.parse(summonerObject, "id");
+		JSONObject currentGame = requester.requestCurrentGameObject(summonerId, region);
+		JSONArray participants = (JSONArray) parser.parse(currentGame, "participants");
+		int enemyTeamId = parser.parseTeamId(participants, summonerId);
+		initSummoners(participants, enemyTeamId, region);
 	}
 
 	private void initSummoners(JSONArray participants, int enemyTeamId, String region) throws IOException, JSONException {
@@ -41,15 +35,26 @@ public class CurrentGame {
 			JSONObject participant = participants.getJSONObject(i);
 			if (participant.getInt("teamId") == enemyTeamId) {
 				String name = (String) parser.parse(participant, "summonerName");
-				Champion champ = parser.parseChampion((int) parser.parse(participant, "championId"));
+				int championId = (int) parser.parse(participant, "championId");
+				Champion champ = parser.parseChampion(championId);
 				Spell spell1 = parser.parseSpell(parser.parseSpellId(participant, 1));
 				Spell spell2 = parser.parseSpell(parser.parseSpellId(participant, 2));
 				String masteries = parser.parseMasteries(participant);
 				RuneCollection runes = parser.parseRuneCollection(participant);
+
+				int summonerId = (int) parser.parse(participant, "summonerId");
+				try {
+					JSONArray rankedChampData = requester.requestRankedChampionData(summonerId, region);
+					setRankedChampionData(championId, rankedChampData, champ);
+				} catch (IOException e) {
+					setRankedChampionData(championId, null, champ);
+				}
+
 				summoners[index] = new Summoner().setName(name).setSpell1(spell1).
 						setSpell2(spell2).setChampion(champ).setMasteries(masteries).setRunes(runes);
+
 				try {
-					JSONObject rankedData = requester.requestRankedData((int) parser.parse(participant, "summonerId"), region);
+					JSONObject rankedData = requester.requestRankedData(summonerId, region);
 					setRankedData(participant, rankedData, summoners[index++]);
 				} catch (FileNotFoundException e) {
 					setRankedData(participant, null, summoners[index++]);
@@ -69,6 +74,25 @@ public class CurrentGame {
 			int losses = (int) parser.parse(rankedEntries, "losses");
 			int wins = (int) parser.parse(rankedEntries, "wins");
 			summoner.setDivision(division).setLeaguePoints(leaguePoints).setLosses(losses).setWins(wins).setTier(tier);
+		}
+	}
+
+	public void setRankedChampionData(int championId, JSONArray rankedChampData, Champion champion) throws JSONException {
+		if(rankedChampData == null) {
+			champion.setWins(0).setLosses(0);
+		} else {
+			int wins = 0;
+			int losses = 0;
+			for(int index = 0; index < rankedChampData.length(); index++) {
+				JSONObject entry = rankedChampData.getJSONObject(index);
+				if((int) parser.parse(entry, "id") == championId) {
+					JSONObject stats = (JSONObject) parser.parse(entry, "stats");
+					wins = (int) parser.parse(stats, "totalSessionsWon");
+					losses = (int) parser.parse(stats, "totalSessionsLost");
+				}
+			}
+
+			champion.setWins(wins).setLosses(losses);
 		}
 	}
 

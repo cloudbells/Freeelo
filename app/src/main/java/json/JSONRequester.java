@@ -1,5 +1,6 @@
 package json;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -18,6 +19,7 @@ public class JSONRequester {
 	private final String CURRENT_GAME_URL = "https://%s.api.pvp.net/observer-mode/rest/consumer/getSpectatorGameInfo/%s/%s";
 	private final String SUMMONER_ID_URL = "https://%s.api.pvp.net/api/lol/%s/v1.4/summoner/by-name/%s";
 	private final String RANKED_DATA_URL = "https://%s.api.pvp.net/api/lol/%s/v2.5/league/by-summoner/%s/entry";
+	private final String RANKED_CHAMP_DATA_URL = "https://%s.api.pvp.net/api/lol/%s/v1.3/stats/by-summoner/%s/ranked";
 
 	public JSONRequester(JSONParser parser) {
 		this.parser = parser;
@@ -64,6 +66,18 @@ public class JSONRequester {
 			return new JSONObject();
 		}
 		return rankedData;
+	}
+
+	public JSONArray requestRankedChampionData(int summonerId, String region) throws IOException {
+		JSONArray rankedChampData;
+		try {
+			rankedChampData = buildRootObject(new URL(String.format(RANKED_CHAMP_DATA_URL, region, region.toLowerCase(), summonerId) + API_KEY)).
+					getJSONArray("champions");
+		} catch (JSONException e) {
+			return new JSONArray();
+		}
+
+		return rankedChampData;
 	}
 
 	private JSONObject buildRootObject(URL url) throws IOException, JSONException {

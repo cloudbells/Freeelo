@@ -13,6 +13,8 @@ public class Champion implements Serializable {
 	private String key;
 	private String imageName;
 	private Ultimate ultimate;
+	private int wins;
+	private int losses;
 
 	public Champion setChampionId(int championId) {
 		this.championId = championId;
@@ -41,6 +43,16 @@ public class Champion implements Serializable {
 
 	public Champion setUltimate(Ultimate ultimate) {
 		this.ultimate = ultimate;
+		return this;
+	}
+
+	public Champion setWins(int wins) {
+		this.wins = wins;
+		return this;
+	}
+
+	public Champion setLosses(int losses) {
+		this.losses = losses;
 		return this;
 	}
 
@@ -76,8 +88,25 @@ public class Champion implements Serializable {
 		return ultimate.getImage();
 	}
 
+	public int getWins() {
+		return wins;
+	}
+
+	public int getLosses() {
+		return losses;
+	}
+
 	@Override
 	public String toString() {
-		return name;
+		return "Champion{" +
+				"championId=" + championId +
+				", name='" + name + '\'' +
+				", title='" + title + '\'' +
+				", key='" + key + '\'' +
+				", imageName='" + imageName + '\'' +
+				", ultimate=" + ultimate +
+				", wins=" + wins +
+				", losses=" + losses +
+				'}';
 	}
 }
