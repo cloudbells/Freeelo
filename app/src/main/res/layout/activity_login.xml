@@ -43,7 +43,6 @@
         android:hint="@string/summoner_name"
         android:textAlignment="center"
         android:textSize="24sp"
-        android:textColorHint="#e9eded"
         android:imeOptions="actionDone"
         android:singleLine="true"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
