@@ -1,9 +1,11 @@
 package collection;
 
+import java.io.Serializable;
+
 /**
  * @author Christoffer Nilsson
  */
-public class Ultimate {
+public class Ultimate implements Serializable {
 
 	private int maxRank;
 	private double[] cooldowns;

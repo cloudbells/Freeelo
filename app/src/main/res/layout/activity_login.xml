@@ -8,7 +8,7 @@
     android:focusable="true"
     tools:context="com.grupp32.activity.LoginActivity">
 
-    <android.support.v7.widget.Toolbar
+    <!--<android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,12 +16,12 @@
         android:background="@color/colorPrimary"
         android:elevation="6dp"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>-->
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/app_name"
+        android:text="@string/search"
         android:id="@+id/okButton"
         android:layout_below="@+id/summonerName"
         android:layout_centerHorizontal="true"
@@ -47,16 +47,16 @@
         android:singleLine="true"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:layout_below="@+id/logo"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"/>
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/logo"
         android:background="@drawable/ic_logo"
-        android:layout_below="@+id/toolbar"
+        android:layout_above="@+id/summonerName"
         android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

@@ -1,9 +1,11 @@
 package collection;
 
+import java.io.Serializable;
+
 /**
  * @author Alexander Johansson
  */
-public class Rune {
+public class Rune implements Serializable {
 
 	private int count;
 	private double stat;

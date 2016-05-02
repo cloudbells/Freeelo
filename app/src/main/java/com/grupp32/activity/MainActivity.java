@@ -13,7 +13,6 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -23,21 +22,17 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 
-import collection.Champion;
 import collection.CurrentGame;
-import collection.RuneCollection;
-import collection.Spell;
 import collection.Summoner;
 
 /**
- * @author
+ * @author Alexander Johansson
  */
 public class MainActivity extends AppCompatActivity {
 
 	private ArrayList<Summoner> summoners;
 	private TabLayout tabLayout;
 	private ViewPager viewPager;
-	private long unixTime;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
 	}
 
 	public class PagerAdapter extends FragmentStatePagerAdapter {
-		int numOfTabs;
+		private int numOfTabs;
 
 		public PagerAdapter(FragmentManager fm, int numOfTabs) {
 			super(fm);
@@ -119,8 +114,6 @@ public class MainActivity extends AppCompatActivity {
 			summonerName = params[0];
 			String region = params[1];
 
-			unixTime = System.currentTimeMillis() / 1000L;
-
 			try {
 				CurrentGame game = new CurrentGame(getApplicationContext(), summonerName, region);
 
@@ -151,7 +144,6 @@ public class MainActivity extends AppCompatActivity {
 		@Override
 		protected void onPostExecute(String result) {
 			super.onPostExecute(result);
-			Log.e("ONPOSTEXECUTE - RESULT", "Result: (" + result + ")");
 			if (result != null) {
 				bar.setProgress(100);
 				bar.setVisibility(View.INVISIBLE);
@@ -164,21 +156,6 @@ public class MainActivity extends AppCompatActivity {
 
 				viewPager.setCurrentItem(1);
 				viewPager.setCurrentItem(2);
-
-				long time = (System.currentTimeMillis() / 1000L) - unixTime;
-				Toast.makeText(getApplication(), "Responstid: " + time, Toast.LENGTH_LONG).show();
-
-				for (Summoner summoner : summoners) {
-					Log.e("CHAMPION", summoner.getChampion().toString());
-					Spell spell1 = summoner.getSpell1();
-					Spell spell2 = summoner.getSpell2();
-					RuneCollection runes = summoner.getRunes();
-					Log.e("SPELL1", spell1.toString());
-					Log.e("SPELL2", spell2.toString());
-					Log.e("MASTERIES", summoner.getMasteries());
-					Log.e("RUNES", runes.toString());
-					Log.e("SUMMONER", summoner.toString());
-				}
 			} else {
 				Toast.makeText(getApplication(), String.format(getString(R.string.not_in_game), summonerName), Toast.LENGTH_LONG).show();
 			}

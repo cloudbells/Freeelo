@@ -4,13 +4,15 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
-import android.util.Log;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,9 +31,10 @@ import java.net.URL;
 import collection.Summoner;
 
 /**
- * @author
+ * @author Alexander Johansson, Christoffer Nilsson
  */
 public class TabFragment extends Fragment implements View.OnClickListener {
+	private Toolbar toolbar;
 	private ImageView background;
 	private int bHeight, bWidth;
 
@@ -66,9 +69,10 @@ public class TabFragment extends Fragment implements View.OnClickListener {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_tab, container, false);
-		background = (ImageView) view.findViewById(R.id.background);
-		bWidth = background.getWidth();
-		bHeight = background.getHeight();
+		//background = (ImageView) view.findViewById(R.id.background);
+		toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+		//bWidth = background.getWidth();
+		//bHeight = background.getHeight();
 
 		iBtnSpell1 = (ImageButton) view.findViewById(R.id.summonerSpell1);
 		iBtnSpell2 = (ImageButton) view.findViewById(R.id.summonerSpell2);
@@ -93,7 +97,6 @@ public class TabFragment extends Fragment implements View.OnClickListener {
 		final ImageView tier = (ImageView) view.findViewById(R.id.tier);
 
 		final Context context = getActivity();
-		Log.e("PRE BUNDLE", "Fragment instantiated");
 		Bundle bundle = this.getArguments();
 		if (bundle != null) {
 			tabSummoner = (Summoner) bundle.getSerializable("summoner");
@@ -127,8 +130,6 @@ public class TabFragment extends Fragment implements View.OnClickListener {
 					e.printStackTrace();
 				}
 			}
-		} else {
-			Log.e("BUNDLE", "BUNDLE EMPTY");
 		}
 
 		return view;
@@ -246,9 +247,14 @@ public class TabFragment extends Fragment implements View.OnClickListener {
 		new CountDownTimer(seconds * 1000, 500) {
 			@Override
 			public void onTick(long leftTimeInMilliseconds) {
-				long seconds = leftTimeInMilliseconds / 1000;
-				pResource.setProgress((int) seconds);
-				twResource.setText(Long.toString(seconds));
+				long curSecond = leftTimeInMilliseconds / 1000;
+				pResource.setProgress(seconds - (int) curSecond);
+				if((int) curSecond <= 10) {
+					twResource.setTextColor(Color.parseColor("#B20000"));
+				} else {
+					twResource.setTextColor(Color.parseColor("#ffe066"));
+				}
+				twResource.setText(Long.toString(curSecond));
 			}
 
 			@Override
@@ -264,7 +270,8 @@ public class TabFragment extends Fragment implements View.OnClickListener {
 		protected Bitmap[] doInBackground(URL... urls) {
 			Bitmap[] bitmaps = new Bitmap[5];
 			try {
-				bitmaps[0] = decodeSampledBitmapFromStream((InputStream) urls[0].getContent(), bWidth, bHeight);
+				//bitmaps[0] = decodeSampledBitmapFromStream((InputStream) urls[0].getContent(), bWidth, bHeight);
+				bitmaps[0] = decodeSampledBitmapFromStream((InputStream) urls[0].getContent(), 300, 500);
 				bitmaps[1] = decodeSampledBitmapFromStream((InputStream) urls[1].getContent(), 64, 64);
 				bitmaps[2] = decodeSampledBitmapFromStream((InputStream) urls[2].getContent(), 64, 64);
 				bitmaps[3] = decodeSampledBitmapFromStream((InputStream) urls[3].getContent(), 64, 64);
@@ -276,7 +283,8 @@ public class TabFragment extends Fragment implements View.OnClickListener {
 		}
 
 		protected void onPostExecute(Bitmap[] bitmaps) {
-			background.setImageBitmap(Bitmap.createScaledBitmap(bitmaps[0], background.getWidth(), background.getHeight(), false));
+			//background.setImageBitmap(Bitmap.createScaledBitmap(bitmaps[0], background.getWidth(), background.getHeight(), false));
+			toolbar.setLogo(new BitmapDrawable(getResources(), bitmaps[0]));
 			iBtnSpell1.setImageBitmap(Bitmap.createScaledBitmap(bitmaps[1], iBtnSpell1.getWidth(), iBtnSpell1.getHeight(), false));
 			iBtnSpell2.setImageBitmap(Bitmap.createScaledBitmap(bitmaps[2], iBtnSpell2.getWidth(), iBtnSpell2.getHeight(), false));
 			iBtnUltimate.setImageBitmap(Bitmap.createScaledBitmap(bitmaps[3], iBtnUltimate.getWidth(), iBtnUltimate.getHeight(), false));

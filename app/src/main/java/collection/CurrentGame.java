@@ -12,6 +12,9 @@ import org.json.JSONObject;
 import json.JSONParser;
 import json.JSONRequester;
 
+/**
+ * @author Christoffer Nilsson, Alexander Johansson
+ */
 public class CurrentGame {
 
 	private JSONRequester requester;

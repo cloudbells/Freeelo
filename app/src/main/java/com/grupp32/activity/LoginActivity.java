@@ -18,7 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 /**
- * @author
+ * @author Alexander Johansson, Sigvard Nilsson
  */
 public class LoginActivity extends AppCompatActivity {
 	private TextView twSummonerName;

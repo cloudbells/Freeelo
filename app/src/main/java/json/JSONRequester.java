@@ -9,7 +9,7 @@ import java.net.URL;
 import java.util.Scanner;
 
 /**
- * Created by Christoffer on 2016-04-19.
+ * Created by Christoffer on 2016-04-19, Alexander Johansson (rankedChampData)
  */
 public class JSONRequester {
 
