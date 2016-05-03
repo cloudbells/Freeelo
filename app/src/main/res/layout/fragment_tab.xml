@@ -1,235 +1,166 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fragment_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:id="@+id/background"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentBottom="true" />
+    <com.github.ksoichiro.android.observablescrollview.ObservableScrollView
+        android:id="@+id/scroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:overScrollMode="never"
+        android:scrollbars="none">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="4dip"
-        android:layout_marginLeft="4sp"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:id="@+id/summonerName"
-        android:textColor="#FAFAFA"
-        android:textStyle="bold"
-        android:shadowColor="#000000"
-        android:shadowDx="1.5"
-        android:shadowDy="1.3"
-        android:shadowRadius="1.6"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_toStartOf="@+id/summonerSpell2" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="4dip"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:id="@+id/championName"
-        android:textColor="#FAFAFA"
-        android:textStyle="bold"
-        android:shadowColor="#000000"
-        android:shadowDx="1.5"
-        android:shadowDy="1.3"
-        android:shadowRadius="1.6"
-        android:layout_below="@+id/summonerName"
-        android:layout_alignStart="@+id/summonerName"
-        android:layout_alignEnd="@+id/summonerName" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/flexible_space_image_height"
+                android:background="@android:color/transparent" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="4dip"
-        android:layout_marginLeft="4sp"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:id="@+id/masteries"
-        android:textColor="#FAFAFA"
-        android:textStyle="bold"
-        android:shadowColor="#000000"
-        android:shadowDx="1.5"
-        android:shadowDy="1.3"
-        android:shadowRadius="1.6"
-        android:layout_below="@+id/summonerName"
-        android:layout_marginTop="39dp"
-        android:layout_alignParentStart="true"
-        android:layout_toStartOf="@+id/tier"
-        android:layout_alignEnd="@+id/championName" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="30dp">
 
+                <ImageButton
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:id="@+id/summoner_spell1"
+                    android:layout_marginEnd="32dp"
+                    android:visibility="invisible"
+                    android:layout_alignTop="@+id/summoner_spell2"
+                    android:layout_toStartOf="@+id/summoner_spell2" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="4dip"
-        android:layout_marginLeft="4sp"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:id="@+id/runes"
-        android:textColor="#FAFAFA"
-        android:textStyle="bold"
-        android:shadowColor="#000000"
-        android:shadowDx="1.5"
-        android:shadowDy="1.3"
-        android:shadowRadius="1.6"
-        android:layout_below="@+id/masteries"
-        android:layout_alignParentStart="true"
-        android:layout_toStartOf="@+id/background"
-        android:layout_alignEnd="@+id/masteries" />
+                <ImageButton
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:id="@+id/summoner_spell2"
+                    android:shadowColor="#FFFFFF"
+                    android:shadowDx="1.5"
+                    android:shadowDy="1.3"
+                    android:shadowRadius="1.6"
+                    android:visibility="invisible"
+                    android:layout_marginTop="32dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true" />
 
-    <ImageButton
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:id="@+id/summonerSpell1"
-        android:layout_alignTop="@+id/summonerSpell2"
-        android:layout_toStartOf="@+id/summonerSpell2"
-        android:layout_marginEnd="31dp"
-        android:layout_marginBottom="32dp"
-        android:visibility="invisible" />
+                <ImageButton
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:id="@+id/summoner_ultimate"
+                    android:layout_marginStart="32dp"
+                    android:visibility="invisible"
+                    android:layout_alignTop="@+id/summoner_spell2"
+                    android:layout_toEndOf="@+id/summoner_spell2" />
 
-    <ImageButton
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:id="@+id/summonerSpell2"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="32dp"
-        android:shadowColor="#FFFFFF"
-        android:shadowDx="1.5"
-        android:shadowDy="1.3"
-        android:shadowRadius="1.6"
-        android:visibility="invisible" />
+                <ProgressBar
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:progressDrawable="@drawable/circular_progress_bar"
+                    android:id="@+id/progress_bar_spell1"
+                    android:layout_alignStart="@+id/summoner_spell1"
+                    android:layout_alignEnd="@+id/summoner_spell1"
+                    android:layout_alignTop="@+id/summoner_spell1"
+                    android:layout_alignBottom="@+id/text_spell1"
+                    android:visibility="invisible"/>
 
-    <ImageButton
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:id="@+id/ultimate"
-        android:layout_alignTop="@+id/summonerSpell2"
-        android:layout_toEndOf="@+id/summonerSpell2"
-        android:layout_marginStart="32dp"
-        android:layout_marginBottom="32dp"
-        android:visibility="invisible" />
+                <TextView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:id="@+id/text_spell1"
+                    android:gravity="center"
+                    android:textColor="#ffe066"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:shadowColor="#000000"
+                    android:shadowDx="1.5"
+                    android:shadowDy="1.3"
+                    android:shadowRadius="1.6"
+                    android:textAlignment="center"
+                    android:layout_alignStart="@+id/summoner_spell1"
+                    android:layout_alignEnd="@+id/summoner_spell1"
+                    android:layout_alignTop="@+id/summoner_spell1"
+                    android:layout_alignBottom="@+id/summoner_spell1" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="#FAFAFA"
-        android:textStyle="bold"
-        android:shadowColor="#000000"
-        android:shadowDx="1.5"
-        android:shadowDy="1.3"
-        android:shadowRadius="1.6"
-        android:gravity="center_horizontal"
-        android:id="@+id/tierDivision"
-        android:layout_below="@+id/championName"
-        android:layout_alignParentEnd="true"
-        android:layout_toEndOf="@+id/summonerSpell2" />
+                <ProgressBar
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:progressDrawable="@drawable/circular_progress_bar"
+                    android:id="@+id/progress_bar_spell2"
+                    android:layout_alignStart="@+id/summoner_spell2"
+                    android:layout_alignEnd="@+id/summoner_spell2"
+                    android:layout_alignTop="@+id/summoner_spell2"
+                    android:layout_alignBottom="@+id/text_spell2"
+                    android:visibility="invisible"/>
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/tier"
-        android:layout_alignParentEnd="true"
-        android:layout_toEndOf="@+id/summonerSpell2"
-        android:layout_alignParentTop="true"
-        android:layout_alignBottom="@+id/championName" />
+                <TextView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:id="@+id/text_spell2"
+                    android:gravity="center"
+                    android:textColor="#ffe066"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:shadowColor="#000000"
+                    android:shadowDx="1.5"
+                    android:shadowDy="1.3"
+                    android:shadowRadius="1.6"
+                    android:textAlignment="center"
+                    android:layout_alignStart="@+id/summoner_spell2"
+                    android:layout_alignEnd="@+id/summoner_spell2"
+                    android:layout_alignTop="@+id/summoner_spell2"
+                    android:layout_alignBottom="@+id/summoner_spell2" />
 
-    <ProgressBar
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:progressDrawable="@drawable/circular_progress_bar"
-        android:id="@+id/pBarSpell1"
-        android:layout_alignStart="@+id/summonerSpell1"
-        android:layout_alignEnd="@+id/summonerSpell1"
-        android:layout_alignTop="@+id/summonerSpell1"
-        android:layout_alignBottom="@+id/twSpell1"
-        android:visibility="invisible"/>
+                <ProgressBar
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:id="@+id/progress_bar_ultimate"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:progressDrawable="@drawable/circular_progress_bar"
+                    android:layout_alignStart="@+id/summoner_ultimate"
+                    android:layout_alignEnd="@+id/summoner_ultimate"
+                    android:layout_alignTop="@+id/summoner_ultimate"
+                    android:visibility="invisible"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/twSpell1"
-        android:gravity="center"
-        android:textColor="#ffe066"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:shadowColor="#000000"
-        android:shadowDx="1.5"
-        android:shadowDy="1.3"
-        android:shadowRadius="1.6"
-        android:textAlignment="center"
-        android:layout_alignStart="@+id/summonerSpell1"
-        android:layout_alignEnd="@+id/summonerSpell1"
-        android:layout_alignTop="@+id/summonerSpell1"
-        android:layout_alignBottom="@+id/summonerSpell1" />
+                <TextView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:id="@+id/text_ultimate"
+                    android:gravity="center"
+                    android:textColor="#ffe066"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:shadowColor="#000000"
+                    android:shadowDx="1.5"
+                    android:shadowDy="1.3"
+                    android:shadowRadius="1.6"
+                    android:textAlignment="center"
+                    android:layout_alignTop="@+id/summoner_ultimate"
+                    android:layout_alignStart="@+id/summoner_ultimate" />
+                </RelativeLayout>
 
-    <ProgressBar
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:progressDrawable="@drawable/circular_progress_bar"
-        android:id="@+id/pBarSpell2"
-        android:layout_alignStart="@+id/summonerSpell2"
-        android:layout_alignEnd="@+id/summonerSpell2"
-        android:layout_alignTop="@+id/summonerSpell2"
-        android:layout_alignBottom="@+id/twSpell2"
-        android:visibility="invisible"/>
+            <View xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="?attr/colorPrimary"
+                android:minHeight="1px" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/twSpell2"
-        android:gravity="center"
-        android:textColor="#ffe066"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:shadowColor="#000000"
-        android:shadowDx="1.5"
-        android:shadowDy="1.3"
-        android:shadowRadius="1.6"
-        android:textAlignment="center"
-        android:layout_alignStart="@+id/summonerSpell2"
-        android:layout_alignEnd="@+id/summonerSpell2"
-        android:layout_alignTop="@+id/summonerSpell2"
-        android:layout_alignBottom="@+id/summonerSpell2" />
-
-    <ProgressBar
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:id="@+id/pBarUltimate"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:progressDrawable="@drawable/circular_progress_bar"
-        android:layout_alignStart="@+id/ultimate"
-        android:layout_alignEnd="@+id/ultimate"
-        android:layout_alignTop="@+id/ultimate"
-        android:layout_alignBottom="@+id/twUltimate"
-        android:visibility="invisible"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/twUltimate"
-        android:gravity="center"
-        android:textColor="#ffe066"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:shadowColor="#000000"
-        android:shadowDx="1.5"
-        android:shadowDy="1.3"
-        android:shadowRadius="1.6"
-        android:layout_marginBottom="28dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignStart="@+id/ultimate"
-        android:layout_alignEnd="@+id/ultimate"
-        android:textAlignment="center"
-        android:layout_alignTop="@+id/ultimate" />
-
-</RelativeLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:paddingBottom="@dimen/activity_vertical_margin"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_vertical_margin"
+                android:text="@string/lipsum" />
+        </LinearLayout>
+    </com.github.ksoichiro.android.observablescrollview.ObservableScrollView>
+</FrameLayout>

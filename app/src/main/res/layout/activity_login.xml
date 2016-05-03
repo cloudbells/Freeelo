@@ -18,28 +18,32 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>-->
 
-    <Button
+    <com.dd.CircularProgressButton
+        android:id="@+id/search_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/search"
-        android:id="@+id/okButton"
-        android:layout_below="@+id/summonerName"
+        android:layout_below="@+id/summoner_name"
         android:layout_centerHorizontal="true"
-        android:layout_margin="10dp"/>
+        android:layout_margin="10dp"
+        app:cpb_textIdle="@string/search"
+        app:cpb_iconError="@drawable/ic_error"
+        app:cpb_iconComplete="@drawable/ic_done"
+        app:cpb_colorIndicator="@color/colorAccent"
+        app:cpb_selectorIdle="@drawable/idle_state_selector"/>
 
     <Spinner
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/region"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:layout_toStartOf="@+id/okButton"
-        android:layout_alignTop="@+id/okButton"
-        android:layout_alignBottom="@+id/okButton" />
+        android:layout_toStartOf="@+id/search_button"
+        android:layout_alignTop="@+id/search_button"
+        android:layout_alignBottom="@+id/search_button" />
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/summonerName"
+        android:id="@+id/summoner_name"
         android:hint="@string/summoner_name"
         android:textAlignment="center"
         android:textSize="24sp"
@@ -56,7 +60,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/logo"
         android:background="@drawable/ic_logo"
-        android:layout_above="@+id/summonerName"
+        android:layout_above="@+id/summoner_name"
         android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
