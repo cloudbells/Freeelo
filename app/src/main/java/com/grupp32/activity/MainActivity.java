@@ -167,14 +167,14 @@ public class MainActivity extends BaseActivity {
 
 	private void translateTab(int scrollY, boolean animated) {
 		int flexibleSpaceImageHeight = getResources().getDimensionPixelSize(R.dimen.flexible_space_image_height);
-		int tabHeight = getResources().getDimensionPixelSize(R.dimen.tab_height);
+		int flexTabHeight = getResources().getDimensionPixelSize(R.dimen.tab_height);
 		View imageView = flexibleImage;
 		View overlayView = findViewById(R.id.overlay);
 		TextView titleView = flexibleTitle;
 
 		// Translate overlay and image
 		float flexibleRange = flexibleSpaceImageHeight - getActionBarSize();
-		int minOverlayTransitionY = tabHeight - overlayView.getHeight();
+		int minOverlayTransitionY = flexTabHeight - overlayView.getHeight();
 		ViewHelper.setTranslationY(overlayView, ScrollUtils.getFloat(-scrollY, minOverlayTransitionY, 0));
 		ViewHelper.setTranslationY(imageView, ScrollUtils.getFloat(-scrollY / 2, minOverlayTransitionY, 0));
 
@@ -182,14 +182,14 @@ public class MainActivity extends BaseActivity {
 		ViewHelper.setAlpha(overlayView, ScrollUtils.getFloat((float) scrollY / flexibleRange, 0, 1));
 
 		// Scale title text
-		float scale = 1 + ScrollUtils.getFloat((flexibleRange - scrollY - tabHeight) / flexibleRange, 0, 0.3f);
+		float scale = 1 + ScrollUtils.getFloat((flexibleRange - scrollY - flexTabHeight) / flexibleRange, 0, 0.3f);
 		ViewHelper.setPivotX(titleView, 0);
 		ViewHelper.setPivotY(titleView, 0);
 		ViewHelper.setScaleX(titleView, scale);
 		ViewHelper.setScaleY(titleView, scale);
 
 		// Translate title text
-		int maxTitleTranslationY = flexibleSpaceImageHeight - tabHeight - getActionBarSize();
+		int maxTitleTranslationY = flexibleSpaceImageHeight - flexTabHeight - getActionBarSize();
 		int titleTranslationY = maxTitleTranslationY - scrollY;
 		ViewHelper.setTranslationY(titleView, titleTranslationY);
 

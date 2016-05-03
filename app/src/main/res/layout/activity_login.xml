@@ -29,7 +29,7 @@
         app:cpb_iconError="@drawable/ic_error"
         app:cpb_iconComplete="@drawable/ic_done"
         app:cpb_colorIndicator="@color/colorAccent"
-        app:cpb_selectorIdle="@drawable/idle_state_selector"/>
+        app:cpb_selectorIdle="@drawable/idle_state_selector" />
 
     <Spinner
         android:layout_width="wrap_content"
@@ -38,7 +38,8 @@
         android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:layout_toStartOf="@+id/search_button"
         android:layout_alignTop="@+id/search_button"
-        android:layout_alignBottom="@+id/search_button" />
+        android:layout_alignBottom="@+id/search_button"
+        android:focusable="false" />
 
     <EditText
         android:layout_width="wrap_content"

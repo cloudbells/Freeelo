@@ -30,7 +30,7 @@ import decoder.ImageStreamDecoder;
 /**
  * @author Alexander Johansson, Christoffer Nilsson
  */
-public class TabFragment extends FlexibleSpaceWithImageBaseFragment<ObservableScrollView> implements View.OnClickListener {
+public class TabFragment extends FlexibleSpaceWithImageBaseFragment<ObservableScrollView> implements View.OnClickListener, View.OnLongClickListener {
 	private ImageButton btnSpell1;
 	private ImageButton btnSpell2;
 	private ImageButton btnUltimate;
@@ -41,6 +41,8 @@ public class TabFragment extends FlexibleSpaceWithImageBaseFragment<ObservableSc
 	private TextView twSpell1;
 	private TextView twSpell2;
 	private TextView twUltimate;
+
+	private CountDownTimer[] timers = new CountDownTimer[3];
 
 	private Summoner tabSummoner;
 
@@ -74,6 +76,9 @@ public class TabFragment extends FlexibleSpaceWithImageBaseFragment<ObservableSc
 		btnSpell1.setOnClickListener(this);
 		btnSpell2.setOnClickListener(this);
 		btnUltimate.setOnClickListener(this);
+		btnSpell1.setOnLongClickListener(this);
+		btnSpell2.setOnLongClickListener(this);
+		btnUltimate.setOnLongClickListener(this);
 
 		pBarSpell1 = (ProgressBar) view.findViewById(R.id.progress_bar_spell1);
 		pBarSpell2 = (ProgressBar) view.findViewById(R.id.progress_bar_spell2);
@@ -143,29 +148,55 @@ public class TabFragment extends FlexibleSpaceWithImageBaseFragment<ObservableSc
 		switch(v.getId()) {
 			case R.id.summoner_spell1:
 				if(btnSpell1.getColorFilter() == null) {
-					startTimer(tabSummoner.getSpell1().getCooldown(), btnSpell1, pBarSpell1, twSpell1);
+					timers[0] = startTimer(tabSummoner.getSpell1().getCooldown(), btnSpell1, pBarSpell1, twSpell1);
 				}
 				break;
 			case R.id.summoner_spell2:
 				if(btnSpell2.getColorFilter() == null) {
-					startTimer(tabSummoner.getSpell2().getCooldown(), btnSpell2, pBarSpell2, twSpell2);
+					timers[1] = startTimer(tabSummoner.getSpell2().getCooldown(), btnSpell2, pBarSpell2, twSpell2);
 				}
 				break;
 			case R.id.summoner_ultimate:
 				if(btnUltimate.getColorFilter() == null) {
 					int ultMaxRank = tabSummoner.getChampion().getUltimateMaxRank();
 					double[] cooldowns = tabSummoner.getChampion().getUltimateCooldowns();
-					startTimer((int) cooldowns[cooldowns.length - 1], btnUltimate, pBarUltimate, twUltimate);
+					timers[2] = startTimer((int) cooldowns[cooldowns.length - 1], btnUltimate, pBarUltimate, twUltimate);
 				}
 				break;
 		}
 	}
 
-	private void startTimer(final int seconds, final ImageView ivResource, final ProgressBar pResource, final TextView twResource) {
+	@Override
+	public boolean onLongClick(View v) {
+		switch(v.getId()) {
+			case R.id.summoner_spell1:
+				resetTimer(0, btnSpell1, pBarSpell1, twSpell1);
+				break;
+			case R.id.summoner_spell2:
+				resetTimer(1, btnSpell2, pBarSpell2, twSpell2);
+				break;
+			case R.id.summoner_ultimate:
+				resetTimer(2, btnUltimate, pBarUltimate, twUltimate);
+				break;
+		}
+
+		return true;
+	}
+
+	private void resetTimer(final int timerIndex, final ImageView ivResource, final ProgressBar pResource, final TextView twResource) {
+		if(timers[timerIndex] != null) {
+			timers[timerIndex].cancel();
+		}
+		resetColorFilter(ivResource);
+		pResource.setVisibility(View.INVISIBLE);
+		twResource.setText("");
+	}
+
+	private CountDownTimer startTimer(final int seconds, final ImageView ivResource, final ProgressBar pResource, final TextView twResource) {
 		resourceToGrayscale(ivResource);
 		pResource.setVisibility(View.VISIBLE);
 		pResource.setMax(seconds);
-		new CountDownTimer(seconds * 1000, 500) {
+		CountDownTimer timer = new CountDownTimer(seconds * 1000, 500) {
 			@Override
 			public void onTick(long leftTimeInMilliseconds) {
 				long curSecond = leftTimeInMilliseconds / 1000;
@@ -185,6 +216,8 @@ public class TabFragment extends FlexibleSpaceWithImageBaseFragment<ObservableSc
 				twResource.setText("");
 			}
 		}.start();
+
+		return timer;
 	}
 
 	private class ImageSwitcher extends AsyncTask<URL, Bitmap[], Bitmap[]> {

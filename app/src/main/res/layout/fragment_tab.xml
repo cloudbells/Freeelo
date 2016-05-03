@@ -24,8 +24,8 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="30dp">
+                android:orientation="vertical"
+                android:background="@android:color/white">
 
                 <ImageButton
                     android:layout_width="80dp"
@@ -34,7 +34,8 @@
                     android:layout_marginEnd="32dp"
                     android:visibility="invisible"
                     android:layout_alignTop="@+id/summoner_spell2"
-                    android:layout_toStartOf="@+id/summoner_spell2" />
+                    android:layout_toStartOf="@+id/summoner_spell2"
+                    android:layout_marginBottom="30dp"/>
 
                 <ImageButton
                     android:layout_width="80dp"
@@ -45,7 +46,7 @@
                     android:shadowDy="1.3"
                     android:shadowRadius="1.6"
                     android:visibility="invisible"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginTop="30dp"
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true" />
 
@@ -144,7 +145,7 @@
                     android:textAlignment="center"
                     android:layout_alignTop="@+id/summoner_ultimate"
                     android:layout_alignStart="@+id/summoner_ultimate" />
-                </RelativeLayout>
+            </RelativeLayout>
 
             <View xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
