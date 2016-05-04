@@ -7,6 +7,7 @@ import java.io.Serializable;
  */
 public class Summoner implements Serializable {
 
+	private int summonerId;
 	private int wins;
 	private int losses;
 	private int leaguePoints;
@@ -18,6 +19,11 @@ public class Summoner implements Serializable {
 	private Spell spell2;
 	private Champion champion;
 	private RuneCollection runes;
+
+	public Summoner setSummonerId(int summonerId) {
+		this.summonerId = summonerId;
+		return this;
+	}
 
 	public Summoner setName(String name) {
 		this.name = name;
@@ -72,6 +78,10 @@ public class Summoner implements Serializable {
 	public Summoner setWins(int wins) {
 		this.wins = wins;
 		return this;
+	}
+
+	public int getSummonerId() {
+		return summonerId;
 	}
 
 	public String getName() {

@@ -26,7 +26,7 @@ import com.github.ksoichiro.android.observablescrollview.Scrollable;
 
 import collection.Summoner;
 
-public abstract class FlexibleSpaceWithImageBaseFragment<S extends Scrollable> extends BaseFragment
+public abstract class FlexibleSpaceWithImageBaseFragment<S extends Scrollable> extends Fragment
         implements ObservableScrollViewCallbacks {
 
     public static final String ARG_SCROLL_Y = "ARG_SCROLL_Y";

@@ -1,5 +1,6 @@
 package com.grupp32.activity;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.ColorMatrix;
@@ -7,6 +8,7 @@ import android.graphics.ColorMatrixColorFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +43,9 @@ public class TabFragment extends FlexibleSpaceWithImageBaseFragment<ObservableSc
 	private TextView twSpell1;
 	private TextView twSpell2;
 	private TextView twUltimate;
+
+	private int twColor;
+	private int twCritialColor;
 
 	private CountDownTimer[] timers = new CountDownTimer[3];
 
@@ -88,17 +93,71 @@ public class TabFragment extends FlexibleSpaceWithImageBaseFragment<ObservableSc
 		twSpell2 = (TextView) view.findViewById(R.id.text_spell2);
 		twUltimate = (TextView) view.findViewById(R.id.text_ultimate);
 
+		twColor = Color.parseColor("#" + Integer.toHexString(ContextCompat.getColor(getActivity(), R.color.colorProgressNumber)));
+		twCritialColor = Color.parseColor("#" + Integer.toHexString(ContextCompat.getColor(getActivity(), R.color.colorProgressNumberCritical)));
+
+		//final TextView twRunes = (TextView) view.findViewById(R.id.runes);
+		//final TextView twMasteries = (TextView) view.findViewById(R.id.masteries);
+		final TextView twTier = (TextView) view.findViewById(R.id.tier);
+
+		final ImageView ivTier = (ImageView) view.findViewById(R.id.imgTier);
+
+		final TextView twLpWinLoss = (TextView) view.findViewById(R.id.lp_win_loss);
+		final TextView twWinRatio = (TextView) view.findViewById(R.id.win_ratio);
+		final TextView twChampWinRatio = (TextView) view.findViewById(R.id.champ_win_ratio);
+
 		if (args != null && args.containsKey("summoner")) {
 			Summoner summoner = (Summoner) args.getSerializable("summoner");
 			tabSummoner = summoner;
-			try {
-				new ImageSwitcher().execute(
-						new URL("http://ddragon.leagueoflegends.com/cdn/6.8.1/img/spell/" + summoner.getSpell1().getImage()),
-						new URL("http://ddragon.leagueoflegends.com/cdn/6.8.1/img/spell/" + summoner.getSpell2().getImage()),
-						new URL("http://ddragon.leagueoflegends.com/cdn/6.8.1/img/spell/" + summoner.getChampion().getUltimateImage())
-						);
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
+			if(summoner != null) {
+				//twRunes.append("\n" + summoner.getRunes().toString());
+				//twMasteries.append("\n" + summoner.getMasteries());
+
+				int wins = summoner.getWins();
+				int losses = summoner.getLosses();
+				int champWins = summoner.getChampion().getWins();
+				int champLosses = summoner.getChampion().getLosses();
+				if((wins + losses) != 0) {
+					twLpWinLoss.setText(String.format(twLpWinLoss.getText().toString(), summoner.getLeaguePoints(), wins, losses));
+					double percentage = (double) wins / ((double) wins + (double) losses);
+					twWinRatio.setText(String.format(twWinRatio.getText().toString(), percentage * 100, "%"));
+				} else {
+					twLpWinLoss.setText(String.format(twLpWinLoss.getText().toString(), summoner.getLeaguePoints(), wins, losses));
+					twWinRatio.setText(String.format(twWinRatio.getText().toString(), 0.0, "%"));
+				}
+
+				if((champWins + champLosses) != 0) {
+					double percentage = (double) champWins / ((double) champWins + (double) champLosses);
+					twChampWinRatio.setText(String.format(twChampWinRatio.getText().toString(), percentage * 100, "%"));
+				} else {
+					twChampWinRatio.setText("");
+				}
+
+				Context context = getActivity();
+				int imageResource;
+				String tierText = summoner.getTier().toLowerCase();
+				String divisionText = summoner.getDivision().toLowerCase();
+				if (tierText.equals("challenger") || tierText.equals("master") || tierText.equals("provisional")) {
+					imageResource = context.getResources().getIdentifier("@drawable/" + tierText, null, context.getPackageName());
+					twTier.setText(summoner.getTier());
+				} else {
+					imageResource = context.getResources().getIdentifier("@drawable/" + tierText + "_" + divisionText, null, context.getPackageName());
+					String tempText = summoner.getTier() + " " + summoner.getDivision();
+					twTier.setText(tempText);
+				}
+
+				ImageStreamDecoder decoder = new ImageStreamDecoder();
+				ivTier.setImageBitmap(decoder.decodeSampledBitmapFromResource(context.getResources(), imageResource, 200, 200));
+
+				try {
+					new ImageSwitcher().execute(
+							new URL("http://ddragon.leagueoflegends.com/cdn/6.8.1/img/spell/" + summoner.getSpell1().getImage()),
+							new URL("http://ddragon.leagueoflegends.com/cdn/6.8.1/img/spell/" + summoner.getSpell2().getImage()),
+							new URL("http://ddragon.leagueoflegends.com/cdn/6.8.1/img/spell/" + summoner.getChampion().getUltimateImage())
+					);
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 
@@ -158,7 +217,6 @@ public class TabFragment extends FlexibleSpaceWithImageBaseFragment<ObservableSc
 				break;
 			case R.id.summoner_ultimate:
 				if(btnUltimate.getColorFilter() == null) {
-					int ultMaxRank = tabSummoner.getChampion().getUltimateMaxRank();
 					double[] cooldowns = tabSummoner.getChampion().getUltimateCooldowns();
 					timers[2] = startTimer((int) cooldowns[cooldowns.length - 1], btnUltimate, pBarUltimate, twUltimate);
 				}
@@ -202,9 +260,9 @@ public class TabFragment extends FlexibleSpaceWithImageBaseFragment<ObservableSc
 				long curSecond = leftTimeInMilliseconds / 1000;
 				pResource.setProgress(seconds - (int) curSecond);
 				if((int) curSecond <= 10) {
-					twResource.setTextColor(Color.parseColor("#B20000"));
+					twResource.setTextColor(twCritialColor);
 				} else {
-					twResource.setTextColor(Color.parseColor("#ffe066"));
+					twResource.setTextColor(twColor);
 				}
 				twResource.setText(Long.toString(curSecond));
 			}

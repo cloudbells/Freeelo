@@ -76,7 +76,7 @@
                     android:layout_height="80dp"
                     android:id="@+id/text_spell1"
                     android:gravity="center"
-                    android:textColor="#ffe066"
+                    android:textColor="@color/colorProgressNumber"
                     android:textSize="24sp"
                     android:textStyle="bold"
                     android:shadowColor="#000000"
@@ -106,7 +106,7 @@
                     android:layout_height="80dp"
                     android:id="@+id/text_spell2"
                     android:gravity="center"
-                    android:textColor="#ffe066"
+                    android:textColor="@color/colorProgressNumber"
                     android:textSize="24sp"
                     android:textStyle="bold"
                     android:shadowColor="#000000"
@@ -135,7 +135,7 @@
                     android:layout_height="80dp"
                     android:id="@+id/text_ultimate"
                     android:gravity="center"
-                    android:textColor="#ffe066"
+                    android:textColor="@color/colorProgressNumber"
                     android:textSize="24sp"
                     android:textStyle="bold"
                     android:shadowColor="#000000"
@@ -145,6 +145,82 @@
                     android:textAlignment="center"
                     android:layout_alignTop="@+id/summoner_ultimate"
                     android:layout_alignStart="@+id/summoner_ultimate" />
+            </RelativeLayout>
+
+            <View xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="?attr/colorPrimary"
+                android:minHeight="1px" />
+
+            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/white">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/imgTier"
+                    android:src="@drawable/challenger"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentStart="true"
+                    android:paddingBottom="@dimen/activity_vertical_margin"
+                    android:paddingLeft="@dimen/activity_horizontal_margin"
+                    android:paddingRight="@dimen/activity_horizontal_margin"
+                    android:paddingTop="@dimen/activity_vertical_margin"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tier"
+                    android:id="@+id/tier"
+                    android:layout_marginTop="26dp"
+                    android:paddingBottom="@dimen/activity_vertical_margin"
+                    android:paddingLeft="@dimen/activity_horizontal_margin"
+                    android:paddingRight="@dimen/activity_horizontal_margin"
+                    android:paddingTop="@dimen/activity_vertical_margin"
+                    android:layout_alignParentTop="true"
+                    android:layout_toEndOf="@+id/imgTier"
+                    android:textColor="@color/colorAccent" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/lp_win_loss"
+                    android:id="@+id/lp_win_loss"
+                    android:layout_below="@+id/tier"
+                    android:layout_alignStart="@+id/tier"
+                    android:paddingBottom="@dimen/activity_vertical_margin"
+                    android:paddingLeft="@dimen/activity_horizontal_margin"
+                    android:paddingRight="@dimen/activity_horizontal_margin"
+                    android:paddingTop="@dimen/activity_vertical_margin"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/win_ratio"
+                    android:id="@+id/win_ratio"
+                    android:layout_below="@+id/lp_win_loss"
+                    android:layout_alignStart="@+id/lp_win_loss"
+                    android:layout_alignEnd="@+id/lp_win_loss"
+                    android:paddingBottom="@dimen/activity_vertical_margin"
+                    android:paddingLeft="@dimen/activity_horizontal_margin"
+                    android:paddingRight="@dimen/activity_horizontal_margin"
+                    android:paddingTop="@dimen/activity_vertical_margin"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/champion_win_ratio"
+                    android:id="@+id/champ_win_ratio"
+                    android:layout_below="@+id/win_ratio"
+                    android:layout_alignStart="@+id/win_ratio"
+                    android:paddingBottom="@dimen/activity_vertical_margin"
+                    android:paddingLeft="@dimen/activity_horizontal_margin"
+                    android:paddingRight="@dimen/activity_horizontal_margin"
+                    android:paddingTop="@dimen/activity_vertical_margin"/>
             </RelativeLayout>
 
             <View xmlns:android="http://schemas.android.com/apk/res/android"

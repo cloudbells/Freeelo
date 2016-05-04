@@ -1,12 +1,16 @@
 package com.grupp32.activity;
 
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -30,7 +34,7 @@ import widget.SlidingTabLayout;
 /**
  * @author Alexander Johansson
  */
-public class MainActivity extends BaseActivity {
+public class MainActivity extends AppCompatActivity {
 	private SlidingTabLayout tabLayout;
 	private ViewPager viewPager;
 	private NavigationAdapter pagerAdapter;
@@ -209,6 +213,16 @@ public class MainActivity extends BaseActivity {
 		}
 	}
 
+	protected int getActionBarSize() {
+		TypedValue typedValue = new TypedValue();
+		int[] textSizeAttr = new int[]{R.attr.actionBarSize};
+		int indexOfAttrTextSize = 0;
+		TypedArray a = obtainStyledAttributes(typedValue.data, textSizeAttr);
+		int actionBarSize = a.getDimensionPixelSize(indexOfAttrTextSize, -1);
+		a.recycle();
+		return actionBarSize;
+	}
+
 	private static class NavigationAdapter extends CacheFragmentStatePagerAdapter {
 		private ArrayList<Summoner> summoners = new ArrayList<Summoner>();
 
@@ -230,6 +244,7 @@ public class MainActivity extends BaseActivity {
 		protected Fragment createItem(int position) {
 			FlexibleSpaceWithImageBaseFragment fragment;
 			fragment = new TabFragment();
+			Log.e("createItem", summoners.get(position).toString());
 			fragment.setArguments(scrollY, summoners.get(position));
 			return fragment;
 		}

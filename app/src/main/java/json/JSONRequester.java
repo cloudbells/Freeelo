@@ -57,14 +57,14 @@ public class JSONRequester {
 		return (JSONObject) parser.parse(root, summonerName.replace(" ", "").toLowerCase()); // In the JSON object, the name is lower case and without spaces.
 	}
 
-	public JSONObject requestRankedData(int summonerId, String region) throws IOException {
+	public JSONObject requestRankedData(String summonerIds, String region) throws IOException {
 		JSONObject rankedData;
 		try {
-			rankedData = buildRootObject(new URL(String.format(RANKED_DATA_URL, region, region.toLowerCase(), summonerId) + API_KEY)).
-					getJSONArray(Integer.toString(summonerId)).getJSONObject(0);
+			rankedData = buildRootObject(new URL(String.format(RANKED_DATA_URL, region, region.toLowerCase(), summonerIds) + API_KEY));
 		} catch (JSONException e) {
 			return new JSONObject();
 		}
+
 		return rankedData;
 	}
 
