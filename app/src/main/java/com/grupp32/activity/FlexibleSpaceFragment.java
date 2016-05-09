@@ -26,7 +26,7 @@ import com.github.ksoichiro.android.observablescrollview.Scrollable;
 
 import collection.Summoner;
 
-public abstract class FlexibleSpaceWithImageBaseFragment<S extends Scrollable> extends Fragment
+public abstract class FlexibleSpaceFragment<S extends Scrollable> extends Fragment
         implements ObservableScrollViewCallbacks {
 
     public static final String ARG_SCROLL_Y = "ARG_SCROLL_Y";
@@ -68,12 +68,10 @@ public abstract class FlexibleSpaceWithImageBaseFragment<S extends Scrollable> e
 
     @Override
     public final void onDownMotionEvent() {
-        // We don't use this callback in this pattern.
     }
 
     @Override
     public final void onUpOrCancelMotionEvent(ScrollState scrollState) {
-        // We don't use this callback in this pattern.
     }
 
     protected S getScrollable() {

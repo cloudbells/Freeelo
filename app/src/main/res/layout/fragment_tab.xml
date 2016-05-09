@@ -175,7 +175,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/tier"
-                    android:id="@+id/tier"
+                    android:id="@+id/tier_text"
                     android:layout_marginTop="26dp"
                     android:paddingBottom="@dimen/activity_vertical_margin"
                     android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -190,8 +190,8 @@
                     android:layout_height="wrap_content"
                     android:text="@string/lp_win_loss"
                     android:id="@+id/lp_win_loss"
-                    android:layout_below="@+id/tier"
-                    android:layout_alignStart="@+id/tier"
+                    android:layout_below="@+id/tier_text"
+                    android:layout_alignStart="@+id/tier_text"
                     android:paddingBottom="@dimen/activity_vertical_margin"
                     android:paddingLeft="@dimen/activity_horizontal_margin"
                     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -229,15 +229,80 @@
                 android:background="?attr/colorPrimary"
                 android:minHeight="1px" />
 
-            <TextView
+            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/white"
-                android:paddingBottom="@dimen/activity_vertical_margin"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin"
-                android:paddingTop="@dimen/activity_vertical_margin"
-                android:text="@string/lipsum" />
+                android:layout_height="match_parent"
+                android:background="@android:color/white">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/runes"
+                    android:id="@+id/runes_text"
+                    android:paddingBottom="@dimen/activity_vertical_margin"
+                    android:paddingLeft="@dimen/activity_horizontal_margin"
+                    android:paddingRight="@dimen/activity_horizontal_margin"
+                    android:paddingTop="@dimen/activity_vertical_margin"
+                    android:textColor="@color/colorAccent"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_toStartOf="@+id/masteries_text"
+                    android:gravity="center_horizontal" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/masteries"
+                    android:id="@+id/masteries_text"
+                    android:paddingBottom="@dimen/activity_vertical_margin"
+                    android:paddingLeft="@dimen/activity_horizontal_margin"
+                    android:paddingRight="@dimen/activity_horizontal_margin"
+                    android:paddingTop="@dimen/activity_vertical_margin"
+                    android:textColor="@color/colorAccent"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignEnd="@+id/masteries"
+                    android:layout_toEndOf="@+id/view"
+                    android:gravity="center_horizontal" />
+
+                <View xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="1px"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/colorPrimary"
+                    android:minWidth="1px"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_alignBottom="@+id/runes"
+                    android:id="@+id/view" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tier"
+                    android:id="@+id/runes"
+                    android:paddingBottom="@dimen/activity_vertical_margin"
+                    android:paddingLeft="@dimen/activity_horizontal_margin"
+                    android:paddingRight="@dimen/activity_horizontal_margin"
+                    android:paddingTop="@dimen/activity_vertical_margin"
+                    android:layout_below="@+id/runes_text"
+                    android:layout_alignParentStart="true"
+                    android:layout_toStartOf="@+id/view"
+                    android:gravity="center_horizontal" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tier"
+                    android:id="@+id/masteries"
+                    android:paddingBottom="@dimen/activity_vertical_margin"
+                    android:paddingLeft="@dimen/activity_horizontal_margin"
+                    android:paddingRight="@dimen/activity_horizontal_margin"
+                    android:paddingTop="@dimen/activity_vertical_margin"
+                    android:layout_below="@+id/masteries_text"
+                    android:layout_alignParentEnd="true"
+                    android:layout_toEndOf="@+id/view"
+                    android:gravity="center_horizontal" />
+            </RelativeLayout>
         </LinearLayout>
     </com.github.ksoichiro.android.observablescrollview.ObservableScrollView>
 </FrameLayout>

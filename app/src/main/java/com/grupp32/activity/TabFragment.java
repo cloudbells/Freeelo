@@ -32,7 +32,7 @@ import decoder.ImageStreamDecoder;
 /**
  * @author Alexander Johansson, Christoffer Nilsson
  */
-public class TabFragment extends FlexibleSpaceWithImageBaseFragment<ObservableScrollView> implements View.OnClickListener, View.OnLongClickListener {
+public class TabFragment extends FlexibleSpaceFragment<ObservableScrollView> implements View.OnClickListener, View.OnLongClickListener {
 	private ImageButton btnSpell1;
 	private ImageButton btnSpell2;
 	private ImageButton btnUltimate;
@@ -96,9 +96,9 @@ public class TabFragment extends FlexibleSpaceWithImageBaseFragment<ObservableSc
 		twColor = Color.parseColor("#" + Integer.toHexString(ContextCompat.getColor(getActivity(), R.color.colorProgressNumber)));
 		twCritialColor = Color.parseColor("#" + Integer.toHexString(ContextCompat.getColor(getActivity(), R.color.colorProgressNumberCritical)));
 
-		//final TextView twRunes = (TextView) view.findViewById(R.id.runes);
-		//final TextView twMasteries = (TextView) view.findViewById(R.id.masteries);
-		final TextView twTier = (TextView) view.findViewById(R.id.tier);
+		final TextView twRunes = (TextView) view.findViewById(R.id.runes);
+		final TextView twMasteries = (TextView) view.findViewById(R.id.masteries);
+		final TextView twTier = (TextView) view.findViewById(R.id.tier_text);
 
 		final ImageView ivTier = (ImageView) view.findViewById(R.id.imgTier);
 
@@ -110,8 +110,8 @@ public class TabFragment extends FlexibleSpaceWithImageBaseFragment<ObservableSc
 			Summoner summoner = (Summoner) args.getSerializable("summoner");
 			tabSummoner = summoner;
 			if(summoner != null) {
-				//twRunes.append("\n" + summoner.getRunes().toString());
-				//twMasteries.append("\n" + summoner.getMasteries());
+				twRunes.setText(summoner.getRunes().toString());
+				twMasteries.setText(summoner.getMasteries());
 
 				int wins = summoner.getWins();
 				int losses = summoner.getLosses();

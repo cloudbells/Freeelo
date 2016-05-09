@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
@@ -121,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
 	 * @param s       caller Scrollable view
 	 */
 	public void onScrollChanged(int scrollY, Scrollable s) {
-		FlexibleSpaceWithImageBaseFragment fragment = (FlexibleSpaceWithImageBaseFragment) pagerAdapter.getItemAt(viewPager.getCurrentItem());
+		FlexibleSpaceFragment fragment = (FlexibleSpaceFragment) pagerAdapter.getItemAt(viewPager.getCurrentItem());
 		if (fragment == null) {
 			return;
 		}
@@ -155,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
 			}
 
 			// Skip destroyed or not created item
-			FlexibleSpaceWithImageBaseFragment f = (FlexibleSpaceWithImageBaseFragment) pagerAdapter.getItemAt(i);
+			FlexibleSpaceFragment f = (FlexibleSpaceFragment) pagerAdapter.getItemAt(i);
 			if (f == null) {
 				continue;
 			}
@@ -242,9 +241,8 @@ public class MainActivity extends AppCompatActivity {
 
 		@Override
 		protected Fragment createItem(int position) {
-			FlexibleSpaceWithImageBaseFragment fragment;
+			FlexibleSpaceFragment fragment;
 			fragment = new TabFragment();
-			Log.e("createItem", summoners.get(position).toString());
 			fragment.setArguments(scrollY, summoners.get(position));
 			return fragment;
 		}
