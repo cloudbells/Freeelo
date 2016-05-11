@@ -2,6 +2,7 @@ package collection;
 
 import android.content.Context;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.json.JSONArray;
@@ -70,9 +71,26 @@ public class CurrentGame {
 	}
 
 	private void initRankedData(String summonerIds, String region) throws IOException, JSONException {
-		JSONObject rankedDataArr = requester.requestRankedData(summonerIds, region);
+		JSONObject rankedDataArr = null;
+		JSONObject rankedData = null;
+		try {
+			rankedDataArr = requester.requestRankedData(summonerIds, region);
+		} catch(FileNotFoundException e) {
+			rankedDataArr = null;
+		}
+
 		for(Summoner summoner : summoners) {
-			JSONObject rankedData = rankedDataArr.getJSONArray(Integer.toString(summoner.getSummonerId())).getJSONObject(0);
+			try {
+				if(rankedDataArr == null) {
+					rankedData = null;
+				} else {
+					rankedData = rankedDataArr.getJSONArray(Integer.toString(summoner.getSummonerId())).getJSONObject(0);
+				}
+			} catch(JSONException e) {
+				setRankedData(null, summoner);
+				continue;
+			}
+
 			setRankedData(rankedData, summoner);
 		}
 	}

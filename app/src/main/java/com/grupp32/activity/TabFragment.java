@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
+import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -46,6 +47,7 @@ public class TabFragment extends FlexibleSpaceFragment<ObservableScrollView> imp
 
 	private int twColor;
 	private int twCritialColor;
+	private MediaPlayer rawCompleteSound;
 
 	private CountDownTimer[] timers = new CountDownTimer[3];
 
@@ -95,6 +97,8 @@ public class TabFragment extends FlexibleSpaceFragment<ObservableScrollView> imp
 
 		twColor = Color.parseColor("#" + Integer.toHexString(ContextCompat.getColor(getActivity(), R.color.colorProgressNumber)));
 		twCritialColor = Color.parseColor("#" + Integer.toHexString(ContextCompat.getColor(getActivity(), R.color.colorProgressNumberCritical)));
+
+		rawCompleteSound = MediaPlayer.create(getActivity(), R.raw.danger);
 
 		final TextView twRunes = (TextView) view.findViewById(R.id.runes);
 		final TextView twMasteries = (TextView) view.findViewById(R.id.masteries);
@@ -269,6 +273,7 @@ public class TabFragment extends FlexibleSpaceFragment<ObservableScrollView> imp
 
 			@Override
 			public void onFinish() {
+				rawCompleteSound.start();
 				resetColorFilter(ivResource);
 				pResource.setVisibility(View.INVISIBLE);
 				twResource.setText("");
