@@ -1,15 +1,13 @@
 package json;
 
 import android.content.Context;
-
-import com.grupp32.activity.R;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Scanner;
 
 import collection.Champion;
@@ -17,6 +15,7 @@ import collection.Rune;
 import collection.RuneCollection;
 import collection.Spell;
 import collection.Ultimate;
+import version.ResourceUtil;
 
 /**
  * @author Christoffer Nilsson.
@@ -27,18 +26,16 @@ public class JSONParser {
 	private JSONObject masteryList;
 	private JSONObject runeList;
 	private JSONObject spellList;
+    private String champVersion;
+    private String masteryVersion;
+    private String runeVersion;
+    private String spellVersion;
+    private Context context;
+    private ResourceUtil resourceUtil;
 
-	public JSONParser(Context context) {
-		try {
-			championList = parseResource(context.getResources().openRawResource(R.raw.champions)).getJSONObject("data");
-			masteryList = parseResource(context.getResources().openRawResource(R.raw.masteries)).getJSONObject("data");
-			runeList = parseResource(context.getResources().openRawResource(R.raw.runes)).getJSONObject("data");
-			spellList = parseResource(context.getResources().openRawResource(R.raw.spells)).getJSONObject("data");
-		} catch (JSONException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	public JSONParser(Context context, ResourceUtil resourceUtil) {
+        this.context = context;
+        this.resourceUtil = resourceUtil;
 	}
 
 	public int parseSpellId(JSONObject participant, int spellNumber) throws JSONException {
@@ -140,13 +137,10 @@ public class JSONParser {
 		return rankedData.getJSONArray("entries").getJSONObject(0);
 	}
 
-	private JSONObject parseResource(InputStream inputStream) throws IOException, JSONException {
-		Scanner scanner = new Scanner(inputStream);
-		String str = "";
-		while (scanner.hasNext()) {
-			str += scanner.nextLine();
-		}
-		scanner.close();
-		return new JSONObject(str);
-	}
+    public void updateResources() throws JSONException {
+        championList = resourceUtil.getChampions().getJSONObject("data");
+        masteryList = resourceUtil.getMasteries().getJSONObject("data");
+        runeList = resourceUtil.getRunes().getJSONObject("data");
+        spellList = resourceUtil.getSpells().getJSONObject("data");
+    }
 }

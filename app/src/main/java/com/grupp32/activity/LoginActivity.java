@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,8 +20,17 @@ import android.widget.Toast;
 
 import com.dd.CircularProgressButton;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.io.IOException;
+
 import collection.CurrentGame;
 import collection.Summoner;
+import json.JSONParser;
+import json.JSONRequester;
+import version.ResourceUtil;
+import version.VersionUtil;
 
 /**
  * @author Alexander Johansson, Sigvard Nilsson
@@ -116,9 +126,17 @@ public class LoginActivity extends AppCompatActivity {
 			summonerName = params[0];
 			String region = params[1];
 
+            Context context = getApplicationContext();
+            ResourceUtil resourceUtil = new ResourceUtil(context);
+            JSONParser parser = new JSONParser(context, resourceUtil);
+            JSONRequester requester = new JSONRequester(context, parser);
+            VersionUtil versionUtil = new VersionUtil(context, parser, requester, resourceUtil, region);
+
+            versionUtil.updateVersion();
+
 			CurrentGame game;
 			try {
-				game = new CurrentGame(getApplicationContext(), summonerName, region);
+				game = new CurrentGame(getApplicationContext(), summonerName, region, parser, requester);
 
 				publishProgress(100);
 

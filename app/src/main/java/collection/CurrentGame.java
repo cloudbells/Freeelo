@@ -1,6 +1,7 @@
 package collection;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -21,9 +22,9 @@ public class CurrentGame {
 	private JSONParser parser;
 	private Summoner[] summoners = new Summoner[5];
 
-	public CurrentGame(Context context, String summonerName, String region) throws IOException, JSONException {
-		parser = new JSONParser(context);
-		requester = new JSONRequester(parser);
+	public CurrentGame(Context context, String summonerName, String region, JSONParser parser, JSONRequester requester) throws IOException, JSONException {
+		this.parser = parser;
+		this.requester = requester;
 		JSONObject summonerObject = requester.requestSummonerObject(summonerName, region);
 		int summonerId = (int) parser.parse(summonerObject, "id");
 		JSONObject currentGame = requester.requestCurrentGameObject(summonerId, region);
