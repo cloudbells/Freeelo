@@ -32,6 +32,9 @@ import json.JSONRequester;
 import version.ResourceUtil;
 import version.VersionUtil;
 
+//TODO : WHERE TO CHECK VERSION? ALSO SEND VERSIONUTILITY TO MAINACTIVITY AS EXTRA IN BUNDLE,
+//TODO : ALSO CHANGE STATIC URLS IN TABFRAGMENT TO DYNAMIC
+
 /**
  * @author Alexander Johansson, Sigvard Nilsson
  */
