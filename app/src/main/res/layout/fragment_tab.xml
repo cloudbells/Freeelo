@@ -172,7 +172,7 @@
                     android:paddingTop="@dimen/activity_vertical_margin"/>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/tier"
                     android:id="@+id/tier_text"
@@ -183,10 +183,11 @@
                     android:paddingTop="@dimen/activity_vertical_margin"
                     android:layout_alignParentTop="true"
                     android:layout_toEndOf="@+id/imgTier"
-                    android:textColor="@color/colorAccent" />
+                    android:textColor="@color/colorAccent"
+                    android:gravity="right"/>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/lp_win_loss"
                     android:id="@+id/lp_win_loss"
@@ -195,10 +196,11 @@
                     android:paddingBottom="@dimen/activity_vertical_margin"
                     android:paddingLeft="@dimen/activity_horizontal_margin"
                     android:paddingRight="@dimen/activity_horizontal_margin"
-                    android:paddingTop="@dimen/activity_vertical_margin"/>
+                    android:paddingTop="@dimen/activity_vertical_margin"
+                    android:gravity="right"/>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/win_ratio"
                     android:id="@+id/win_ratio"
@@ -208,10 +210,11 @@
                     android:paddingBottom="@dimen/activity_vertical_margin"
                     android:paddingLeft="@dimen/activity_horizontal_margin"
                     android:paddingRight="@dimen/activity_horizontal_margin"
-                    android:paddingTop="@dimen/activity_vertical_margin"/>
+                    android:paddingTop="@dimen/activity_vertical_margin"
+                    android:gravity="right"/>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/champion_win_ratio"
                     android:id="@+id/champ_win_ratio"
@@ -220,7 +223,8 @@
                     android:paddingBottom="@dimen/activity_vertical_margin"
                     android:paddingLeft="@dimen/activity_horizontal_margin"
                     android:paddingRight="@dimen/activity_horizontal_margin"
-                    android:paddingTop="@dimen/activity_vertical_margin"/>
+                    android:paddingTop="@dimen/activity_vertical_margin"
+                    android:gravity="right"/>
             </RelativeLayout>
 
             <View xmlns:android="http://schemas.android.com/apk/res/android"
@@ -236,7 +240,7 @@
                 android:background="@android:color/white">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/runes"
                     android:id="@+id/runes_text"
@@ -248,14 +252,13 @@
                     android:layout_alignParentTop="true"
                     android:layout_alignParentStart="true"
                     android:layout_toStartOf="@+id/masteries_text"
-                    android:gravity="center_horizontal" />
+                    android:gravity="right" />
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/masteries"
                     android:id="@+id/masteries_text"
-                    android:paddingBottom="@dimen/activity_vertical_margin"
                     android:paddingLeft="@dimen/activity_horizontal_margin"
                     android:paddingRight="@dimen/activity_horizontal_margin"
                     android:paddingTop="@dimen/activity_vertical_margin"
@@ -263,7 +266,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_alignEnd="@+id/masteries"
                     android:layout_toEndOf="@+id/view"
-                    android:gravity="center_horizontal" />
+                    android:gravity="left" />
 
                 <View xmlns:android="http://schemas.android.com/apk/res/android"
                     android:layout_width="1px"
@@ -276,21 +279,20 @@
                     android:id="@+id/view" />
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/tier"
                     android:id="@+id/runes"
-                    android:paddingBottom="@dimen/activity_vertical_margin"
                     android:paddingLeft="@dimen/activity_horizontal_margin"
                     android:paddingRight="@dimen/activity_horizontal_margin"
                     android:paddingTop="@dimen/activity_vertical_margin"
                     android:layout_below="@+id/runes_text"
                     android:layout_alignParentStart="true"
                     android:layout_toStartOf="@+id/view"
-                    android:gravity="center_horizontal" />
+                    android:gravity="right" />
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/tier"
                     android:id="@+id/masteries"
@@ -301,7 +303,7 @@
                     android:layout_below="@+id/masteries_text"
                     android:layout_alignParentEnd="true"
                     android:layout_toEndOf="@+id/view"
-                    android:gravity="center_horizontal" />
+                    android:gravity="left" />
             </RelativeLayout>
         </LinearLayout>
     </com.github.ksoichiro.android.observablescrollview.ObservableScrollView>
