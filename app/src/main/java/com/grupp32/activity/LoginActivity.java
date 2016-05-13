@@ -42,6 +42,10 @@ public class LoginActivity extends AppCompatActivity {
 	private Spinner spRegion;
 	private CircularProgressButton btnSearch;
 
+	private Summoner[] previouslySearchedSummonerArr;
+	private String previouslySearchedPatchVersion;
+	private String previouslySearchedSummoner;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -52,8 +56,10 @@ public class LoginActivity extends AppCompatActivity {
 		btnSearch.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				btnSearch.setProgress(1);
-				checkCurrentGame();
+				if(!checkPreviouslySearched()) {
+					btnSearch.setProgress(1);
+					checkCurrentGame();
+				}
 			}
 		});
 
@@ -62,8 +68,10 @@ public class LoginActivity extends AppCompatActivity {
 		twSummonerName.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 				if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-					btnSearch.setProgress(1);
-					checkCurrentGame();
+					if(!checkPreviouslySearched()) {
+						btnSearch.setProgress(1);
+						checkCurrentGame();
+					}
 				}
 
 				return false;
@@ -74,6 +82,29 @@ public class LoginActivity extends AppCompatActivity {
 		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.regions, R.layout.textview_spinner);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spRegion.setAdapter(adapter);
+
+		Intent intent = this.getIntent();
+		Bundle bundle = intent.getExtras();
+		if(bundle != null) {
+			previouslySearchedSummonerArr = (Summoner[]) bundle.getSerializable("summoners");
+			previouslySearchedPatchVersion = bundle.getString("version");
+			previouslySearchedSummoner = bundle.getString("searched_summoner");
+			twSummonerName.setText(previouslySearchedSummoner);
+			Log.e("OnCreate bundle", previouslySearchedPatchVersion + " " + previouslySearchedSummoner);
+		}
+	}
+
+	private boolean checkPreviouslySearched() {
+		Log.e("checkPrevioslySearched", previouslySearchedPatchVersion + " " + previouslySearchedSummoner);
+		if(previouslySearchedPatchVersion != null && previouslySearchedSummonerArr != null && previouslySearchedSummoner != null &&
+				previouslySearchedSummoner.equals(twSummonerName.getText().toString().trim())) {
+			startIntentToMain(previouslySearchedSummonerArr, previouslySearchedPatchVersion, previouslySearchedSummoner);
+			Log.e("checkPrevioslySearched", "true");
+			return true;
+		}
+
+		Log.e("checkPrevioslySearched", "false");
+		return false;
 	}
 
 	private void checkCurrentGame() {
@@ -89,11 +120,13 @@ public class LoginActivity extends AppCompatActivity {
 		}
 	}
 
-	private void startIntentToMain(Summoner[] summonerArr, VersionUtil versionUtil) {
+	private void startIntentToMain(Summoner[] summonerArr, String patchVersion, String searchedSummoner) {
+		Log.e("StartIntentToMain", patchVersion + " " + searchedSummoner);
 		Intent intent = new Intent(LoginActivity.this, MainActivity.class);
 		Bundle extras = new Bundle();
 		extras.putSerializable("summoners", summonerArr);
-		extras.putString("version", versionUtil.getVersion());
+		extras.putString("version", patchVersion);
+		extras.putString("searched_summoner", searchedSummoner);
 		intent.putExtras(extras);
 		startActivity(intent);
 	}
@@ -191,7 +224,7 @@ public class LoginActivity extends AppCompatActivity {
 			if (result != null) {
 				Summoner[] summoners = result.getSummoners();
 				btnSearch.setProgress(0);
-				startIntentToMain(summoners, versionUtil);
+				startIntentToMain(summoners, versionUtil.getVersion(), summonerName);
 			} else {
 				btnSearch.setProgress(-1);
 				Toast.makeText(getApplication(), String.format(getString(R.string.not_in_game), summonerName), Toast.LENGTH_LONG).show();

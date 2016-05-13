@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
@@ -255,6 +257,8 @@ public class TabFragment extends FlexibleSpaceFragment<ObservableScrollView> imp
 		resetColorFilter(ivResource);
 		pResource.setVisibility(View.INVISIBLE);
 		twResource.setText("");
+
+		Toast.makeText(getActivity(), getString(R.string.reset_spell), Toast.LENGTH_LONG).show();
 	}
 
 	private CountDownTimer startTimer(final int seconds, final ImageView ivResource, final ProgressBar pResource, final TextView twResource) {

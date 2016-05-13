@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
@@ -39,6 +40,9 @@ public class MainActivity extends AppCompatActivity {
 	private NavigationAdapter pagerAdapter;
 
 	private ArrayList<Summoner> summoners = new ArrayList<Summoner>();
+	private Summoner[] summonerArr;
+	private String patchVersion;
+	private String searchedSummoner;
 	private ImageView flexibleImage;
 	private TextView flexibleTitle;
 
@@ -46,6 +50,19 @@ public class MainActivity extends AppCompatActivity {
 	private int tabHeight;
 
 	private static final String DDRAGON_CHAMP_SPLASH_URL = "http://ddragon.leagueoflegends.com/cdn/img/champion/splash/";
+
+	@Override
+	public void onBackPressed() {
+		Log.e("OnBackPressed", "Heyimhere");
+		Intent backIntent = new Intent(MainActivity.this, LoginActivity.class);
+		Bundle extras = new Bundle();
+		extras.putSerializable("summoners", summonerArr);
+		extras.putString("version", patchVersion);
+		extras.putString("searched_summoner", searchedSummoner);
+		Log.e("OnBackPressed", patchVersion + " " + searchedSummoner);
+		backIntent.putExtras(extras);
+		startActivity(backIntent);
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -57,10 +74,10 @@ public class MainActivity extends AppCompatActivity {
 
 		Intent intent = this.getIntent();
 		Bundle bundle = intent.getExtras();
-		String patchVersion = "";
 		if(bundle != null) {
-			Summoner[] summonerArr = (Summoner[]) bundle.getSerializable("summoners");
+			summonerArr = (Summoner[]) bundle.getSerializable("summoners");
 			patchVersion = bundle.getString("version");
+			searchedSummoner = bundle.getString("searched_summoner");
 			for (Summoner summoner : summonerArr) {
 				summoners.add(summoner);
 			}
@@ -71,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
 		pagerAdapter.setPatchVersion(patchVersion);
 		viewPager = (ViewPager) findViewById(R.id.pager);
 		viewPager.setAdapter(pagerAdapter);
+		viewPager.setOffscreenPageLimit(5);
 		viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 			@Override
 			public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {

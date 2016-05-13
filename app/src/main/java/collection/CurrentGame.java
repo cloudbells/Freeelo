@@ -21,8 +21,10 @@ public class CurrentGame {
 	private JSONRequester requester;
 	private JSONParser parser;
 	private Summoner[] summoners = new Summoner[5];
+	private String searchedSummoner;
 
 	public CurrentGame(String summonerName, String region, JSONParser parser, JSONRequester requester) throws IOException, JSONException {
+		this.searchedSummoner = summonerName;
 		this.parser = parser;
 		this.requester = requester;
 		JSONObject summonerObject = requester.requestSummonerObject(summonerName, region);
@@ -131,5 +133,9 @@ public class CurrentGame {
 
 	public Summoner[] getSummoners() {
 		return summoners;
+	}
+
+	public String getSearchedSummoner() {
+		return searchedSummoner;
 	}
 }

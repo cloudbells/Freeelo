@@ -9,6 +9,8 @@
     <string name="runes">Runes</string>
     <string name="masteries">Masteries</string>
 
+    <string name="reset_spell">Spell was reset through long click, countdown reset.</string>
+
     <string name="ranked_stats">Ranked Stats</string>
     <string name="tier">Provisional</string>
     <string name="lp_win_loss" formatted="false">%d LP / %dW %dL</string>
