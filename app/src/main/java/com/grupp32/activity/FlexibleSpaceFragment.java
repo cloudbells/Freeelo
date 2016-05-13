@@ -31,11 +31,12 @@ public abstract class FlexibleSpaceFragment<S extends Scrollable> extends Fragme
 
     public static final String ARG_SCROLL_Y = "ARG_SCROLL_Y";
 
-    public void setArguments(int scrollY, Summoner summoner) {
+    public void setArguments(int scrollY, Summoner summoner, String patchVersion) {
         if (0 <= scrollY) {
             Bundle args = new Bundle();
             args.putInt(ARG_SCROLL_Y, scrollY);
             args.putSerializable("summoner", summoner);
+            args.putString("version", patchVersion);
             setArguments(args);
         }
     }

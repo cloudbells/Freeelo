@@ -22,7 +22,7 @@ public class CurrentGame {
 	private JSONParser parser;
 	private Summoner[] summoners = new Summoner[5];
 
-	public CurrentGame(Context context, String summonerName, String region, JSONParser parser, JSONRequester requester) throws IOException, JSONException {
+	public CurrentGame(String summonerName, String region, JSONParser parser, JSONRequester requester) throws IOException, JSONException {
 		this.parser = parser;
 		this.requester = requester;
 		JSONObject summonerObject = requester.requestSummonerObject(summonerName, region);

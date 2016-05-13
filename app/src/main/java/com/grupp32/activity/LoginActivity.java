@@ -20,6 +20,8 @@ import android.widget.Toast;
 
 import com.dd.CircularProgressButton;
 
+import junit.runner.Version;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -31,9 +33,6 @@ import json.JSONParser;
 import json.JSONRequester;
 import version.ResourceUtil;
 import version.VersionUtil;
-
-//TODO : WHERE TO CHECK VERSION? ALSO SEND VERSIONUTILITY TO MAINACTIVITY AS EXTRA IN BUNDLE,
-//TODO : ALSO CHANGE STATIC URLS IN TABFRAGMENT TO DYNAMIC
 
 /**
  * @author Alexander Johansson, Sigvard Nilsson
@@ -90,10 +89,11 @@ public class LoginActivity extends AppCompatActivity {
 		}
 	}
 
-	private void startIntentToMain(Summoner[] summonerArr) {
+	private void startIntentToMain(Summoner[] summonerArr, VersionUtil versionUtil) {
 		Intent intent = new Intent(LoginActivity.this, MainActivity.class);
 		Bundle extras = new Bundle();
 		extras.putSerializable("summoners", summonerArr);
+		extras.putString("version", versionUtil.getVersion());
 		intent.putExtras(extras);
 		startActivity(intent);
 	}
@@ -123,6 +123,7 @@ public class LoginActivity extends AppCompatActivity {
 
 	private class GetCurrentGame extends AsyncTask<String, Integer, CurrentGame> {
 		private String summonerName;
+		private VersionUtil versionUtil;
 
 		@Override
 		protected CurrentGame doInBackground(String... params) {
@@ -131,15 +132,28 @@ public class LoginActivity extends AppCompatActivity {
 
             Context context = getApplicationContext();
             ResourceUtil resourceUtil = new ResourceUtil(context);
-            JSONParser parser = new JSONParser(context, resourceUtil);
-            JSONRequester requester = new JSONRequester(context, parser);
-            VersionUtil versionUtil = new VersionUtil(context, parser, requester, resourceUtil, region);
+            JSONParser parser = new JSONParser(resourceUtil);
+            JSONRequester requester = new JSONRequester(parser);
+            versionUtil = new VersionUtil(context, parser, requester, resourceUtil, region);
 
-            versionUtil.updateVersion();
+			if (versionUtil.isFirstTime() || !versionUtil.isLatestVersion()) {
+				publishProgress(2);
+				versionUtil.updateVersion();
+
+				publishProgress(100);
+
+				publishProgress(3);
+			} else {
+				try {
+					parser.updateResources();
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
 
 			CurrentGame game;
 			try {
-				game = new CurrentGame(getApplicationContext(), summonerName, region, parser, requester);
+				game = new CurrentGame(summonerName, region, parser, requester);
 
 				publishProgress(100);
 
@@ -159,6 +173,15 @@ public class LoginActivity extends AppCompatActivity {
 		@Override
 		protected void onProgressUpdate(Integer... values) {
 			super.onProgressUpdate(values);
+			switch(values[0]) {
+				case 2:
+					Toast.makeText(getApplication(), getString(R.string.patch_data_notcurrent), Toast.LENGTH_LONG).show();
+					break;
+				case 3:
+					Toast.makeText(getApplication(), getString(R.string.patch_data_complete_proceeding), Toast.LENGTH_LONG).show();
+					break;
+			}
+
 			btnSearch.setProgress(values[0]);
 		}
 
@@ -168,7 +191,7 @@ public class LoginActivity extends AppCompatActivity {
 			if (result != null) {
 				Summoner[] summoners = result.getSummoners();
 				btnSearch.setProgress(0);
-				startIntentToMain(summoners);
+				startIntentToMain(summoners, versionUtil);
 			} else {
 				btnSearch.setProgress(-1);
 				Toast.makeText(getApplication(), String.format(getString(R.string.not_in_game), summonerName), Toast.LENGTH_LONG).show();

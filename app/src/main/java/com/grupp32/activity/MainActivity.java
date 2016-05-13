@@ -45,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
 	private int flexibleSpaceHeight;
 	private int tabHeight;
 
+	private static final String DDRAGON_CHAMP_SPLASH_URL = "http://ddragon.leagueoflegends.com/cdn/img/champion/splash/";
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -55,8 +57,10 @@ public class MainActivity extends AppCompatActivity {
 
 		Intent intent = this.getIntent();
 		Bundle bundle = intent.getExtras();
+		String patchVersion = "";
 		if(bundle != null) {
 			Summoner[] summonerArr = (Summoner[]) bundle.getSerializable("summoners");
+			patchVersion = bundle.getString("version");
 			for (Summoner summoner : summonerArr) {
 				summoners.add(summoner);
 			}
@@ -64,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
 
 		pagerAdapter = new NavigationAdapter(getSupportFragmentManager());
 		pagerAdapter.setSummoners(summoners);
+		pagerAdapter.setPatchVersion(patchVersion);
 		viewPager = (ViewPager) findViewById(R.id.pager);
 		viewPager.setAdapter(pagerAdapter);
 		viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -75,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
 			public void onPageSelected(int position) {
 				try {
 					new ImageSwitcher().execute(
-                            new URL("http://ddragon.leagueoflegends.com/cdn/img/champion/splash/" + summoners.get(position).getChampion().getKey() + "_0.jpg")
+                            new URL(DDRAGON_CHAMP_SPLASH_URL + summoners.get(position).getChampion().getKey() + "_0.jpg")
                     );
 
 					flexibleTitle.setText(summoners.get(position).getName());
@@ -224,6 +229,7 @@ public class MainActivity extends AppCompatActivity {
 
 	private static class NavigationAdapter extends CacheFragmentStatePagerAdapter {
 		private ArrayList<Summoner> summoners = new ArrayList<Summoner>();
+		private String patchVersion;
 
 		private int scrollY;
 
@@ -235,6 +241,10 @@ public class MainActivity extends AppCompatActivity {
 			this.summoners = summoners;
 		}
 
+		public void setPatchVersion(String patchVersion) {
+			this.patchVersion = patchVersion;
+		}
+
 		public void setScrollY(int scrollY) {
 			this.scrollY = scrollY;
 		}
@@ -243,7 +253,7 @@ public class MainActivity extends AppCompatActivity {
 		protected Fragment createItem(int position) {
 			FlexibleSpaceFragment fragment;
 			fragment = new TabFragment();
-			fragment.setArguments(scrollY, summoners.get(position));
+			fragment.setArguments(scrollY, summoners.get(position), patchVersion);
 			return fragment;
 		}
 

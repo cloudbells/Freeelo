@@ -26,15 +26,9 @@ public class JSONParser {
 	private JSONObject masteryList;
 	private JSONObject runeList;
 	private JSONObject spellList;
-    private String champVersion;
-    private String masteryVersion;
-    private String runeVersion;
-    private String spellVersion;
-    private Context context;
     private ResourceUtil resourceUtil;
 
-	public JSONParser(Context context, ResourceUtil resourceUtil) {
-        this.context = context;
+	public JSONParser(ResourceUtil resourceUtil) {
         this.resourceUtil = resourceUtil;
 	}
 

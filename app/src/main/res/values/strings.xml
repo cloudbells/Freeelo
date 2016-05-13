@@ -15,6 +15,9 @@
     <string name="win_ratio" formatted="false">Win Ratio %.1f%s</string>
     <string name="champion_win_ratio" formatted="false">Champion Win Ratio %.1f%s</string>
 
+    <string name="patch_data_notcurrent">Patch data does not match current patch data. Updating...</string>
+    <string name="patch_data_complete_proceeding">"Patch data was downloaded and updated. Proceeding with search...</string>
+
     <string-array name="regions">
         <item>EUW</item>
         <item>EUNE</item>

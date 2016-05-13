@@ -53,6 +53,8 @@ public class TabFragment extends FlexibleSpaceFragment<ObservableScrollView> imp
 
 	private Summoner tabSummoner;
 
+	private static final String DDRAGON_SPELL_URL = "http://ddragon.leagueoflegends.com/cdn/%s/img/spell/";
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_tab, container, false);
@@ -114,6 +116,7 @@ public class TabFragment extends FlexibleSpaceFragment<ObservableScrollView> imp
 			Summoner summoner = (Summoner) args.getSerializable("summoner");
 			tabSummoner = summoner;
 			if(summoner != null) {
+				String patchVersion = args.getString("version");
 				twRunes.setText(summoner.getRunes().toString());
 				twMasteries.setText(summoner.getMasteries());
 
@@ -155,9 +158,9 @@ public class TabFragment extends FlexibleSpaceFragment<ObservableScrollView> imp
 
 				try {
 					new ImageSwitcher().execute(
-							new URL("http://ddragon.leagueoflegends.com/cdn/6.8.1/img/spell/" + summoner.getSpell1().getImage()),
-							new URL("http://ddragon.leagueoflegends.com/cdn/6.8.1/img/spell/" + summoner.getSpell2().getImage()),
-							new URL("http://ddragon.leagueoflegends.com/cdn/6.8.1/img/spell/" + summoner.getChampion().getUltimateImage())
+							new URL(String.format(DDRAGON_SPELL_URL, patchVersion) + summoner.getSpell1().getImage()),
+							new URL(String.format(DDRAGON_SPELL_URL, patchVersion) + summoner.getSpell2().getImage()),
+							new URL(String.format(DDRAGON_SPELL_URL, patchVersion) + summoner.getChampion().getUltimateImage())
 					);
 				} catch (MalformedURLException e) {
 					e.printStackTrace();

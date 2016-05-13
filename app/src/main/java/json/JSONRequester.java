@@ -27,7 +27,6 @@ import java.util.Scanner;
 public class JSONRequester {
 
 	private JSONParser parser;
-    private Context context;
 
 	private final String API_KEY = "api_key=8088586e-a695-4cc5-80c2-be3b6fcec3e5";
 	private final String CURRENT_GAME_URL = "https://%s.api.pvp.net/observer-mode/rest/consumer/getSpectatorGameInfo/%s/%s?";
@@ -40,8 +39,7 @@ public class JSONRequester {
     private final String RUNE_STATIC_URL = "https://global.api.pvp.net/api/lol/static-data/%s/v1.2/rune?runeListData=stats&";
     private final String SPELL_STATIC_URL = "https://global.api.pvp.net/api/lol/static-data/%s/v1.2/summoner-spell?dataById=true&spellData=cooldown,image&";
 
-	public JSONRequester(Context context, JSONParser parser) {
-        this.context = context;
+	public JSONRequester(JSONParser parser) {
 		this.parser = parser;
 	}
 
