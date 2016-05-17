@@ -52,11 +52,7 @@ public class VersionUtil {
     }
 
     public void updateVersion() {
-        Log.e("VersionUtil:", "CHECKING VERSION");
-        Log.e("VERSION CHECK:", "Latest patch: " + latestPatch + ", ALL OTHERS: " + champVersion + ", " + masteryVersion + ", " + runeVersion + ", " + spellVersion);
         try {
-            Log.e("VersionUtil:", "UPDATING RESOURCES");
-            Log.e("VersionUtil:", "REQUESTING STATIC DATA");
             JSONObject champions = requester.requestStaticChampionData(region);
             JSONObject masteries = requester.requestStaticMasteryData(region);
             JSONObject runes = requester.requestStaticRuneData(region);
@@ -65,12 +61,11 @@ public class VersionUtil {
             masteryVersion = masteries.getString("version");
             runeVersion = runes.getString("version");
             spellVersion = spells.getString("version");
-            Log.e("VersionUtil:", "WRITING RESOURCES TO INTERNAL STORAGE");
             resourceUtil.writeResource("champions.json", champions.toString());
             resourceUtil.writeResource("masteries.json", masteries.toString());
             resourceUtil.writeResource("runes.json", runes.toString());
             resourceUtil.writeResource("spells.json", spells.toString());
-            Log.e("JSONParser:", "UPDATING RESOURCES");
+
             resourceUtil.buildResources();
             parser.updateResources();
         } catch (JSONException | IOException e) {

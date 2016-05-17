@@ -6,7 +6,6 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -45,6 +44,10 @@ public class LoginActivity extends AppCompatActivity {
 	private Summoner[] previouslySearchedSummonerArr;
 	private String previouslySearchedPatchVersion;
 	private String previouslySearchedSummoner;
+
+	private static final String ARG_SUMMONERS = "ARG_SUMMONERS";
+	private static final String ARG_SEARCHED_SUMMONER = "ARG_SEARCHED_SUMMONERS";
+	private static final String ARG_VERSION = "ARG_VERSION";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -86,24 +89,20 @@ public class LoginActivity extends AppCompatActivity {
 		Intent intent = this.getIntent();
 		Bundle bundle = intent.getExtras();
 		if(bundle != null) {
-			previouslySearchedSummonerArr = (Summoner[]) bundle.getSerializable("summoners");
-			previouslySearchedPatchVersion = bundle.getString("version");
-			previouslySearchedSummoner = bundle.getString("searched_summoner");
+			previouslySearchedSummonerArr = (Summoner[]) bundle.getSerializable(ARG_SUMMONERS);
+			previouslySearchedPatchVersion = bundle.getString(ARG_VERSION);
+			previouslySearchedSummoner = bundle.getString(ARG_SEARCHED_SUMMONER);
 			twSummonerName.setText(previouslySearchedSummoner);
-			Log.e("OnCreate bundle", previouslySearchedPatchVersion + " " + previouslySearchedSummoner);
 		}
 	}
 
 	private boolean checkPreviouslySearched() {
-		Log.e("checkPrevioslySearched", previouslySearchedPatchVersion + " " + previouslySearchedSummoner);
 		if(previouslySearchedPatchVersion != null && previouslySearchedSummonerArr != null && previouslySearchedSummoner != null &&
 				previouslySearchedSummoner.equals(twSummonerName.getText().toString().trim())) {
 			startIntentToMain(previouslySearchedSummonerArr, previouslySearchedPatchVersion, previouslySearchedSummoner);
-			Log.e("checkPrevioslySearched", "true");
 			return true;
 		}
 
-		Log.e("checkPrevioslySearched", "false");
 		return false;
 	}
 
@@ -121,12 +120,11 @@ public class LoginActivity extends AppCompatActivity {
 	}
 
 	private void startIntentToMain(Summoner[] summonerArr, String patchVersion, String searchedSummoner) {
-		Log.e("StartIntentToMain", patchVersion + " " + searchedSummoner);
 		Intent intent = new Intent(LoginActivity.this, MainActivity.class);
 		Bundle extras = new Bundle();
-		extras.putSerializable("summoners", summonerArr);
-		extras.putString("version", patchVersion);
-		extras.putString("searched_summoner", searchedSummoner);
+		extras.putSerializable(ARG_SUMMONERS, summonerArr);
+		extras.putString(ARG_VERSION, patchVersion);
+		extras.putString(ARG_SEARCHED_SUMMONER, searchedSummoner);
 		intent.putExtras(extras);
 		startActivity(intent);
 	}

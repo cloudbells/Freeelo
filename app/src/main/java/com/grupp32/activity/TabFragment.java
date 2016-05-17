@@ -9,6 +9,7 @@ import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.speech.tts.TextToSpeech;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Locale;
 
 import collection.Summoner;
 import decoder.ImageStreamDecoder;
@@ -49,7 +51,7 @@ public class TabFragment extends FlexibleSpaceFragment<ObservableScrollView> imp
 
 	private int twColor;
 	private int twCritialColor;
-	private MediaPlayer rawCompleteSound;
+	private TextToSpeech textToSpeech;
 
 	private CountDownTimer[] timers = new CountDownTimer[3];
 
@@ -62,9 +64,6 @@ public class TabFragment extends FlexibleSpaceFragment<ObservableScrollView> imp
 		View view = inflater.inflate(R.layout.fragment_tab, container, false);
 
 		final ObservableScrollView scrollView = (ObservableScrollView) view.findViewById(R.id.scroll);
-		// TouchInterceptionViewGroup should be a parent view other than ViewPager.
-		// This is a workaround for the issue #117:
-		// https://github.com/ksoichiro/Android-ObservableScrollView/issues/117
 		scrollView.setTouchInterceptionViewGroup((ViewGroup) view.findViewById(R.id.fragment_root));
 
 		Bundle args = getArguments();
@@ -102,7 +101,14 @@ public class TabFragment extends FlexibleSpaceFragment<ObservableScrollView> imp
 		twColor = Color.parseColor("#" + Integer.toHexString(ContextCompat.getColor(getActivity(), R.color.colorProgressNumber)));
 		twCritialColor = Color.parseColor("#" + Integer.toHexString(ContextCompat.getColor(getActivity(), R.color.colorProgressNumberCritical)));
 
-		rawCompleteSound = MediaPlayer.create(getActivity(), R.raw.danger);
+		textToSpeech = new TextToSpeech(getActivity(), new TextToSpeech.OnInitListener() {
+			@Override
+			public void onInit(int status) {
+				if(status != TextToSpeech.ERROR) {
+					textToSpeech.setLanguage(Locale.UK);
+				}
+			}
+		});
 
 		final TextView twRunes = (TextView) view.findViewById(R.id.runes);
 		final TextView twMasteries = (TextView) view.findViewById(R.id.masteries);
@@ -114,11 +120,11 @@ public class TabFragment extends FlexibleSpaceFragment<ObservableScrollView> imp
 		final TextView twWinRatio = (TextView) view.findViewById(R.id.win_ratio);
 		final TextView twChampWinRatio = (TextView) view.findViewById(R.id.champ_win_ratio);
 
-		if (args != null && args.containsKey("summoner")) {
-			Summoner summoner = (Summoner) args.getSerializable("summoner");
+		if (args != null && args.containsKey(ARG_SUMMONER)) {
+			Summoner summoner = (Summoner) args.getSerializable(ARG_SUMMONER);
 			tabSummoner = summoner;
 			if(summoner != null) {
-				String patchVersion = args.getString("version");
+				String patchVersion = args.getString(ARG_VERSION);
 				twRunes.setText(summoner.getRunes().toString());
 				twMasteries.setText(summoner.getMasteries());
 
@@ -192,7 +198,6 @@ public class TabFragment extends FlexibleSpaceFragment<ObservableScrollView> imp
 	protected void updateFlexibleSpace(int scrollY, View view) {
 		ObservableScrollView scrollView = (ObservableScrollView) view.findViewById(R.id.scroll);
 
-		// Also pass this event to parent Activity
 		MainActivity parentActivity = (MainActivity) getActivity();
 		if (parentActivity != null) {
 			parentActivity.onScrollChanged(scrollY, scrollView);
@@ -213,21 +218,25 @@ public class TabFragment extends FlexibleSpaceFragment<ObservableScrollView> imp
 
 	@Override
 	public void onClick(View v) {
+		String spellReadySpeech = "";
 		switch(v.getId()) {
 			case R.id.summoner_spell1:
 				if(btnSpell1.getColorFilter() == null) {
-					timers[0] = startTimer(tabSummoner.getSpell1().getCooldown(), btnSpell1, pBarSpell1, twSpell1);
+					spellReadySpeech = tabSummoner.getChampion().getName() + " " + tabSummoner.getSpell1().getName() + " ready";
+					timers[0] = startTimer(tabSummoner.getSpell1().getCooldown(), btnSpell1, pBarSpell1, twSpell1, spellReadySpeech);
 				}
 				break;
 			case R.id.summoner_spell2:
 				if(btnSpell2.getColorFilter() == null) {
-					timers[1] = startTimer(tabSummoner.getSpell2().getCooldown(), btnSpell2, pBarSpell2, twSpell2);
+					spellReadySpeech = tabSummoner.getChampion().getName() + " " + tabSummoner.getSpell2().getName() + " ready";
+					timers[1] = startTimer(tabSummoner.getSpell2().getCooldown(), btnSpell2, pBarSpell2, twSpell2, spellReadySpeech);
 				}
 				break;
 			case R.id.summoner_ultimate:
 				if(btnUltimate.getColorFilter() == null) {
+					spellReadySpeech = tabSummoner.getChampion().getName() + " ultimate ready";
 					double[] cooldowns = tabSummoner.getChampion().getUltimateCooldowns();
-					timers[2] = startTimer((int) cooldowns[cooldowns.length - 1], btnUltimate, pBarUltimate, twUltimate);
+					timers[2] = startTimer((int) cooldowns[cooldowns.length - 1], btnUltimate, pBarUltimate, twUltimate, spellReadySpeech);
 				}
 				break;
 		}
@@ -261,7 +270,7 @@ public class TabFragment extends FlexibleSpaceFragment<ObservableScrollView> imp
 		Toast.makeText(getActivity(), getString(R.string.reset_spell), Toast.LENGTH_LONG).show();
 	}
 
-	private CountDownTimer startTimer(final int seconds, final ImageView ivResource, final ProgressBar pResource, final TextView twResource) {
+	private CountDownTimer startTimer(final int seconds, final ImageView ivResource, final ProgressBar pResource, final TextView twResource, final String spellReadySpeech) {
 		resourceToGrayscale(ivResource);
 		pResource.setVisibility(View.VISIBLE);
 		pResource.setMax(seconds);
@@ -280,7 +289,7 @@ public class TabFragment extends FlexibleSpaceFragment<ObservableScrollView> imp
 
 			@Override
 			public void onFinish() {
-				rawCompleteSound.start();
+				textToSpeech.speak(spellReadySpeech, TextToSpeech.QUEUE_ADD, null, null);
 				resetColorFilter(ivResource);
 				pResource.setVisibility(View.INVISIBLE);
 				twResource.setText("");

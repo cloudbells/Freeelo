@@ -7,9 +7,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
@@ -32,7 +32,7 @@ import decoder.ImageStreamDecoder;
 import widget.SlidingTabLayout;
 
 /**
- * @author Alexander Johansson
+ * @author Alexander Johansson, code samples taken from ObservableScrollView (credits to ksoichiro; https://github.com/ksoichiro/Android-ObservableScrollView)
  */
 public class MainActivity extends AppCompatActivity {
 	private SlidingTabLayout tabLayout;
@@ -49,17 +49,19 @@ public class MainActivity extends AppCompatActivity {
 	private int flexibleSpaceHeight;
 	private int tabHeight;
 
+	private static final String ARG_SUMMONERS = "ARG_SUMMONERS";
+	private static final String ARG_SEARCHED_SUMMONER = "ARG_SEARCHED_SUMMONERS";
+	private static final String ARG_VERSION = "ARG_VERSION";
+
 	private static final String DDRAGON_CHAMP_SPLASH_URL = "http://ddragon.leagueoflegends.com/cdn/img/champion/splash/";
 
 	@Override
 	public void onBackPressed() {
-		Log.e("OnBackPressed", "Heyimhere");
 		Intent backIntent = new Intent(MainActivity.this, LoginActivity.class);
 		Bundle extras = new Bundle();
-		extras.putSerializable("summoners", summonerArr);
-		extras.putString("version", patchVersion);
-		extras.putString("searched_summoner", searchedSummoner);
-		Log.e("OnBackPressed", patchVersion + " " + searchedSummoner);
+		extras.putSerializable(ARG_SUMMONERS, summonerArr);
+		extras.putString(ARG_VERSION, patchVersion);
+		extras.putString(ARG_SEARCHED_SUMMONER, searchedSummoner);
 		backIntent.putExtras(extras);
 		startActivity(backIntent);
 	}
@@ -75,9 +77,9 @@ public class MainActivity extends AppCompatActivity {
 		Intent intent = this.getIntent();
 		Bundle bundle = intent.getExtras();
 		if(bundle != null) {
-			summonerArr = (Summoner[]) bundle.getSerializable("summoners");
-			patchVersion = bundle.getString("version");
-			searchedSummoner = bundle.getString("searched_summoner");
+			summonerArr = (Summoner[]) bundle.getSerializable(ARG_SUMMONERS);
+			patchVersion = bundle.getString(ARG_VERSION);
+			searchedSummoner = bundle.getString(ARG_SEARCHED_SUMMONER);
 			for (Summoner summoner : summonerArr) {
 				summoners.add(summoner);
 			}
@@ -111,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
 			public void onPageScrollStateChanged(int state) {
 			}
 		});
+
 		flexibleSpaceHeight = getResources().getDimensionPixelSize(R.dimen.flexible_space_image_height);
 		tabHeight = getResources().getDimensionPixelSize(R.dimen.tab_height);
 
@@ -119,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
 
 		tabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
 		tabLayout.setCustomTabView(R.layout.tab_indicator, android.R.id.text1);
-		tabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.colorAccent));
+		tabLayout.setSelectedIndicatorColors(ContextCompat.getColor(this, R.color.colorAccent));
 		tabLayout.setDistributeEvenly(true);
 		tabLayout.setViewPager(viewPager);
 

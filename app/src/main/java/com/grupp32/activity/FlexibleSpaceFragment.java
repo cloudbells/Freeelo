@@ -30,13 +30,15 @@ public abstract class FlexibleSpaceFragment<S extends Scrollable> extends Fragme
         implements ObservableScrollViewCallbacks {
 
     public static final String ARG_SCROLL_Y = "ARG_SCROLL_Y";
+    public static final String ARG_SUMMONER = "ARG_SUMMONER";
+    public static final String ARG_VERSION = "ARG_VERSION";
 
     public void setArguments(int scrollY, Summoner summoner, String patchVersion) {
         if (0 <= scrollY) {
             Bundle args = new Bundle();
             args.putInt(ARG_SCROLL_Y, scrollY);
-            args.putSerializable("summoner", summoner);
-            args.putString("version", patchVersion);
+            args.putSerializable(ARG_SUMMONER, summoner);
+            args.putString(ARG_VERSION, patchVersion);
             setArguments(args);
         }
     }
