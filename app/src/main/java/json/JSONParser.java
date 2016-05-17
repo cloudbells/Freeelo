@@ -100,10 +100,19 @@ public class JSONParser {
 			String desc = listRune.getString("description");
 			JSONObject stats = listRune.getJSONObject("stats");
 			String statType = stats.names().getString(0);
-			double stat = stats.getDouble(statType);
-			runeCollection.add(new Rune(count, statType, stat, desc));
+            double stat = stats.getDouble(statType);
+            String statType2 = "";
+            double stat2 = 0;
+            try {
+                statType2 = stats.names().getString(1);
+                stat2 = stats.getDouble(statType2);
+            } catch (JSONException e) {
+
+            }
+			runeCollection.add(new Rune(count, statType, statType2, stat, stat2, desc));
 		}
-		return runeCollection.finalizeStats();
+        runeCollection.finalizeStats();
+        return runeCollection;
 	}
 
 	public Champion parseChampion(int championId) throws IOException, JSONException {
