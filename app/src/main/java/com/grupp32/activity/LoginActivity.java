@@ -21,12 +21,8 @@ import android.widget.Toast;
 
 import com.dd.CircularProgressButton;
 
-import junit.runner.Version;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
 
@@ -45,7 +41,9 @@ public class LoginActivity extends AppCompatActivity {
 	private Spinner spRegion;
 	private CircularProgressButton btnSearch;
 
-    private String[] autoCompleteSet;
+    private String[] autoCompleteArray;
+    private HashSet autoCompleteSet;
+    private SharedPreferences prefs;
 
 	private Summoner[] previouslySearchedSummonerArr;
 	private String previouslySearchedPatchVersion;
@@ -95,24 +93,21 @@ public class LoginActivity extends AppCompatActivity {
 	}
 
     private void setupSharedPrefs() {
-        SharedPreferences pref = getSharedPreferences("autocomplete", MODE_PRIVATE);
-        HashSet hashSet = (HashSet) pref.getStringSet("searchedNames", new HashSet<String>());
-        autoCompleteSet = new String[hashSet.size()];
-        int index = 0;
+        prefs = getSharedPreferences("autocomplete", MODE_PRIVATE);
+        HashSet hashSet = (HashSet) prefs.getStringSet("searchedNames", new HashSet<String>());
+        autoCompleteSet = (HashSet) hashSet.clone();
+        autoCompleteArray = new String[hashSet.size()];
         Iterator it = hashSet.iterator();
+        int index = 0;
         while (it.hasNext()) {
-            autoCompleteSet[index++] = (String) it.next();
+            autoCompleteArray[index++] = (String) it.next();
         }
     }
 
     private void setupSearchBar() {
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_dropdown_item_1line, autoCompleteSet);
-        twSummonerName.setAdapter(adapter);
-
-        twSummonerName = (TextView) findViewById(R.id.summoner_name);
+        twSummonerName = (AutoCompleteTextView) findViewById(R.id.summoner_name);
         twSummonerName.requestFocus();
-        twSummonerName.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        twSummonerName.setOnEditorActionListener(new AutoCompleteTextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
                     if(!checkPreviouslySearched()) {
@@ -123,6 +118,9 @@ public class LoginActivity extends AppCompatActivity {
                 return false;
             }
         });
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_dropdown_item_1line, autoCompleteArray);
+        twSummonerName.setAdapter(adapter);
     }
 
 	private boolean checkPreviouslySearched() {
@@ -149,6 +147,8 @@ public class LoginActivity extends AppCompatActivity {
 	}
 
 	private void startIntentToMain(Summoner[] summonerArr, String patchVersion, String searchedSummoner, String searchedRegion) {
+        autoCompleteSet.add(searchedSummoner);
+        prefs.edit().putStringSet("searchedNames", autoCompleteSet).apply();
 		Intent intent = new Intent(LoginActivity.this, MainActivity.class);
 		Bundle extras = new Bundle();
 		extras.putSerializable(ARG_SUMMONERS, summonerArr);
