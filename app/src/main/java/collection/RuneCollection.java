@@ -1,7 +1,5 @@
 package collection;
 
-import android.util.Log;
-
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -23,17 +21,6 @@ public class RuneCollection implements Serializable {
 		runes.add(rune);
 	}
 
-	public Rune get(int index) throws IndexOutOfBoundsException {
-        if (index > runes.size()) {
-            throw new IndexOutOfBoundsException("Index out of bounds: " + index);
-        }
-        return runes.get(index);
-	}
-
-	public int size() {
-		return runes.size();
-	}
-
 	public void finalizeStats() {
 		for (Rune rune : runes) {
 			String statType = rune.getStatType();
@@ -42,7 +29,6 @@ public class RuneCollection implements Serializable {
             double stat2 = rune.getStat2();
 			addRune(statType, stat, rune);
             if (statType2 != "" && stat2 != 0) {
-                Log.e("RuneCollection: ", "Found a HYBRID rune! Stat1: " + stat + ", Stat2: " + stat2);
                 addRune(statType2, stat2, rune);
             }
 		}
@@ -85,10 +71,8 @@ public class RuneCollection implements Serializable {
             // The following is necessary for hybrid runes to work.
             if (key.equals("rFlatMagicPenetrationMod")) {
                 shortDesc = " magic penetration";
-                Log.e("RuneCollection: ", shortDesc);
             } else if (key.equals("rFlatArmorPenetrationMod")) {
                 shortDesc = " armor penetration";
-                Log.e("RuneCollection: ", shortDesc);
             }
             String finalStats = "";
             // If the desc contains the percent sign, add it to the finalStats and format, else dont add and format
