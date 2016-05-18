@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
 	private Summoner[] summonerArr;
 	private String patchVersion;
 	private String searchedSummoner;
+    private String searchedRegion;
 	private ImageView flexibleImage;
 	private TextView flexibleTitle;
 
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
 	private static final String ARG_SUMMONERS = "ARG_SUMMONERS";
 	private static final String ARG_SEARCHED_SUMMONER = "ARG_SEARCHED_SUMMONERS";
 	private static final String ARG_VERSION = "ARG_VERSION";
+    private static final String ARG_REGION = "ARG_REGION";
 
 	private static final String DDRAGON_CHAMP_SPLASH_URL = "http://ddragon.leagueoflegends.com/cdn/img/champion/splash/";
 
@@ -62,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
 		extras.putSerializable(ARG_SUMMONERS, summonerArr);
 		extras.putString(ARG_VERSION, patchVersion);
 		extras.putString(ARG_SEARCHED_SUMMONER, searchedSummoner);
+        extras.putString(ARG_REGION, searchedRegion);
 		backIntent.putExtras(extras);
 		startActivity(backIntent);
 	}
@@ -80,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
 			summonerArr = (Summoner[]) bundle.getSerializable(ARG_SUMMONERS);
 			patchVersion = bundle.getString(ARG_VERSION);
 			searchedSummoner = bundle.getString(ARG_SEARCHED_SUMMONER);
+            searchedRegion = bundle.getString(ARG_REGION);
 			for (Summoner summoner : summonerArr) {
 				summoners.add(summoner);
 			}

@@ -44,10 +44,12 @@ public class LoginActivity extends AppCompatActivity {
 	private Summoner[] previouslySearchedSummonerArr;
 	private String previouslySearchedPatchVersion;
 	private String previouslySearchedSummoner;
+    private String previouslySearchedRegion;
 
 	private static final String ARG_SUMMONERS = "ARG_SUMMONERS";
 	private static final String ARG_SEARCHED_SUMMONER = "ARG_SEARCHED_SUMMONERS";
 	private static final String ARG_VERSION = "ARG_VERSION";
+    private static final String ARG_REGION = "ARG_REGION";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +78,6 @@ public class LoginActivity extends AppCompatActivity {
 						checkCurrentGame();
 					}
 				}
-
 				return false;
 			}
 		});
@@ -92,14 +93,16 @@ public class LoginActivity extends AppCompatActivity {
 			previouslySearchedSummonerArr = (Summoner[]) bundle.getSerializable(ARG_SUMMONERS);
 			previouslySearchedPatchVersion = bundle.getString(ARG_VERSION);
 			previouslySearchedSummoner = bundle.getString(ARG_SEARCHED_SUMMONER);
+            previouslySearchedRegion = bundle.getString(ARG_REGION);
 			twSummonerName.setText(previouslySearchedSummoner);
+            spRegion.setSelection(((ArrayAdapter)spRegion.getAdapter()).getPosition(previouslySearchedRegion));
 		}
 	}
 
 	private boolean checkPreviouslySearched() {
-		if(previouslySearchedPatchVersion != null && previouslySearchedSummonerArr != null && previouslySearchedSummoner != null &&
-				previouslySearchedSummoner.equals(twSummonerName.getText().toString().trim())) {
-			startIntentToMain(previouslySearchedSummonerArr, previouslySearchedPatchVersion, previouslySearchedSummoner);
+		if (previouslySearchedPatchVersion != null && previouslySearchedSummonerArr != null && previouslySearchedSummoner != null &&
+				previouslySearchedSummoner.equals(twSummonerName.getText().toString().trim()) && previouslySearchedRegion != null) {
+			startIntentToMain(previouslySearchedSummonerArr, previouslySearchedPatchVersion, previouslySearchedSummoner, previouslySearchedRegion);
 			return true;
 		}
 
@@ -119,12 +122,13 @@ public class LoginActivity extends AppCompatActivity {
 		}
 	}
 
-	private void startIntentToMain(Summoner[] summonerArr, String patchVersion, String searchedSummoner) {
+	private void startIntentToMain(Summoner[] summonerArr, String patchVersion, String searchedSummoner, String searchedRegion) {
 		Intent intent = new Intent(LoginActivity.this, MainActivity.class);
 		Bundle extras = new Bundle();
 		extras.putSerializable(ARG_SUMMONERS, summonerArr);
 		extras.putString(ARG_VERSION, patchVersion);
 		extras.putString(ARG_SEARCHED_SUMMONER, searchedSummoner);
+        extras.putString(ARG_REGION, searchedRegion);
 		intent.putExtras(extras);
 		startActivity(intent);
 	}
@@ -222,7 +226,7 @@ public class LoginActivity extends AppCompatActivity {
 			if (result != null) {
 				Summoner[] summoners = result.getSummoners();
 				btnSearch.setProgress(0);
-				startIntentToMain(summoners, versionUtil.getVersion(), summonerName);
+				startIntentToMain(summoners, versionUtil.getVersion(), summonerName, (String) spRegion.getSelectedItem());
 			} else {
 				btnSearch.setProgress(-1);
 				Toast.makeText(getApplication(), String.format(getString(R.string.not_in_game), summonerName), Toast.LENGTH_LONG).show();
