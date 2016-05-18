@@ -2,6 +2,7 @@ package com.grupp32.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -25,6 +27,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Iterator;
 
 import collection.CurrentGame;
 import collection.Summoner;
@@ -37,9 +41,11 @@ import version.VersionUtil;
  * @author Alexander Johansson, Sigvard Nilsson
  */
 public class LoginActivity extends AppCompatActivity {
-	private TextView twSummonerName;
+	private AutoCompleteTextView twSummonerName;
 	private Spinner spRegion;
 	private CircularProgressButton btnSearch;
+
+    private String[] autoCompleteSet;
 
 	private Summoner[] previouslySearchedSummonerArr;
 	private String previouslySearchedPatchVersion;
@@ -68,19 +74,8 @@ public class LoginActivity extends AppCompatActivity {
 			}
 		});
 
-		twSummonerName = (TextView) findViewById(R.id.summoner_name);
-		twSummonerName.requestFocus();
-		twSummonerName.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-				if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-					if(!checkPreviouslySearched()) {
-						btnSearch.setProgress(1);
-						checkCurrentGame();
-					}
-				}
-				return false;
-			}
-		});
+        setupSharedPrefs();
+        setupSearchBar();
 
 		spRegion = (Spinner) findViewById(R.id.region);
 		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.regions, R.layout.textview_spinner);
@@ -98,6 +93,37 @@ public class LoginActivity extends AppCompatActivity {
             spRegion.setSelection(((ArrayAdapter)spRegion.getAdapter()).getPosition(previouslySearchedRegion));
 		}
 	}
+
+    private void setupSharedPrefs() {
+        SharedPreferences pref = getSharedPreferences("autocomplete", MODE_PRIVATE);
+        HashSet hashSet = (HashSet) pref.getStringSet("searchedNames", new HashSet<String>());
+        autoCompleteSet = new String[hashSet.size()];
+        int index = 0;
+        Iterator it = hashSet.iterator();
+        while (it.hasNext()) {
+            autoCompleteSet[index++] = (String) it.next();
+        }
+    }
+
+    private void setupSearchBar() {
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_dropdown_item_1line, autoCompleteSet);
+        twSummonerName.setAdapter(adapter);
+
+        twSummonerName = (TextView) findViewById(R.id.summoner_name);
+        twSummonerName.requestFocus();
+        twSummonerName.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                    if(!checkPreviouslySearched()) {
+                        btnSearch.setProgress(1);
+                        checkCurrentGame();
+                    }
+                }
+                return false;
+            }
+        });
+    }
 
 	private boolean checkPreviouslySearched() {
 		if (previouslySearchedPatchVersion != null && previouslySearchedSummonerArr != null && previouslySearchedSummoner != null &&
