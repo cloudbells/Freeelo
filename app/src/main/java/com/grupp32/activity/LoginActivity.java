@@ -41,6 +41,8 @@ public class LoginActivity extends AppCompatActivity {
 	private Spinner spRegion;
 	private CircularProgressButton btnSearch;
 
+	private boolean searchedPressed = false;
+
     private String[] autoCompleteArray;
     private HashSet autoCompleteSet;
     private SharedPreferences prefs;
@@ -65,8 +67,8 @@ public class LoginActivity extends AppCompatActivity {
 		btnSearch.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if(!checkPreviouslySearched()) {
-					btnSearch.setEnabled(false);
+				if(!searchedPressed && !checkPreviouslySearched()) {
+					searchedPressed = true;
 					btnSearch.setProgress(1);
 					checkCurrentGame();
 				}
@@ -111,8 +113,8 @@ public class LoginActivity extends AppCompatActivity {
         twSummonerName.setOnEditorActionListener(new AutoCompleteTextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                    if(!checkPreviouslySearched()) {
-						btnSearch.setEnabled(false);
+                    if(!searchedPressed && !checkPreviouslySearched()) {
+						searchedPressed = true;
                         btnSearch.setProgress(1);
                         checkCurrentGame();
                     }
@@ -145,9 +147,8 @@ public class LoginActivity extends AppCompatActivity {
 		} else {
 			Toast.makeText(getApplication(), getString(R.string.enter_name), Toast.LENGTH_LONG).show();
 			btnSearch.setProgress(0);
+			searchedPressed = false;
 		}
-
-		btnSearch.setEnabled(true);
 	}
 
 	private void startIntentToMain(Summoner[] summonerArr, String patchVersion, String searchedSummoner, String searchedRegion) {
@@ -269,6 +270,8 @@ public class LoginActivity extends AppCompatActivity {
 					}
 				}, 1000);
 			}
+
+			searchedPressed = false;
 		}
 	}
 }

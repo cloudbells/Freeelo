@@ -87,14 +87,11 @@ public class MainActivity extends AppCompatActivity {
 	}
 
 	private void toggleFragmentSound(){
-		Log.e("toggleFragmentSound", "Resetting");
 		FragmentManager fragmentManager = MainActivity.this.getSupportFragmentManager();
 		List<Fragment> fragments = fragmentManager.getFragments();
 		if(fragments != null) {
 			for (Fragment fragment : fragments) {
-				Log.e("toggleFragmentSound", "fragment");
 				if (fragment != null) {
-					Log.e("toggleFragmentSound", "fragment not null");
 					((TabFragment) fragment).toggleSound();
 				}
 			}
@@ -102,14 +99,11 @@ public class MainActivity extends AppCompatActivity {
 	}
 
 	private void resetFragmentTimers(){
-		Log.e("resetFragmentTimers", "Resetting");
 		FragmentManager fragmentManager = MainActivity.this.getSupportFragmentManager();
 		List<Fragment> fragments = fragmentManager.getFragments();
 		if(fragments != null) {
 			for(Fragment fragment : fragments) {
-				Log.e("resetFragmentTimers", "fragment");
 				if(fragment != null) {
-					Log.e("resetFragmentTimers", "fragment not null");
 					((TabFragment) fragment).resetTimers();
 				}
 			}

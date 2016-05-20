@@ -282,7 +282,6 @@ public class TabFragment extends FlexibleSpaceFragment<ObservableScrollView> imp
 	}
 
 	public void resetTimers() {
-		Log.e("resetFragmentTimers", "Cancelling timers");
 		for(int timerIndex = 0; timerIndex < timers.length; timerIndex++) {
 			if(timers[timerIndex] != null) {
 				timers[timerIndex].cancel();
