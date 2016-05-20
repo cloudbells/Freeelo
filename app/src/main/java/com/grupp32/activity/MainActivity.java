@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
@@ -26,6 +27,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 import collection.Summoner;
 import decoder.ImageStreamDecoder;
@@ -59,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
 
 	@Override
 	public void onBackPressed() {
+		resetFragmentTimers();
+
 		Intent backIntent = new Intent(MainActivity.this, LoginActivity.class);
 		Bundle extras = new Bundle();
 		extras.putSerializable(ARG_SUMMONERS, summonerArr);
@@ -66,7 +70,50 @@ public class MainActivity extends AppCompatActivity {
 		extras.putString(ARG_SEARCHED_SUMMONER, searchedSummoner);
         extras.putString(ARG_REGION, searchedRegion);
 		backIntent.putExtras(extras);
+		backIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		startActivity(backIntent);
+	}
+
+	@Override
+	public void onPause() {
+		toggleFragmentSound();
+		super.onPause();
+	}
+
+	@Override
+	public void onResume() {
+		toggleFragmentSound();
+		super.onResume();
+	}
+
+	private void toggleFragmentSound(){
+		Log.e("toggleFragmentSound", "Resetting");
+		FragmentManager fragmentManager = MainActivity.this.getSupportFragmentManager();
+		List<Fragment> fragments = fragmentManager.getFragments();
+		if(fragments != null) {
+			for (Fragment fragment : fragments) {
+				Log.e("toggleFragmentSound", "fragment");
+				if (fragment != null) {
+					Log.e("toggleFragmentSound", "fragment not null");
+					((TabFragment) fragment).toggleSound();
+				}
+			}
+		}
+	}
+
+	private void resetFragmentTimers(){
+		Log.e("resetFragmentTimers", "Resetting");
+		FragmentManager fragmentManager = MainActivity.this.getSupportFragmentManager();
+		List<Fragment> fragments = fragmentManager.getFragments();
+		if(fragments != null) {
+			for(Fragment fragment : fragments) {
+				Log.e("resetFragmentTimers", "fragment");
+				if(fragment != null) {
+					Log.e("resetFragmentTimers", "fragment not null");
+					((TabFragment) fragment).resetTimers();
+				}
+			}
+		}
 	}
 
 	@Override

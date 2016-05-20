@@ -54,6 +54,7 @@ public class TabFragment extends FlexibleSpaceFragment<ObservableScrollView> imp
 	private TextToSpeech textToSpeech;
 
 	private CountDownTimer[] timers = new CountDownTimer[3];
+	private boolean playSound = true;
 
 	private Summoner tabSummoner;
 
@@ -182,6 +183,12 @@ public class TabFragment extends FlexibleSpaceFragment<ObservableScrollView> imp
 	}
 
 	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		textToSpeech.shutdown();
+	}
+
+	@Override
 	protected void updateFlexibleSpace(int scrollY) {
 		// Sometimes scrollable.getCurrentScrollY() and the real scrollY has different values.
 		// As a workaround, we should call scrollVerticallyTo() to make sure that they match.
@@ -270,6 +277,19 @@ public class TabFragment extends FlexibleSpaceFragment<ObservableScrollView> imp
 		Toast.makeText(getActivity(), getString(R.string.reset_spell), Toast.LENGTH_LONG).show();
 	}
 
+	public void toggleSound() {
+		playSound = !playSound;
+	}
+
+	public void resetTimers() {
+		Log.e("resetFragmentTimers", "Cancelling timers");
+		for(int timerIndex = 0; timerIndex < timers.length; timerIndex++) {
+			if(timers[timerIndex] != null) {
+				timers[timerIndex].cancel();
+			}
+		}
+	}
+
 	private CountDownTimer startTimer(final int seconds, final ImageView ivResource, final ProgressBar pResource, final TextView twResource, final String spellReadySpeech) {
 		resourceToGrayscale(ivResource);
 		pResource.setVisibility(View.VISIBLE);
@@ -289,7 +309,10 @@ public class TabFragment extends FlexibleSpaceFragment<ObservableScrollView> imp
 
 			@Override
 			public void onFinish() {
-				textToSpeech.speak(spellReadySpeech, TextToSpeech.QUEUE_ADD, null, null);
+				if(playSound) {
+					textToSpeech.speak(spellReadySpeech, TextToSpeech.QUEUE_ADD, null, null);
+				}
+
 				resetColorFilter(ivResource);
 				pResource.setVisibility(View.INVISIBLE);
 				twResource.setText("");
