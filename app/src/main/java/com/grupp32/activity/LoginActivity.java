@@ -66,6 +66,7 @@ public class LoginActivity extends AppCompatActivity {
 			@Override
 			public void onClick(View v) {
 				if(!checkPreviouslySearched()) {
+					btnSearch.setEnabled(false);
 					btnSearch.setProgress(1);
 					checkCurrentGame();
 				}
@@ -111,6 +112,7 @@ public class LoginActivity extends AppCompatActivity {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
                     if(!checkPreviouslySearched()) {
+						btnSearch.setEnabled(false);
                         btnSearch.setProgress(1);
                         checkCurrentGame();
                     }
@@ -144,6 +146,8 @@ public class LoginActivity extends AppCompatActivity {
 			Toast.makeText(getApplication(), getString(R.string.enter_name), Toast.LENGTH_LONG).show();
 			btnSearch.setProgress(0);
 		}
+
+		btnSearch.setEnabled(true);
 	}
 
 	private void startIntentToMain(Summoner[] summonerArr, String patchVersion, String searchedSummoner, String searchedRegion) {
