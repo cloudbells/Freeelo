@@ -9,62 +9,55 @@
     tools:context="com.grupp32.activity.LoginActivity"
     android:background="@android:color/white">
 
-    <!--<android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:background="@color/colorPrimary"
-        android:elevation="6dp"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>-->
-
-    <com.dd.CircularProgressButton
-        android:id="@+id/search_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/summoner_name"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="10dp"
-        app:cpb_textIdle="@string/search"
-        app:cpb_iconError="@drawable/ic_error"
-        app:cpb_iconComplete="@drawable/ic_done"
-        app:cpb_colorIndicator="@color/colorAccent"
-        app:cpb_selectorIdle="@drawable/idle_state_selector" />
-
-    <Spinner
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/region"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:layout_toStartOf="@+id/search_button"
-        android:layout_alignTop="@+id/search_button"
-        android:layout_alignBottom="@+id/search_button"
-        android:focusable="false" />
-
-    <AutoCompleteTextView
+    <LinearLayout
+        android:orientation="horizontal"
         android:background="@android:color/transparent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/summoner_name"
-        android:hint="@string/summoner_name"
-        android:textAlignment="center"
-        android:textSize="24sp"
-        android:imeOptions="actionDone"
-        android:singleLine="true"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="true"
-        android:layout_centerVertical="true"/>
+        android:id="@+id/search"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_centerVertical="true"
+        android:layout_width="fill_parent" android:layout_height="wrap_content">
+
+        <Spinner
+            android:layout_width="0.0dip"
+            android:layout_weight="0.35"
+            android:layout_height="fill_parent"
+            android:background="@drawable/search_bar"
+            android:id="@+id/region"
+            android:focusable="false" />
+
+        <AutoCompleteTextView
+            android:background="@drawable/search_bar"
+            android:layout_width="0.0dip"
+            android:layout_weight="1.0"
+            android:layout_height="fill_parent"
+            android:id="@+id/summoner_name"
+            android:hint="@string/summoner_name"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            android:imeOptions="actionDone"
+            android:singleLine="true"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"/>
+
+        <com.dd.CircularProgressButton
+            android:id="@+id/search_button"
+            android:layout_width="0.0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.40"
+            app:cpb_textIdle="@string/search"
+            app:cpb_iconError="@drawable/ic_error"
+            app:cpb_iconComplete="@drawable/ic_done"
+            app:cpb_colorIndicator="@color/colorAccent"
+            app:cpb_selectorIdle="@drawable/idle_state_selector" />
+    </LinearLayout>
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
         android:id="@+id/logo"
         android:background="@drawable/ic_logo"
-        android:layout_above="@+id/summoner_name"
         android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

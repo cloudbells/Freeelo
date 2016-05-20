@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Freeelo</string>
     <string name="search">Search</string>
-    <string name="summoner_name">Enter Summoner Name</string>
+    <string name="summoner_name">Enter Summoner</string>
     <string name="enter_name">Please enter a summoner name!</string>
     <string name="not_in_game">Summoner %s is not in an active game.</string>
     <string name="error">Error</string>
