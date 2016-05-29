@@ -27,7 +27,7 @@ public class Ultimate implements Serializable {
 		return this;
 	}
 
-	public Ultimate setimageName(String imageName) {
+	public Ultimate setImageName(String imageName) {
 		this.imageName = imageName;
 		return this;
 	}

@@ -128,10 +128,10 @@ public class JSONParser {
 		for (int i = 0; i < ultimateMaxRank; i++) {
 			ultimateCooldowns[i] = cooldown.getDouble(i);
 		}
-		String ultimateImage = ultimateObject.getJSONObject("image").getString("full");
-		Ultimate ultimate = new Ultimate().setName(ultimateName).setImage(ultimateImage).
+		String ultimateImageName = ultimateObject.getJSONObject("image").getString("full");
+		Ultimate ultimate = new Ultimate().setName(ultimateName).setImageName(ultimateImageName).
 				setCooldowns(ultimateCooldowns).setMaxRank(ultimateMaxRank);
-		return new Champion().setChampionId(championId).setName(name).setTitle(title).setKey(key).setUltimate(ultimate);
+		return new Champion().setName(name).setTitle(title).setKey(key).setUltimate(ultimate);
 	}
 
 	public JSONObject parseRankedEntries(JSONObject rankedData) throws JSONException {

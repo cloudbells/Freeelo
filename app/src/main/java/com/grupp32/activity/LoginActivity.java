@@ -217,9 +217,9 @@ public class LoginActivity extends AppCompatActivity {
 				}
 			}
 
-			CurrentGame game;
+			CurrentGame game = new CurrentGame(summonerName, region, parser, requester);
 			try {
-				game = new CurrentGame(summonerName, region, parser, requester);
+                game.searchCurrentGame();
 
 				publishProgress(100);
 
