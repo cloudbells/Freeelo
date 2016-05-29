@@ -40,6 +40,7 @@ import decoder.ImageStreamDecoder;
  * @author Alexander Johansson, Christoffer Nilsson
  */
 public class TabFragment extends FlexibleSpaceFragment<ObservableScrollView> implements View.OnClickListener, View.OnLongClickListener {
+
     private ImageButton spell1;
     private ImageButton spell2;
     private ImageButton ultimate;

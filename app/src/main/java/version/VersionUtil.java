@@ -44,6 +44,12 @@ public class VersionUtil {
         this.requester = requester;
         this.resourceUtil = resourceUtil;
         this.region = region.toLowerCase();
+    }
+
+    /**
+     * 
+     */
+    public void checkFirstTime() {
         try {
             // If not first time
             if (!isFirstTime()) {
@@ -55,7 +61,6 @@ public class VersionUtil {
                 runeVersion = resourceUtil.getRunes().getString("version");
                 spellVersion = resourceUtil.getSpells().getString("version");
             }
-
             // Set latest patch
             latestPatch = requester.requestPatchData(this.region).getString(0);
         } catch (JSONException | IOException e) {
