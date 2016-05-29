@@ -53,7 +53,7 @@ public class Ultimate implements Serializable {
      * @param image ultimate image (file name + file extension, ie. "MonkeyKingSpinToWin.png")
      * @return <code>Ultimate</code> - for method chain-calling
      */
-    public Ultimate setImage(String image) {
+    public Ultimate setImageName(String image) {
         this.image = image;
         return this;
     }
@@ -90,7 +90,7 @@ public class Ultimate implements Serializable {
      *
      * @return <code>String</code> - ultimate image (file name + file extension, ie. "MonkeyKingSpinToWin.png")
      */
-    public String getImage() {
+    public String getImageName() {
         return image;
     }
 }
