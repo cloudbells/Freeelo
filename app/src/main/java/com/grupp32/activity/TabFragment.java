@@ -185,8 +185,8 @@ public class TabFragment extends FlexibleSpaceFragment<ObservableScrollView> imp
                 try {
                     // Calls for image switches to match current summoner spells and champion ultimate images
                     new ImageSwitcher().execute(
-                            new URL(String.format(DDRAGON_SPELL_URL, patchVersion) + summoner.getSpell1().getImage()),
-                            new URL(String.format(DDRAGON_SPELL_URL, patchVersion) + summoner.getSpell2().getImage()),
+                            new URL(String.format(DDRAGON_SPELL_URL, patchVersion) + summoner.getSpell1().getImageName()),
+                            new URL(String.format(DDRAGON_SPELL_URL, patchVersion) + summoner.getSpell2().getImageName()),
                             new URL(String.format(DDRAGON_SPELL_URL, patchVersion) + summoner.getChampion().getUltimateImageName())
                     );
                 } catch (MalformedURLException e) {

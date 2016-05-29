@@ -52,7 +52,7 @@ public class Spell implements Serializable {
      *
      * @return <code>String</code> - current spell image
      */
-    public String getImage() {
+    public String getImageName() {
         return image;
     }
 
