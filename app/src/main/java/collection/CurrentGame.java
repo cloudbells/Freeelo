@@ -11,8 +11,9 @@ import json.JSONParser;
 import json.JSONRequester;
 
 /**
+ * Represents a current, active game in which 10 summoners (players) are playing.
+ *
  * @author Christoffer Nilsson, Alexander Johansson
- *         Represents a current, active game in which 10 summoners (players) are playing.
  */
 public class CurrentGame {
 
@@ -51,7 +52,7 @@ public class CurrentGame {
         int summonerId = (int) parser.parse(summonerObject, "id"); // Needed to find currentGame
         JSONObject currentGame = requester.requestCurrentGameObject(summonerId, region); // Contains all the info about the current game
         JSONArray participants = (JSONArray) parser.parse(currentGame, "participants"); // 10 summoners are playing
-        int enemyTeamId = parser.parseTeamId(participants, summonerId); // Finds the enemy team ID
+        int enemyTeamId = parser.parseEnemyTeamId(participants, summonerId); // Finds the enemy team ID
         initSummoners(participants, enemyTeamId); // We need the enemy team ID because we only want enemy player info
     }
 
@@ -74,8 +75,8 @@ public class CurrentGame {
                 String name = (String) parser.parse(participant, "summonerName");
                 int championId = (int) parser.parse(participant, "championId"); // Necessary because champions are ordered by ID
                 Champion champ = parser.parseChampion(championId);
-                Spell spell1 = parser.parseSpell(parser.parseSpellId(participant, 1));
-                Spell spell2 = parser.parseSpell(parser.parseSpellId(participant, 2));
+                Spell spell1 = parser.parseSpell((int) parser.parse(participant, "spell1Id"));
+                Spell spell2 = parser.parseSpell((int) parser.parse(participant, "spell2Id"));
                 String masteries = parser.parseMasteries(participant);
                 RuneCollection runes = parser.parseRuneCollection(participant);
                 int summonerId = (int) parser.parse(participant, "summonerId");
@@ -112,7 +113,7 @@ public class CurrentGame {
         rankedDataArr = requester.requestRankedData(summonerIds, region);
         for (Summoner summoner : summoners) {
             if (rankedDataArr != null) {
-                rankedData = rankedDataArr.getJSONArray(Integer.toString(summoner.getSummonerId())).getJSONObject(0);
+                rankedData = ((JSONArray) parser.parse(rankedDataArr, Integer.toString(summoner.getSummonerId()))).getJSONObject(0);
             }
             setRankedData(rankedData, summoner);
         }
@@ -132,7 +133,7 @@ public class CurrentGame {
         } else {
             String tier = (String) parser.parse(rankedData, "tier");
             // Each ranked entry is for a different summoner
-            JSONObject rankedEntries = parser.parseRankedEntries(rankedData);
+            JSONObject rankedEntries = ((JSONArray) parser.parse(rankedData, "entries")).getJSONObject(0);
             int leaguePoints = (int) parser.parse(rankedEntries, "leaguePoints");
             String division = (String) parser.parse(rankedEntries, "division");
             int losses = (int) parser.parse(rankedEntries, "losses");

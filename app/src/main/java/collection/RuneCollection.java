@@ -38,7 +38,7 @@ public class RuneCollection implements Serializable {
             double stat = rune.getStat();
             double stat2 = rune.getStat2(); // Get 2nd stat if hybrid
             addRune(statType, stat, rune); // Add to hashmaps
-            if (statType2 != "" && stat2 != 0) {
+            if (statType2 != null && stat2 != 0) {
                 addRune(statType2, stat2, rune); // Add to hashmaps if hybrid
             }
         }

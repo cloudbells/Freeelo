@@ -12,20 +12,20 @@ public class Spell implements Serializable {
     private int id;
     private int cooldown;
     private String name;
-    private String image;
+    private String imageName;
 
     /**
      * Constructor for Spell-objects, takes in parameters to fully initialize a Spell-object
      *
-     * @param id       spell id provided from the API
-     * @param name     spell name
-     * @param image    spell image (file name + file extension, ie. "SummonerFlash.png")
-     * @param cooldown spell cooldown
+     * @param id        spell id provided from the API
+     * @param name      spell name
+     * @param imageName spell image name (file name + file extension, ie. "SummonerFlash.png")
+     * @param cooldown  spell cooldown
      */
-    public Spell(int id, String name, String image, int cooldown) {
+    public Spell(int id, String name, String imageName, int cooldown) {
         this.id = id;
         this.name = name;
-        this.image = image;
+        this.imageName = imageName;
         this.cooldown = cooldown;
     }
 
@@ -52,8 +52,8 @@ public class Spell implements Serializable {
      *
      * @return <code>String</code> - current spell image
      */
-    public String getImage() {
-        return image;
+    public String getImageName() {
+        return imageName;
     }
 
     /**

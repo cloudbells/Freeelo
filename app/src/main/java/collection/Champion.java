@@ -3,8 +3,9 @@ package collection;
 import java.io.Serializable;
 
 /**
+ * Represents a champion (e.g. Kayle).
+ *
  * @author Alexander Johansson, Christoffer Nilsson
- *         Represents a champion (e.g. Kayle).
  */
 public class Champion implements Serializable {
 
