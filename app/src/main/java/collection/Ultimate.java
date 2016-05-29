@@ -3,48 +3,94 @@ package collection;
 import java.io.Serializable;
 
 /**
+ * Class represents a champion ultimate spell.
+ *
  * @author Christoffer Nilsson
  */
 public class Ultimate implements Serializable {
 
-	private int maxRank;
-	private double[] cooldowns;
-	private String name;
-	private String image;
+    private int maxRank;
+    private double[] cooldowns;
+    private String name;
+    private String image;
 
-	public Ultimate setMaxRank(int maxRank) {
-		this.maxRank = maxRank;
-		return this;
-	}
+    /**
+     * Sets ultimate max rank.
+     *
+     * @param maxRank max rank
+     * @return <code>Ultimate</code> - for method chain-calling
+     */
+    public Ultimate setMaxRank(int maxRank) {
+        this.maxRank = maxRank;
+        return this;
+    }
 
-	public Ultimate setCooldowns(double[] cooldowns) {
-		this.cooldowns = cooldowns;
-		return this;
-	}
+    /**
+     * Sets ultimate cooldowns (per rank).
+     *
+     * @param cooldowns cooldowns in array format ie. [0.0, 20.0, 40.0]
+     * @return <code>Champion</code> - for method chain-calling
+     */
+    public Ultimate setCooldowns(double[] cooldowns) {
+        this.cooldowns = cooldowns;
+        return this;
+    }
 
-	public Ultimate setName(String name) {
-		this.name = name;
-		return this;
-	}
+    /**
+     * Sets ultimate name.
+     *
+     * @param name name
+     * @return <code>Ultimate</code> - for method chain-calling
+     */
+    public Ultimate setName(String name) {
+        this.name = name;
+        return this;
+    }
 
-	public Ultimate setImage(String image) {
-		this.image = image;
-		return this;
-	}
+    /**
+     * Sets ultimate image (file name + file extension, ie. "MonkeyKingSpinToWin.png").
+     *
+     * @param image ultimate image (file name + file extension, ie. "MonkeyKingSpinToWin.png")
+     * @return <code>Ultimate</code> - for method chain-calling
+     */
+    public Ultimate setImage(String image) {
+        this.image = image;
+        return this;
+    }
 
-	public int getMaxRank() {
-		return maxRank;
-	}
+    /**
+     * Returns ultimate max rank.
+     *
+     * @return <code>int</code> - max rank for ultimate
+     */
+    public int getMaxRank() {
+        return maxRank;
+    }
 
-	public double[] getCooldowns() {
-		return cooldowns;
-	}
+    /**
+     * Returns cooldowns of ultimate in double array.
+     *
+     * @return <code>double[]</code> - array of cooldowns per rank, ie. [0.0, 20.0, 40.0]
+     */
+    public double[] getCooldowns() {
+        return cooldowns;
+    }
 
-	public String getName() {
-		return name;
-	}
+    /**
+     * Returns ultimate name.
+     *
+     * @return <code>String</code> - ultimate name
+     */
+    public String getName() {
+        return name;
+    }
 
-	public String getImage() {
-		return image;
-	}
+    /**
+     * Returns ultimate image (file name + file extension, ie. "MonkeyKingSpinToWin.png").
+     *
+     * @return <code>String</code> - ultimate image (file name + file extension, ie. "MonkeyKingSpinToWin.png")
+     */
+    public String getImage() {
+        return image;
+    }
 }
