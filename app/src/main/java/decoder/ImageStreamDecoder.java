@@ -10,7 +10,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * Created by Alexander Johansson on 2016-05-03. Code samples taken from Android Developer Documentation (https://developer.android.com/training/displaying-bitmaps/load-bitmap.html)
+ * @author Android Developer
+ *         Code samples taken from Android Developer Documentation (https://developer.android.com/training/displaying-bitmaps/load-bitmap.html)
  */
 public class ImageStreamDecoder {
     public int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {

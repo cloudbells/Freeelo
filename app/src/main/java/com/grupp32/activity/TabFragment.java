@@ -5,13 +5,11 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
-import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,315 +33,392 @@ import collection.Summoner;
 import decoder.ImageStreamDecoder;
 
 /**
+ * TabFragment represents the information in MainActivity.
+ * The UI is filled with data from current summoner, based on view pager (tab) position.
+ * Code samples for a scrollable fragment taken from ObservableScrollView (credits to ksoichiro; https://github.com/ksoichiro/Android-ObservableScrollView).
+ *
  * @author Alexander Johansson, Christoffer Nilsson
  */
 public class TabFragment extends FlexibleSpaceFragment<ObservableScrollView> implements View.OnClickListener, View.OnLongClickListener {
-	private ImageButton btnSpell1;
-	private ImageButton btnSpell2;
-	private ImageButton btnUltimate;
+    private ImageButton spell1;
+    private ImageButton spell2;
+    private ImageButton ultimate;
 
-	private ProgressBar pBarSpell1;
-	private ProgressBar pBarSpell2;
-	private ProgressBar pBarUltimate;
-	private TextView twSpell1;
-	private TextView twSpell2;
-	private TextView twUltimate;
+    private ProgressBar progressBarSpell1;
+    private ProgressBar progressBarSpell2;
+    private ProgressBar progressBarUltimate;
+    private TextView textSpell1;
+    private TextView textSpell2;
+    private TextView textUltimate;
 
-	private int twColor;
-	private int twCritialColor;
-	private TextToSpeech textToSpeech;
+    private int textColor;
+    private int textCriticalColor;
+    private TextToSpeech textToSpeech;
 
-	private CountDownTimer[] timers = new CountDownTimer[3];
-	private boolean playSound = true;
+    private CountDownTimer[] timers = new CountDownTimer[3];
+    private boolean playSound = true;
 
-	private Summoner tabSummoner;
+    private Summoner tabSummoner;
 
-	private static final String DDRAGON_SPELL_URL = "http://ddragon.leagueoflegends.com/cdn/%s/img/spell/";
+    private static final String DDRAGON_SPELL_URL = "http://ddragon.leagueoflegends.com/cdn/%s/img/spell/";
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.fragment_tab, container, false);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // Set root view
+        View view = inflater.inflate(R.layout.fragment_tab, container, false);
 
-		final ObservableScrollView scrollView = (ObservableScrollView) view.findViewById(R.id.scroll);
-		scrollView.setTouchInterceptionViewGroup((ViewGroup) view.findViewById(R.id.fragment_root));
+        // Fix for a viewgroup touch bug, credits to ksoichiro
+        final ObservableScrollView scrollView = (ObservableScrollView) view.findViewById(R.id.scroll);
+        scrollView.setTouchInterceptionViewGroup((ViewGroup) view.findViewById(R.id.fragment_root));
 
-		Bundle args = getArguments();
-		if (args != null && args.containsKey(ARG_SCROLL_Y)) {
-			final int scrollY = args.getInt(ARG_SCROLL_Y, 0);
-			ScrollUtils.addOnGlobalLayoutListener(scrollView, new Runnable() {
-				@Override
-				public void run() {
-					scrollView.scrollTo(0, scrollY);
-				}
-			});
-			updateFlexibleSpace(scrollY, view);
-		} else {
-			updateFlexibleSpace(0, view);
-		}
+        // Retrieve arguments passed from activity
+        Bundle args = getArguments();
+        if (args != null && args.containsKey(ARG_SCROLL_Y)) {
+            // If y-axis was changed (to match scrolled view when switching fragment)
+            final int scrollY = args.getInt(ARG_SCROLL_Y, 0);
+            ScrollUtils.addOnGlobalLayoutListener(scrollView, new Runnable() {
+                @Override
+                public void run() {
+                    // Scroll to y-axis
+                    scrollView.scrollTo(0, scrollY);
+                }
+            });
+            updateFlexibleSpace(scrollY, view); // Update space with new axis
+        } else {
+            updateFlexibleSpace(0, view);
+        }
 
-		btnSpell1 = (ImageButton) view.findViewById(R.id.summoner_spell1);
-		btnSpell2 = (ImageButton) view.findViewById(R.id.summoner_spell2);
-		btnUltimate = (ImageButton) view.findViewById(R.id.summoner_ultimate);
-		btnSpell1.setOnClickListener(this);
-		btnSpell2.setOnClickListener(this);
-		btnUltimate.setOnClickListener(this);
-		btnSpell1.setOnLongClickListener(this);
-		btnSpell2.setOnLongClickListener(this);
-		btnUltimate.setOnLongClickListener(this);
+        // Init listeners, both click and longclick
+        spell1 = (ImageButton) view.findViewById(R.id.summoner_spell1);
+        spell2 = (ImageButton) view.findViewById(R.id.summoner_spell2);
+        ultimate = (ImageButton) view.findViewById(R.id.summoner_ultimate);
+        spell1.setOnClickListener(this);
+        spell2.setOnClickListener(this);
+        ultimate.setOnClickListener(this);
+        spell1.setOnLongClickListener(this);
+        spell2.setOnLongClickListener(this);
+        ultimate.setOnLongClickListener(this);
 
-		pBarSpell1 = (ProgressBar) view.findViewById(R.id.progress_bar_spell1);
-		pBarSpell2 = (ProgressBar) view.findViewById(R.id.progress_bar_spell2);
-		pBarUltimate = (ProgressBar) view.findViewById(R.id.progress_bar_ultimate);
+        progressBarSpell1 = (ProgressBar) view.findViewById(R.id.progress_bar_spell1);
+        progressBarSpell2 = (ProgressBar) view.findViewById(R.id.progress_bar_spell2);
+        progressBarUltimate = (ProgressBar) view.findViewById(R.id.progress_bar_ultimate);
 
-		twSpell1 = (TextView) view.findViewById(R.id.text_spell1);
-		twSpell2 = (TextView) view.findViewById(R.id.text_spell2);
-		twUltimate = (TextView) view.findViewById(R.id.text_ultimate);
+        textSpell1 = (TextView) view.findViewById(R.id.text_spell1);
+        textSpell2 = (TextView) view.findViewById(R.id.text_spell2);
+        textUltimate = (TextView) view.findViewById(R.id.text_ultimate);
 
-		twColor = Color.parseColor("#" + Integer.toHexString(ContextCompat.getColor(getActivity(), R.color.colorProgressNumber)));
-		twCritialColor = Color.parseColor("#" + Integer.toHexString(ContextCompat.getColor(getActivity(), R.color.colorProgressNumberCritical)));
+        // Parse colors for cooldown usage
+        textColor = Color.parseColor("#" + Integer.toHexString(ContextCompat.getColor(getActivity(), R.color.colorProgressNumber)));
+        textCriticalColor = Color.parseColor("#" + Integer.toHexString(ContextCompat.getColor(getActivity(), R.color.colorProgressNumberCritical)));
 
-		textToSpeech = new TextToSpeech(getActivity(), new TextToSpeech.OnInitListener() {
-			@Override
-			public void onInit(int status) {
-				if(status != TextToSpeech.ERROR) {
-					textToSpeech.setLanguage(Locale.UK);
-				}
-			}
-		});
+        // Initialize text-to-speech
+        textToSpeech = new TextToSpeech(getActivity(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if (status != TextToSpeech.ERROR) {
+                    textToSpeech.setLanguage(Locale.UK); // Set locale to UK (for british english)
+                }
+            }
+        });
 
-		final TextView twRunes = (TextView) view.findViewById(R.id.runes);
-		final TextView twMasteries = (TextView) view.findViewById(R.id.masteries);
-		final TextView twTier = (TextView) view.findViewById(R.id.tier_text);
+        final TextView runes = (TextView) view.findViewById(R.id.runes);
+        final TextView masteries = (TextView) view.findViewById(R.id.masteries);
+        final TextView tier = (TextView) view.findViewById(R.id.tier_text);
 
-		final ImageView ivTier = (ImageView) view.findViewById(R.id.imgTier);
+        final ImageView imageTier = (ImageView) view.findViewById(R.id.imgTier);
 
-		final TextView twLpWinLoss = (TextView) view.findViewById(R.id.lp_win_loss);
-		final TextView twWinRatio = (TextView) view.findViewById(R.id.win_ratio);
-		final TextView twChampWinRatio = (TextView) view.findViewById(R.id.champ_win_ratio);
+        final TextView lpWinLoss = (TextView) view.findViewById(R.id.lp_win_loss);
+        final TextView winRatio = (TextView) view.findViewById(R.id.win_ratio);
+        final TextView champWinRatio = (TextView) view.findViewById(R.id.champ_win_ratio);
 
-		if (args != null && args.containsKey(ARG_SUMMONER)) {
-			Summoner summoner = (Summoner) args.getSerializable(ARG_SUMMONER);
-			tabSummoner = summoner;
-			if(summoner != null) {
-				String patchVersion = args.getString(ARG_VERSION);
-				twRunes.setText(summoner.getRunes().toString());
-				twMasteries.setText(summoner.getMasteries());
+        // If args were passed (summoner information)
+        if (args != null && args.containsKey(ARG_SUMMONER)) {
+            Summoner summoner = (Summoner) args.getSerializable(ARG_SUMMONER);
+            tabSummoner = summoner;
+            if (summoner != null) { // Summoner not null
+                // Set its content to UI elements
+                String patchVersion = args.getString(ARG_VERSION);
+                runes.setText(summoner.getRunes().toString());
+                masteries.setText(summoner.getMasteries());
 
-				int wins = summoner.getWins();
-				int losses = summoner.getLosses();
-				int champWins = summoner.getChampion().getWins();
-				int champLosses = summoner.getChampion().getLosses();
-				if((wins + losses) != 0) {
-					twLpWinLoss.setText(String.format(twLpWinLoss.getText().toString(), summoner.getLeaguePoints(), wins, losses));
-					double percentage = (double) wins / ((double) wins + (double) losses);
-					twWinRatio.setText(String.format(twWinRatio.getText().toString(), percentage * 100, "%"));
-				} else {
-					twLpWinLoss.setText(String.format(twLpWinLoss.getText().toString(), summoner.getLeaguePoints(), wins, losses));
-					twWinRatio.setText(String.format(twWinRatio.getText().toString(), 0.0, "%"));
-				}
+                int wins = summoner.getWins();
+                int losses = summoner.getLosses();
+                int champWins = summoner.getChampion().getWins();
+                int champLosses = summoner.getChampion().getLosses();
+                if ((wins + losses) != 0) { // Makes sure percentage doesn't divide by zero
+                    // Set LP
+                    lpWinLoss.setText(String.format(lpWinLoss.getText().toString(), summoner.getLeaguePoints(), wins, losses));
+                    double percentage = (double) wins / ((double) wins + (double) losses); // No zeroes
+                    // Set winratio
+                    winRatio.setText(String.format(winRatio.getText().toString(), percentage * 100, "%"));
+                } else { // Just set LP and 0% winrate
+                    lpWinLoss.setText(String.format(lpWinLoss.getText().toString(), summoner.getLeaguePoints(), wins, losses));
+                    winRatio.setText(String.format(winRatio.getText().toString(), 0.0, "%"));
+                }
 
-				if((champWins + champLosses) != 0) {
-					double percentage = (double) champWins / ((double) champWins + (double) champLosses);
-					twChampWinRatio.setText(String.format(twChampWinRatio.getText().toString(), percentage * 100, "%"));
-				} else {
-					twChampWinRatio.setText("");
-				}
+                if ((champWins + champLosses) != 0) { // Makes sure percentage doesn't divide by zero
+                    double percentage = (double) champWins / ((double) champWins + (double) champLosses);
+                    champWinRatio.setText(String.format(champWinRatio.getText().toString(), percentage * 100, "%"));
+                } else {
+                    champWinRatio.setText("");
+                }
 
-				Context context = getActivity();
-				int imageResource;
-				String tierText = summoner.getTier().toLowerCase();
-				String divisionText = summoner.getDivision().toLowerCase();
-				if (tierText.equals("challenger") || tierText.equals("master") || tierText.equals("provisional")) {
-					imageResource = context.getResources().getIdentifier("@drawable/" + tierText, null, context.getPackageName());
-					twTier.setText(summoner.getTier());
-				} else {
-					imageResource = context.getResources().getIdentifier("@drawable/" + tierText + "_" + divisionText, null, context.getPackageName());
-					String tempText = summoner.getTier() + " " + summoner.getDivision();
-					twTier.setText(tempText);
-				}
+                Context context = getActivity();
+                int imageResource;
+                // Gets lowercase tier and division
+                String tierText = summoner.getTier().toLowerCase();
+                String divisionText = summoner.getDivision().toLowerCase();
+                // If tier equals to the lone tiers, don't set division
+                if (tierText.equals("challenger") || tierText.equals("master") || tierText.equals("provisional")) {
+                    imageResource = context.getResources().getIdentifier("@drawable/" + tierText, null, context.getPackageName());
+                    tier.setText(summoner.getTier());
+                } else { // Set division if summoner is diamond or lower (to match drawable image names ie. "diamond_iv"
+                    imageResource = context.getResources().getIdentifier("@drawable/" + tierText + "_" + divisionText, null, context.getPackageName());
+                    String tempText = summoner.getTier() + " " + summoner.getDivision();
+                    tier.setText(tempText);
+                }
 
-				ImageStreamDecoder decoder = new ImageStreamDecoder();
-				ivTier.setImageBitmap(decoder.decodeSampledBitmapFromResource(context.getResources(), imageResource, 200, 200));
+                // Start decoder and decode image from resources (drawable)
+                ImageStreamDecoder decoder = new ImageStreamDecoder();
+                imageTier.setImageBitmap(decoder.decodeSampledBitmapFromResource(context.getResources(), imageResource, 200, 200));
 
-				try {
-					new ImageSwitcher().execute(
-							new URL(String.format(DDRAGON_SPELL_URL, patchVersion) + summoner.getSpell1().getImage()),
-							new URL(String.format(DDRAGON_SPELL_URL, patchVersion) + summoner.getSpell2().getImage()),
-							new URL(String.format(DDRAGON_SPELL_URL, patchVersion) + summoner.getChampion().getUltimateImageName())
-					);
-				} catch (MalformedURLException e) {
-					e.printStackTrace();
-				}
-			}
-		}
+                try {
+                    // Calls for image switches to match current summoner spells and champion ultimate images
+                    new ImageSwitcher().execute(
+                            new URL(String.format(DDRAGON_SPELL_URL, patchVersion) + summoner.getSpell1().getImage()),
+                            new URL(String.format(DDRAGON_SPELL_URL, patchVersion) + summoner.getSpell2().getImage()),
+                            new URL(String.format(DDRAGON_SPELL_URL, patchVersion) + summoner.getChampion().getUltimateImageName())
+                    );
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
 
-		scrollView.setScrollViewCallbacks(this);
+        scrollView.setScrollViewCallbacks(this);
 
-		return view;
-	}
+        return view;
+    }
 
-	@Override
-	public void onDestroy() {
-		super.onDestroy();
-		textToSpeech.shutdown();
-	}
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        // Manually shutdown the text-to-speech session to avoid any memory leaks
+        textToSpeech.shutdown();
+    }
 
-	@Override
-	protected void updateFlexibleSpace(int scrollY) {
-		// Sometimes scrollable.getCurrentScrollY() and the real scrollY has different values.
-		// As a workaround, we should call scrollVerticallyTo() to make sure that they match.
-		Scrollable s = getScrollable();
-		s.scrollVerticallyTo(scrollY);
+    @Override
+    protected void updateFlexibleSpace(int scrollY) {
+        // Sometimes scrollable.getCurrentScrollY() and the real scrollY has different values.
+        // As a workaround, we should call scrollVerticallyTo() to make sure that they match.
+        Scrollable s = getScrollable();
+        s.scrollVerticallyTo(scrollY);
 
-		// If scrollable.getCurrentScrollY() and the real scrollY has the same values,
-		// calling scrollVerticallyTo() won't invoke scroll (or onScrollChanged()), so we call it here.
-		// Calling this twice is not a problem as long as updateFlexibleSpace(int, View) has idempotence.
-		updateFlexibleSpace(scrollY, getView());
-	}
+        // If scrollable.getCurrentScrollY() and the real scrollY has the same values,
+        // calling scrollVerticallyTo() won't invoke scroll (or onScrollChanged()), so we call it here.
+        // Calling this twice is not a problem as long as updateFlexibleSpace(int, View) has idempotence.
+        updateFlexibleSpace(scrollY, getView());
+    }
 
-	@Override
-	protected void updateFlexibleSpace(int scrollY, View view) {
-		ObservableScrollView scrollView = (ObservableScrollView) view.findViewById(R.id.scroll);
+    @Override
+    protected void updateFlexibleSpace(int scrollY, View view) {
+        ObservableScrollView scrollView = (ObservableScrollView) view.findViewById(R.id.scroll);
 
-		MainActivity parentActivity = (MainActivity) getActivity();
-		if (parentActivity != null) {
-			parentActivity.onScrollChanged(scrollY, scrollView);
-		}
-	}
+        // Get parent activity
+        MainActivity parentActivity = (MainActivity) getActivity();
+        if (parentActivity != null) {
+            // Call scrollChanged to match y-axis
+            parentActivity.onScrollChanged(scrollY, scrollView);
+        }
+    }
 
-	private void resourceToGrayscale(ImageView view) {
-		ColorMatrix matrix = new ColorMatrix();
-		matrix.setSaturation(0);
+    /**
+     * Sets the resource to greyscale (imagebutton).
+     *
+     * @param view view to set to greyscale
+     */
+    private void resourceToGreyscale(ImageView view) {
+        ColorMatrix matrix = new ColorMatrix();
+        matrix.setSaturation(0); // 0 sat means no color = greyscale
 
-		ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
-		view.setColorFilter(filter);
-	}
+        ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
+        view.setColorFilter(filter); // Set the color filter to the matrix initialized above
+    }
 
-	private void resetColorFilter(ImageView view) {
-		view.setColorFilter(null);
-	}
+    /**
+     * Resets the current color filter to null. Removes greyscale.
+     *
+     * @param view view to reset color filter
+     */
+    private void resetColorFilter(ImageView view) {
+        view.setColorFilter(null);
+    }
 
-	@Override
-	public void onClick(View v) {
-		String spellReadySpeech = "";
-		switch(v.getId()) {
-			case R.id.summoner_spell1:
-				if(btnSpell1.getColorFilter() == null) {
-					spellReadySpeech = tabSummoner.getChampion().getName() + " " + tabSummoner.getSpell1().getName() + " ready";
-					timers[0] = startTimer(tabSummoner.getSpell1().getCooldown(), btnSpell1, pBarSpell1, twSpell1, spellReadySpeech);
-				}
-				break;
-			case R.id.summoner_spell2:
-				if(btnSpell2.getColorFilter() == null) {
-					spellReadySpeech = tabSummoner.getChampion().getName() + " " + tabSummoner.getSpell2().getName() + " ready";
-					timers[1] = startTimer(tabSummoner.getSpell2().getCooldown(), btnSpell2, pBarSpell2, twSpell2, spellReadySpeech);
-				}
-				break;
-			case R.id.summoner_ultimate:
-				if(btnUltimate.getColorFilter() == null) {
-					spellReadySpeech = tabSummoner.getChampion().getName() + " ultimate ready";
-					double[] cooldowns = tabSummoner.getChampion().getUltimateCooldowns();
-					timers[2] = startTimer((int) cooldowns[cooldowns.length - 1], btnUltimate, pBarUltimate, twUltimate, spellReadySpeech);
-				}
-				break;
-		}
-	}
+    @Override
+    public void onClick(View v) {
+        // Speech string
+        String spellReadySpeech = "";
+        // Based on which view, seperate actions
+        switch (v.getId()) {
+            case R.id.summoner_spell1:
+                if (spell1.getColorFilter() == null) { // If color filter is null, start timer
+                    spellReadySpeech = tabSummoner.getChampion().getName() + " " + tabSummoner.getSpell1().getName() + " ready";
+                    timers[0] = startTimer(tabSummoner.getSpell1().getCooldown(), spell1, progressBarSpell1, textSpell1, spellReadySpeech);
+                }
+                break;
+            case R.id.summoner_spell2:
+                if (spell2.getColorFilter() == null) { // If color filter is null, start timer
+                    spellReadySpeech = tabSummoner.getChampion().getName() + " " + tabSummoner.getSpell2().getName() + " ready";
+                    timers[1] = startTimer(tabSummoner.getSpell2().getCooldown(), spell2, progressBarSpell2, textSpell2, spellReadySpeech);
+                }
+                break;
+            case R.id.summoner_ultimate:
+                if (ultimate.getColorFilter() == null) { // If color filter is null, start timer
+                    spellReadySpeech = tabSummoner.getChampion().getName() + " ultimate ready";
+                    double[] cooldowns = tabSummoner.getChampion().getUltimateCooldowns();
+                    timers[2] = startTimer((int) cooldowns[cooldowns.length - 1], ultimate, progressBarUltimate, textUltimate, spellReadySpeech);
+                }
+                break;
+        }
+    }
 
-	@Override
-	public boolean onLongClick(View v) {
-		switch(v.getId()) {
-			case R.id.summoner_spell1:
-				resetTimer(0, btnSpell1, pBarSpell1, twSpell1);
-				break;
-			case R.id.summoner_spell2:
-				resetTimer(1, btnSpell2, pBarSpell2, twSpell2);
-				break;
-			case R.id.summoner_ultimate:
-				resetTimer(2, btnUltimate, pBarUltimate, twUltimate);
-				break;
-		}
+    @Override
+    public boolean onLongClick(View v) {
+        // Based on which view, seperate the buttons, but reset them
+        switch (v.getId()) {
+            case R.id.summoner_spell1:
+                resetTimer(0, spell1, progressBarSpell1, textSpell1);
+                break;
+            case R.id.summoner_spell2:
+                resetTimer(1, spell2, progressBarSpell2, textSpell2);
+                break;
+            case R.id.summoner_ultimate:
+                resetTimer(2, ultimate, progressBarUltimate, textUltimate);
+                break;
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	private void resetTimer(final int timerIndex, final ImageView ivResource, final ProgressBar pResource, final TextView twResource) {
-		if(timers[timerIndex] != null) {
-			timers[timerIndex].cancel();
-		}
-		resetColorFilter(ivResource);
-		pResource.setVisibility(View.INVISIBLE);
-		twResource.setText("");
+    /**
+     * Resets the timer for set index.
+     *
+     * @param timerIndex index of timer
+     * @param ivResource ImageView resource to reset
+     * @param pResource  ProgressBar resource to reset
+     * @param tvResource TextView resource to reset
+     */
+    private void resetTimer(final int timerIndex, final ImageView ivResource, final ProgressBar pResource, final TextView tvResource) {
+        if (timers[timerIndex] != null) { // If timer was started, cancel it
+            timers[timerIndex].cancel();
+        }
+        // Reset progress bar visiblity and color filter
+        resetColorFilter(ivResource);
+        pResource.setVisibility(View.INVISIBLE);
+        tvResource.setText("");
 
-		Toast.makeText(getActivity(), getString(R.string.reset_spell), Toast.LENGTH_LONG).show();
-	}
+        // Show message
+        Toast.makeText(getActivity(), getString(R.string.reset_spell), Toast.LENGTH_LONG).show();
+    }
 
-	public void toggleSound() {
-		playSound = !playSound;
-	}
+    /**
+     * Toggles a boolean for whether or not to play sound (text-to-speech).
+     */
+    public void toggleSound() {
+        playSound = !playSound;
+    }
 
-	public void resetTimers() {
-		for(int timerIndex = 0; timerIndex < timers.length; timerIndex++) {
-			if(timers[timerIndex] != null) {
-				timers[timerIndex].cancel();
-			}
-		}
-	}
+    /**
+     * Resets all timers.
+     */
+    public void resetTimers() {
+        for (int timerIndex = 0; timerIndex < timers.length; timerIndex++) {
+            if (timers[timerIndex] != null) {
+                timers[timerIndex].cancel();
+            }
+        }
+    }
 
-	private CountDownTimer startTimer(final int seconds, final ImageView ivResource, final ProgressBar pResource, final TextView twResource, final String spellReadySpeech) {
-		resourceToGrayscale(ivResource);
-		pResource.setVisibility(View.VISIBLE);
-		pResource.setMax(seconds);
-		CountDownTimer timer = new CountDownTimer(seconds * 1000, 500) {
-			@Override
-			public void onTick(long leftTimeInMilliseconds) {
-				long curSecond = leftTimeInMilliseconds / 1000;
-				pResource.setProgress(seconds - (int) curSecond);
-				if((int) curSecond <= 10) {
-					twResource.setTextColor(twCritialColor);
-				} else {
-					twResource.setTextColor(twColor);
-				}
-				twResource.setText(Long.toString(curSecond));
-			}
+    /**
+     * Starts a timer with given parameters, returns a CountDownTimer for storing.
+     *
+     * @param seconds          amount of seconds
+     * @param ivResource       ImageView resource
+     * @param pResource        ProgressBar resource
+     * @param tvResource       TextView resource
+     * @param spellReadySpeech Text-to-speech string upon completion
+     * @return <code>CountDownTimer</code> - timer object
+     */
+    private CountDownTimer startTimer(final int seconds, final ImageView ivResource, final ProgressBar pResource, final TextView tvResource, final String spellReadySpeech) {
+        // Set the button to greyscale and set progressbar visiblity
+        resourceToGreyscale(ivResource);
+        pResource.setVisibility(View.VISIBLE);
+        pResource.setMax(seconds);
+        // Init a timer
+        CountDownTimer timer = new CountDownTimer(seconds * 1000, 500) {
+            @Override
+            public void onTick(long leftTimeInMilliseconds) {
+                // Every tick set the progress bar and text
+                long curSecond = leftTimeInMilliseconds / 1000;
+                pResource.setProgress(seconds - (int) curSecond);
+                if ((int) curSecond <= 10) {
+                    tvResource.setTextColor(textCriticalColor);
+                } else {
+                    tvResource.setTextColor(textColor);
+                }
+                tvResource.setText(Long.toString(curSecond));
+            }
 
-			@Override
-			public void onFinish() {
-				if(playSound) {
-					textToSpeech.speak(spellReadySpeech, TextToSpeech.QUEUE_ADD, null, null);
-				}
+            @Override
+            public void onFinish() {
+                // Event fired when timer ticks runs out
+                // If sound is toggled on, launch text-to-speech in queue-mode
+                if (playSound) {
+                    textToSpeech.speak(spellReadySpeech, TextToSpeech.QUEUE_ADD, null, null);
+                }
 
-				resetColorFilter(ivResource);
-				pResource.setVisibility(View.INVISIBLE);
-				twResource.setText("");
-			}
-		}.start();
+                // Reset button to original state
+                resetColorFilter(ivResource);
+                pResource.setVisibility(View.INVISIBLE);
+                tvResource.setText("");
+            }
+        }.start();
 
-		return timer;
-	}
+        return timer;
+    }
 
-	private class ImageSwitcher extends AsyncTask<URL, Bitmap[], Bitmap[]> {
-		protected Bitmap[] doInBackground(URL... urls) {
-			Bitmap[] bitmaps = new Bitmap[4];
-			ImageStreamDecoder decoder = new ImageStreamDecoder();
-			try {
-				bitmaps[0] = decoder.decodeSampledBitmapFromStream((InputStream) urls[0].getContent(), 64, 64);
-				bitmaps[1] = decoder.decodeSampledBitmapFromStream((InputStream) urls[1].getContent(), 64, 64);
-				bitmaps[2] = decoder.decodeSampledBitmapFromStream((InputStream) urls[2].getContent(), 64, 64);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+    /**
+     * This nested class handles image switching for summoner spells and champion ultimate.
+     * This is handled asynchronously.
+     */
+    private class ImageSwitcher extends AsyncTask<URL, Bitmap[], Bitmap[]> {
+        protected Bitmap[] doInBackground(URL... urls) {
+            // Init bitmaps and the decoder
+            Bitmap[] bitmaps = new Bitmap[4];
+            ImageStreamDecoder decoder = new ImageStreamDecoder();
+            try {
+                // Try to decode from given URL (input stream), use decoder to load the bitmap into memory efficiently
+                bitmaps[0] = decoder.decodeSampledBitmapFromStream((InputStream) urls[0].getContent(), 64, 64);
+                bitmaps[1] = decoder.decodeSampledBitmapFromStream((InputStream) urls[1].getContent(), 64, 64);
+                bitmaps[2] = decoder.decodeSampledBitmapFromStream((InputStream) urls[2].getContent(), 64, 64);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
-			return bitmaps;
-		}
+            return bitmaps;
+        }
 
-		protected void onPostExecute(Bitmap[] bitmaps) {
-			btnSpell1.setImageBitmap(Bitmap.createScaledBitmap(bitmaps[0], btnSpell1.getWidth(), btnSpell1.getHeight(), false));
-			btnSpell2.setImageBitmap(Bitmap.createScaledBitmap(bitmaps[1], btnSpell2.getWidth(), btnSpell2.getHeight(), false));
-			btnUltimate.setImageBitmap(Bitmap.createScaledBitmap(bitmaps[2], btnUltimate.getWidth(), btnUltimate.getHeight(), false));
+        protected void onPostExecute(Bitmap[] bitmaps) {
+            if (bitmaps != null) { // If bitmaps not null
+                // Set scaled bitmaps to ImageButton
+                spell1.setImageBitmap(Bitmap.createScaledBitmap(bitmaps[0], spell1.getWidth(), spell1.getHeight(), false));
+                spell2.setImageBitmap(Bitmap.createScaledBitmap(bitmaps[1], spell2.getWidth(), spell2.getHeight(), false));
+                ultimate.setImageBitmap(Bitmap.createScaledBitmap(bitmaps[2], ultimate.getWidth(), ultimate.getHeight(), false));
 
-			btnSpell1.setVisibility(View.VISIBLE);
-			btnSpell2.setVisibility(View.VISIBLE);
-			btnUltimate.setVisibility(View.VISIBLE);
-		}
-	}
+                spell1.setVisibility(View.VISIBLE);
+                spell2.setVisibility(View.VISIBLE);
+                ultimate.setVisibility(View.VISIBLE);
+            }
+        }
+    }
 }

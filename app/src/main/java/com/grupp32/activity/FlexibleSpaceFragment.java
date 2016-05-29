@@ -29,12 +29,21 @@ import collection.Summoner;
 public abstract class FlexibleSpaceFragment<S extends Scrollable> extends Fragment
         implements ObservableScrollViewCallbacks {
 
+    // Static variables for easier changes
     public static final String ARG_SCROLL_Y = "ARG_SCROLL_Y";
     public static final String ARG_SUMMONER = "ARG_SUMMONER";
     public static final String ARG_VERSION = "ARG_VERSION";
 
+    /**
+     * Method sets information to a bundle for passing it onto the fragment (in our case TabFragment)
+     *
+     * @param scrollY value for current scroll-axis
+     * @param summoner Summoner-object passed
+     * @param patchVersion patch version passed
+     */
     public void setArguments(int scrollY, Summoner summoner, String patchVersion) {
         if (0 <= scrollY) {
+            // Set information to bundle and set it as arguments
             Bundle args = new Bundle();
             args.putInt(ARG_SCROLL_Y, scrollY);
             args.putSerializable(ARG_SUMMONER, summoner);
