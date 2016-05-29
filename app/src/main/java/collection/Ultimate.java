@@ -10,7 +10,7 @@ public class Ultimate implements Serializable {
 	private int maxRank;
 	private double[] cooldowns;
 	private String name;
-	private String image;
+	private String imageName;
 
 	public Ultimate setMaxRank(int maxRank) {
 		this.maxRank = maxRank;
@@ -27,8 +27,8 @@ public class Ultimate implements Serializable {
 		return this;
 	}
 
-	public Ultimate setImage(String image) {
-		this.image = image;
+	public Ultimate setimageName(String imageName) {
+		this.imageName = imageName;
 		return this;
 	}
 
@@ -44,7 +44,7 @@ public class Ultimate implements Serializable {
 		return name;
 	}
 
-	public String getImage() {
-		return image;
+	public String getImageName() {
+		return imageName;
 	}
 }
