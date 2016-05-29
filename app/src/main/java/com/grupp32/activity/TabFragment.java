@@ -5,13 +5,11 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
-import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,10 +33,13 @@ import collection.Summoner;
 import decoder.ImageStreamDecoder;
 
 /**
+ * TabFragment represents the information in MainActivity.
+ * The UI is filled with data from current summoner, based on view pager (tab) position.
+ * Code samples for a scrollable fragment taken from ObservableScrollView (credits to ksoichiro; https://github.com/ksoichiro/Android-ObservableScrollView).
+ *
  * @author Alexander Johansson, Christoffer Nilsson
  */
 public class TabFragment extends FlexibleSpaceFragment<ObservableScrollView> implements View.OnClickListener, View.OnLongClickListener {
-
     private ImageButton spell1;
     private ImageButton spell2;
     private ImageButton ultimate;
