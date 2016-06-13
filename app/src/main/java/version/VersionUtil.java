@@ -20,10 +20,10 @@ public class VersionUtil {
 
     private String region;
     private String latestPatch;
-    private String champVersion;
-    private String masteryVersion;
-    private String runeVersion;
-    private String spellVersion;
+    private String champVersion = "";
+    private String masteryVersion = "";
+    private String runeVersion = "";
+    private String spellVersion = "";
     private Context context;
     private JSONParser parser;
     private JSONRequester requester;
@@ -47,9 +47,9 @@ public class VersionUtil {
     }
 
     /**
-     * 
+     * Setups resources and sets patch (champ/mastery/rune/spell) version
      */
-    public void checkFirstTime() {
+    public void setupAndBuildResources() {
         try {
             // If not first time
             if (!isFirstTime()) {
@@ -73,11 +73,12 @@ public class VersionUtil {
      */
     public void updateVersion() {
         try {
+            latestPatch = requester.requestPatchData(this.region).getString(0);
             // Request all static data one-by-one
-            JSONObject champions = requester.requestStaticChampionData(region);
-            JSONObject masteries = requester.requestStaticMasteryData(region);
-            JSONObject runes = requester.requestStaticRuneData(region);
-            JSONObject spells = requester.requestStaticSpellData(region);
+            JSONObject champions = requester.requestStaticChampionData(region, latestPatch);
+            JSONObject masteries = requester.requestStaticMasteryData(region, latestPatch);
+            JSONObject runes = requester.requestStaticRuneData(region, latestPatch);
+            JSONObject spells = requester.requestStaticSpellData(region, latestPatch);
             // Get versions
             champVersion = champions.getString("version");
             masteryVersion = masteries.getString("version");

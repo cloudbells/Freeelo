@@ -249,6 +249,7 @@ public class LoginActivity extends AppCompatActivity {
 			JSONParser parser = new JSONParser(resourceUtil);
 			JSONRequester requester = new JSONRequester(parser);
 			versionUtil = new VersionUtil(context, parser, requester, resourceUtil, region);
+			versionUtil.setupAndBuildResources();
 
 			// Check if a search is being conducted for the first time, or if patch data is not latest version
 			if (versionUtil.isFirstTime() || !versionUtil.isLatestVersion()) {

@@ -25,10 +25,10 @@ public class JSONRequester {
     private final String RANKED_DATA_URL = "https://%s.api.pvp.net/api/lol/%s/v2.5/league/by-summoner/%s/entry?";
     private final String RANKED_CHAMP_DATA_URL = "https://%s.api.pvp.net/api/lol/%s/v1.3/stats/by-summoner/%s/ranked?";
     private final String PATCH_DATA_URL = "https://global.api.pvp.net/api/lol/static-data/%s/v1.2/versions?";
-    private final String CHAMP_STATIC_URL = "https://global.api.pvp.net/api/lol/static-data/%s/v1.2/champion?dataById=true&champData=image,spells&";
-    private final String MASTERY_STATIC_URL = "https://global.api.pvp.net/api/lol/static-data/%s/v1.2/mastery?masteryListData=masteryTree&";
-    private final String RUNE_STATIC_URL = "https://global.api.pvp.net/api/lol/static-data/%s/v1.2/rune?runeListData=stats&";
-    private final String SPELL_STATIC_URL = "https://global.api.pvp.net/api/lol/static-data/%s/v1.2/summoner-spell?dataById=true&spellData=cooldown,image&";
+    private final String CHAMP_STATIC_URL = "https://global.api.pvp.net/api/lol/static-data/%s/v1.2/champion?version=%s&dataById=true&champData=image,spells&";
+    private final String MASTERY_STATIC_URL = "https://global.api.pvp.net/api/lol/static-data/%s/v1.2/mastery?version=%s&masteryListData=masteryTree&";
+    private final String RUNE_STATIC_URL = "https://global.api.pvp.net/api/lol/static-data/%s/v1.2/rune?version=%s&runeListData=stats&";
+    private final String SPELL_STATIC_URL = "https://global.api.pvp.net/api/lol/static-data/%s/v1.2/summoner-spell?version=%s&dataById=true&spellData=cooldown,image&";
 
     /**
      * Constructs a new JSONRequester.
@@ -123,48 +123,52 @@ public class JSONRequester {
      * Requests static champion data (a list of all champions by ID's, not ordered).
      *
      * @param region the region to search on, this is not important as long as it's a valid region
+     * @param version the version data to retrieve
      * @return <code>JSONObject</code> - a JSONObject containing all champions
      * @throws IOException   if the URL is incorrect for the API
      * @throws JSONException if returned data is corrupt or parsed wrong
      */
-    public JSONObject requestStaticChampionData(String region) throws IOException, JSONException {
-        return buildRootObject(new URL(String.format(CHAMP_STATIC_URL, region) + API_KEY));
+    public JSONObject requestStaticChampionData(String region, String version) throws IOException, JSONException {
+        return buildRootObject(new URL(String.format(CHAMP_STATIC_URL, region, version) + API_KEY));
     }
 
     /**
      * Requests static mastery data (a list of all masteries by ID's, not ordered).
      *
      * @param region the region to search on, this is not important as long as it's a valid region
+     * @param version the version data to retrieve
      * @return <code>JSONObject</code> - a JSONObject containing all masteries
      * @throws IOException   if the URL is incorrect for the API
      * @throws JSONException if returned data is corrupt or parsed wrong
      */
-    public JSONObject requestStaticMasteryData(String region) throws IOException, JSONException {
-        return buildRootObject(new URL(String.format(MASTERY_STATIC_URL, region) + API_KEY));
+    public JSONObject requestStaticMasteryData(String region, String version) throws IOException, JSONException {
+        return buildRootObject(new URL(String.format(MASTERY_STATIC_URL, region, version) + API_KEY));
     }
 
     /**
      * Requests static rune data (a list of all runes by ID's, not ordered).
      *
      * @param region the region to search on, this is not important as long as it's a valid region
+     * @param version the version data to retrieve
      * @return <code>JSONObject</code> - a JSONObject containing all runes
      * @throws IOException   if the URL is incorrect for the API
      * @throws JSONException if returned data is corrupt or parsed wrong
      */
-    public JSONObject requestStaticRuneData(String region) throws IOException, JSONException {
-        return buildRootObject(new URL(String.format(RUNE_STATIC_URL, region) + API_KEY));
+    public JSONObject requestStaticRuneData(String region, String version) throws IOException, JSONException {
+        return buildRootObject(new URL(String.format(RUNE_STATIC_URL, region, version) + API_KEY));
     }
 
     /**
      * Requests static summoner spell data (a list of all spells by ID's, not ordered).
      *
      * @param region the region to search on, this is not important as long as it's a valid region
+     * @param version the version data to retrieve
      * @return <code>JSONObject</code> - a JSONObject containing all spells
      * @throws IOException   if the URL is incorrect for the API
      * @throws JSONException if returned data is corrupt or parsed wrong
      */
-    public JSONObject requestStaticSpellData(String region) throws IOException, JSONException {
-        return buildRootObject(new URL(String.format(SPELL_STATIC_URL, region) + API_KEY));
+    public JSONObject requestStaticSpellData(String region, String version) throws IOException, JSONException {
+        return buildRootObject(new URL(String.format(SPELL_STATIC_URL, region, version) + API_KEY));
     }
 
     /**

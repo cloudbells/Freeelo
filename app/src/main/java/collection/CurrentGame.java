@@ -113,7 +113,11 @@ public class CurrentGame {
         rankedDataArr = requester.requestRankedData(summonerIds, region);
         for (Summoner summoner : summoners) {
             if (rankedDataArr != null) {
-                rankedData = ((JSONArray) parser.parse(rankedDataArr, Integer.toString(summoner.getSummonerId()))).getJSONObject(0);
+                try {
+                    rankedData = ((JSONArray) parser.parse(rankedDataArr, Integer.toString(summoner.getSummonerId()))).getJSONObject(0);
+                } catch(JSONException e) {
+                    rankedData = null;
+                }
             }
             setRankedData(rankedData, summoner);
         }
